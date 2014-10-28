@@ -22,7 +22,7 @@ exports.index = function(req, res) {
 
 // Get a single thing
 exports.show = function(req, res) {
-  Keyword.findById(req.params.id, function (err, thing) {
+  Keyword.findById(req.params.id, function (err, keyword) {
     if(err) { return handleError(res, err); }
     if(!keyword) { return res.send(404); }
     return res.json(thing);
@@ -31,7 +31,7 @@ exports.show = function(req, res) {
 
 // Creates a new thing in the DB.
 exports.create = function(req, res) {
-  Keyword.create(req.body, function(err, thing) {
+  Keyword.create(req.body, function(err, keyword) {
     if(err) { return handleError(res, err); }
     return res.json(201, thing);
   });
@@ -56,7 +56,7 @@ exports.destroy = function(req, res) {
   Keyword.findById(req.params.id, function (err, keyword) {
     if(err) { return handleError(res, err); }
     if(!keyword) { return res.send(404); }
-    thing.remove(function(err) {
+    keyword.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.send(204);
     });
