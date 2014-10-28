@@ -74,7 +74,7 @@ for (var i = 0; i < savedKeyword.length; i++) {
     storedKw = savedKeyword[i];
 
 
- return listKeywordDetails(storedKw.id);
+ return listKeywordDetails(storedKw._id);
 }
   })
   .then(function(sites){
