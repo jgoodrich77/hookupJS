@@ -27,7 +27,7 @@ var
 Keyword      = mongoose.model('Keyword'),
 KeywordCheck = mongoose.model('KeywordCheck');
 
-function saveKeyword(keyword) {
+function listKeyword(keyword) {
   var
   defer = Q.defer();
 
@@ -131,18 +131,13 @@ tmp.results.push({
   return defer.promise;
 }
 
-var
-testKeyword = 'Data',
-testPages = 3,
-testPageSize = 10,
-storedKw;
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
 Q([])
   .then(function(){
-    return saveKeyword(testKeyword);
+    return listKeyword();
   })
   .then(function(savedKeyword){
     console.log(savedKeyword);
