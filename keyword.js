@@ -131,7 +131,11 @@ tmp.results.push({
   return defer.promise;
 }
 
+var
 
+testPages = 3,
+testPageSize = 10,
+storedKw;
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
