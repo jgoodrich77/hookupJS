@@ -39,7 +39,7 @@ function listKeyword() {
 
     defer.resolve(doc);
   });
- console.log(defer);
+
   return defer.promise;
 }
 
@@ -70,16 +70,16 @@ Q([])
     return listKeyword();
   })
   .then(function(savedKeyword){
-   // console.log(savedKeyword);
+   console.log(savedKeyword);
 for (var i = 0; i < savedKeyword.length; i++) { 
     storedKw = savedKeyword[i];
 
- //console.log(listKeyword());
+ console.log(listKeyword());
 // console.log(listKeywordDetails(storedKw._id));
 }
   })
   .then(function(sites){
-  //  console.log(sites);
+    console.log(sites);
       })
   
  
