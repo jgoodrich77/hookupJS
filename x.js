@@ -1,5 +1,10 @@
 'use strict';
 
+// experiments from 10/27
+// adding ability to parse, dump and examine the object from
+// the custom search API
+// because looks wrong in rockmongo
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var
@@ -102,8 +107,12 @@ function saveKeywordCheck(keywordId, resultRows) {
   });
 
   resultRows.forEach(function(result){
+
+//var urlParse = require('url').parse;
+//var parsed = urlParse(url);
+//var domain = parsed.hostname;
   tmp.results.push({
-    domain: result.url,
+    domain: result.domain,
     url: result.url,
     title: result.title,
     snippet: result.snippet,
