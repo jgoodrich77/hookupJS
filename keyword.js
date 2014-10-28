@@ -31,7 +31,14 @@ function saveKeyword(keyword) {
   var
   defer = Q.defer();
 
-  Keyword.find();
+  Keyword.find(
+  function (err, doc) {
+      if(err || !doc) {
+      return defer.reject(err);
+    }
+
+    defer.resolve(doc);
+  });
 
   return defer.promise;
 }
