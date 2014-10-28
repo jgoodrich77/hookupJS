@@ -137,7 +137,7 @@ tmp.results.push({
 }
 
 var
-testKeyword = 'digital cameras',
+testKeyword = 'Database',
 testPages = 3,
 testPageSize = 10,
 storedKw;
