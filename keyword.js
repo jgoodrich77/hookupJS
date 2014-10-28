@@ -50,6 +50,7 @@ function listKeywordDetails(keywordId) {
 
   KeywordCheck.find(
         {keyword_id: keywordId},
+{"date" : 1},
   function (err, doc) {
       if(err || !doc) {
       return defer.reject(err);
@@ -76,10 +77,12 @@ for (var i = 0; i < savedKeyword.length; i++) {
 
 //return listKeyword();
 return listKeywordDetails(storedKw._id);
+
+
 }
   })
   .then(function(sites){
-    console.log(sites);
+  console.log(sites);
       })
   
  
