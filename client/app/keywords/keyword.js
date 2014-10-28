@@ -6,7 +6,7 @@ angular.module('auditpagesApp')
       .state('keywords', {
         url: '/keywords',
         templateUrl: 'app/keywords/keywords.html',
-        controller: 'LoginCtrl',
+        controller: 'KeywordCtrl',
 	authenticate: true
       });
   });
