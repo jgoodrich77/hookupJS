@@ -43,55 +43,22 @@ function listKeyword() {
   return defer.promise;
 }
 
-function checkKeyword(keyword, pages, pageSize) {
-  pages = pages || 10;
-  pageSize = pageSize || 10;
-
+function fromKeywordChecks(keywordId) {
   var
-  fetchData = function(startIndex) {
-    return function(){
-      var defer = Q.defer();
+  defer = Q.defer();
 
-      GoogleCustomSearch.cse.list({
-          cx: CX,
-          auth: API_KEY,
-          q: keyword,
-          start: startIndex,
-          num: pageSize
-        },
-        function (error, response) {
-          if(error) { // break the promise
-            return defer.reject(error);
-          }
+  KeywordCheck.find(
+          { _id: keywordId },
+  function (err, doc) {
+      if(err || !doc) {
+      return defer.reject(err);
+    }
 
-          if(!!response && !!response.items) {
-            allResults = allResults.concat(response.items);
-            defer.resolve(response.items);
-          }
-          else {
-            defer.reject(new Error('No items found in result'));
-          }
-        }
-      );
-
-      return defer.promise;
-    };
-  },
-  allResults,
-  result = Q([])
-    .then(function(output){ // seed allResults buffer
-        return allResults = output;
-    });
-
-  for(var i = 1; i <= (pages * pageSize); i = i + pageSize) {
-    result = result.then(fetchData(i));
-  }
-
-  result = result.then(function(lItems){
-    return allResults;
+    defer.resolve(doc);
   });
 
-  return result;
+  return defer.promise;
+      
 }
 
 function saveKeywordCheck(keywordId, resultRows) {
@@ -131,11 +98,7 @@ tmp.results.push({
   return defer.promise;
 }
 
-var
-
-testPages = 3,
-testPageSize = 10,
-storedKw;
+var storedKw;
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
@@ -147,10 +110,9 @@ Q([])
     console.log(savedKeyword);
 for (var i = 0; i < savedKeyword.length; i++) { 
     storedKw = savedKeyword[i];
-console.log(storedKw.keyword);
-console.log(storedKw._id);
 
-   // return checkKeyword(storedKw.keyword, testPages, testPageSize);
+
+ return fromKeywordChecks(storedKw.id);
 }
   })
   .then(function(sites){
