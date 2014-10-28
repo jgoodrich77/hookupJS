@@ -4,7 +4,9 @@ angular.module('auditpagesApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
     $scope.menu = [{
       'title': 'Home',
-      'link': '/'
+      'link': '/',
+      'title': 'Keywords',
+      'link': '/keywords'
     }];
 
     $scope.isCollapsed = true;
