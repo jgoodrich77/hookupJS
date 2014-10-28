@@ -5,8 +5,6 @@ angular.module('auditpagesApp')
     $scope.menu = [{
       'title': 'Home',
       'link': '/',
-      'title': 'Keywords',
-      'link': '/keywords'
     }];
 
     $scope.isCollapsed = true;
