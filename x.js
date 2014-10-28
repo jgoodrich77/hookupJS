@@ -137,8 +137,8 @@ tmp.results.push({
 }
 
 var
-testKeyword = 'my keyword',
-testPages = 1,
+testKeyword = 'digital cameras',
+testPages = 3,
 testPageSize = 10,
 storedKw;
 

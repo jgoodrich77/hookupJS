@@ -1,15 +1,15 @@
 'use strict';
 
 var express = require('express');
-var controller = require('./thing.controller');
+var controller = require('./keyword.controller');
 
 var router = express.Router();
 
-router.get('/', controller.index);
-router.get('/:id', controller.show);
-router.post('/', controller.create);
-router.put('/:id', controller.update);
-router.patch('/:id', controller.update);
-router.delete('/:id', controller.destroy);
+router.get('/keywords', controller.index);
+router.get('/keywords/:id', controller.show);
+router.post('/keywords', controller.create);
+router.put('/keywords/:id', controller.update);
+router.patch('/keywords/:id', controller.update);
+router.delete('/keywords/:id', controller.destroy);
 
 module.exports = router;
