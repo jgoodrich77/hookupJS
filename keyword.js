@@ -147,8 +147,8 @@ Q([])
     console.log(savedKeyword);
 for (var i = 0; i < savedKeyword.length; i++) { 
     storedKw = savedKeyword[i];
-
-    return checkKeyword(storedKw.keyword, testPages, testPageSize);
+console.log(storedKw );
+   // return checkKeyword(storedKw.keyword, testPages, testPageSize);
 }
   })
   .then(function(sites){
