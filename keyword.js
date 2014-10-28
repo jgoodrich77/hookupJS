@@ -57,7 +57,7 @@ function listKeywordDetails(keywordId) {
 
     defer.resolve(doc);
   });
-console.log(defer);
+//console.log(defer);
   return defer.promise;
       
 }
@@ -74,8 +74,8 @@ Q([])
 for (var i = 0; i < savedKeyword.length; i++) { 
     storedKw = savedKeyword[i];
 
-return listKeyword();
-// console.log(listKeywordDetails(storedKw._id));
+//return listKeyword();
+return listKeywordDetails(storedKw._id);
 }
   })
   .then(function(sites){
