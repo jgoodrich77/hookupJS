@@ -74,7 +74,7 @@ Q([])
 for (var i = 0; i < savedKeyword.length; i++) { 
     storedKw = savedKeyword[i];
 
- console.log(listKeyword());
+return listKeyword();
 // console.log(listKeywordDetails(storedKw._id));
 }
   })
