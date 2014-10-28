@@ -48,8 +48,8 @@ function listKeywordDetails(keywordId) {
   var
   defer = Q.defer();
 
-  Keyword.find(
-        {keyword : "digital cameras"},
+  KeywordCheck.find(
+        {keyword_id: keywordId},
   function (err, doc) {
       if(err || !doc) {
       return defer.reject(err);
