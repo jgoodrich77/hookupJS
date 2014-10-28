@@ -4,24 +4,24 @@ angular.module('auditpagesApp')
   .controller('KeywordCtrl', function ($scope, $http, socket) {
     $scope.awesomeKeywords = [];
 
-    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+    $http.get('/api/keywords').success(function(awesomeKeywords) {
+      $scope.awesomeKeywords = awesomeKeywords;
+      socket.syncUpdates('keyword', $scope.awesomeKeywords);
     });
 
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
+    $scope.addKeyword = function() {
+      if($scope.newKeyword === '') {
         return;
       }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
+      $http.post('/api/keywords', { name: $scope.newKeyword });
+      $scope.newKeyword = '';
     };
 
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
+    $scope.deleteKeyword = function(keyword) {
+      $http.delete('/api/keywordss/' + keyword._id);
     };
 
     $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
+      socket.unsyncUpdates('keyword');
     });
   });
