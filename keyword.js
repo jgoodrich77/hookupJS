@@ -141,7 +141,7 @@ Q([])
   })
   .then(function(savedKeyword){
     console.log(savedKeyword);
-for (i = 0; i < savedKeyword.length; i++) { 
+for (var i = 0; i < savedKeyword.length; i++) { 
     storedKw = savedKeyword[i];
 
     return checkKeyword(storedKw.keyword, testPages, testPageSize);
