@@ -27,7 +27,7 @@ var
 Keyword      = mongoose.model('Keyword'),
 KeywordCheck = mongoose.model('KeywordCheck');
 
-function listKeyword(keyword) {
+function listKeyword() {
   var
   defer = Q.defer();
 
