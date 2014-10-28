@@ -31,19 +31,7 @@ function saveKeyword(keyword) {
   var
   defer = Q.defer();
 
-  Keyword.find({ // find by criteria
-    keyword: keyword
-  }, { // new Keyword criteria
-    keyword: keyword
-  },
-  { upsert: true },
-  function (err, doc) {
-      if(err || !doc) {
-      return defer.reject(err);
-    }
-
-    defer.resolve(doc);
-  });
+  Keyword.find();
 
   return defer.promise;
 }
