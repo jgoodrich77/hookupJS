@@ -147,7 +147,9 @@ Q([])
     console.log(savedKeyword);
 for (var i = 0; i < savedKeyword.length; i++) { 
     storedKw = savedKeyword[i];
-console.log(storedKw );
+console.log(storedKw.keyword);
+console.log(storedKw._id);
+
    // return checkKeyword(storedKw.keyword, testPages, testPageSize);
 }
   })
