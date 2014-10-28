@@ -141,11 +141,16 @@ Q([])
   })
   .then(function(savedKeyword){
     console.log(savedKeyword);
-
-    storedKw = savedKeyword;
+for (i = 0; i < savedKeyword.length; i++) { 
+    storedKw = savedKeyword[i];
 
     return checkKeyword(storedKw.keyword, testPages, testPageSize);
+}
   })
+  .then(function(sites){
+    console.log(sites);
+      })
+  
   .then(function(checkResult){
     return saveKeywordCheck(storedKw._id, checkResult);
   })
