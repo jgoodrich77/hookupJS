@@ -6,10 +6,10 @@ var
 KeywordCheckSchema = new Schema({
   keyword_id: {
     type: Schema.Types.ObjectId,
-    ref: ‘Keyword’
+    ref: 'Keyword'
   },
   results: [{
-    domain: String,
+    website: String,
     url: String,
     title: String,
     snippet: String,
