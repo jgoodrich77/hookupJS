@@ -57,7 +57,7 @@ function listKeywordDetails(keywordId) {
 
     defer.resolve(doc);
   });
-
+console.log(defer);
   return defer.promise;
       
 }
