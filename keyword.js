@@ -31,7 +31,7 @@ function saveKeyword(keyword) {
   var
   defer = Q.defer();
 
-  Keyword.findOneAndUpdate({ // find by criteria
+  Keyword.find({ // find by criteria
     keyword: keyword
   }, { // new Keyword criteria
     keyword: keyword
