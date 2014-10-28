@@ -48,7 +48,7 @@ function listKeywordDetails(keywordId) {
   var
   defer = Q.defer();
 
-  KeywordCheck.find(
+  Keyword.find(
         {keyword : "digital cameras"},
   function (err, doc) {
       if(err || !doc) {
