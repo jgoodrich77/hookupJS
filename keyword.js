@@ -49,7 +49,7 @@ function listKeywordDetails(keywordId) {
   defer = Q.defer();
 
   KeywordCheck.find(
-        {_id : ObjectId("544d90a73dd00722b92ce18c")},
+        {keyword : "digital cameras"},
   function (err, doc) {
       if(err || !doc) {
       return defer.reject(err);
