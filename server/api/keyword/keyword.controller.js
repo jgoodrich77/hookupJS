@@ -25,7 +25,7 @@ exports.show = function(req, res) {
   Keyword.findById(req.params.id, function (err, keyword) {
     if(err) { return handleError(res, err); }
     if(!keyword) { return res.send(404); }
-    return res.json(thing);
+    return res.json(keyword);
   });
 };
 
@@ -33,7 +33,7 @@ exports.show = function(req, res) {
 exports.create = function(req, res) {
   Keyword.create(req.body, function(err, keyword) {
     if(err) { return handleError(res, err); }
-    return res.json(201, thing);
+    return res.json(201, keyword);
   });
 };
 
@@ -46,7 +46,7 @@ exports.update = function(req, res) {
     var updated = _.merge(keyword, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(200, thing);
+      return res.json(200, keyword);
     });
   });
 };
