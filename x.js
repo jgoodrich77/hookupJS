@@ -137,7 +137,7 @@ tmp.results.push({
 }
 
 var
-testKeyword = 'Database',
+testKeyword = 'Data',
 testPages = 3,
 testPageSize = 10,
 storedKw;
