@@ -44,12 +44,12 @@ function listKeyword() {
 }
 
 function listKeywordDetails(keywordId) {
-    console.log(keywordId);
+  
   var
   defer = Q.defer();
 
   KeywordCheck.find(
-          { _id: keywordId },
+        {_id : ObjectId("544d90a73dd00722b92ce18c")},
   function (err, doc) {
       if(err || !doc) {
       return defer.reject(err);
