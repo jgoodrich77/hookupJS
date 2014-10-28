@@ -44,6 +44,7 @@ function listKeyword() {
 }
 
 function listKeywordDetails(keywordId) {
+    console.log(keywordId);
   var
   defer = Q.defer();
 
@@ -56,7 +57,7 @@ function listKeywordDetails(keywordId) {
 
     defer.resolve(doc);
   });
-console.log(defer.promise);
+
   return defer.promise;
       
 }
