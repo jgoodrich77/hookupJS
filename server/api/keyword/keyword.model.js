@@ -4,6 +4,10 @@ Schema = mongoose.Schema;
 
 var
 KeywordSchema = new Schema({
+  user_id: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
   keyword: {
     type: String,
     required: true

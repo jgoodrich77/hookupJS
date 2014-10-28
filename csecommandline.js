@@ -1,9 +1,9 @@
 'use strict';
 
-// experiments from 10/27
-// adding ability to parse, dump and examine the object from
-// the custom search API
-// because looks wrong in rockmongo
+// experiments from 10/28
+//
+// trying to update keywords and reports so they can be used by specific users.
+//
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
