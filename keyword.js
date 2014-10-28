@@ -43,7 +43,7 @@ function listKeyword() {
   return defer.promise;
 }
 
-function fromKeywordChecks(keywordId) {
+function listKeywordDetails(keywordId) {
   var
   defer = Q.defer();
 
@@ -56,48 +56,10 @@ function fromKeywordChecks(keywordId) {
 
     defer.resolve(doc);
   });
-
+console.log(defer.promise);
   return defer.promise;
       
 }
-
-function saveKeywordCheck(keywordId, resultRows) {
-  var
-  defer = Q.defer(),
-  tmp = new KeywordCheck({
-    keyword_id: keywordId
-  });
-
-  resultRows.forEach(function(result){
-
-var urlParse = require('url').parse;
-var parsed = urlParse(result.link);
-var webdomain = parsed.hostname;
-
-console.log( 'title is ' + result.title );
-console.log( 'link is ' + result.link );
-console.log( 'domain is ' + webdomain );
-
-tmp.results.push({
-    website: webdomain,
-    url: result.link,
-    title: result.title,
-    snippet: result.snippet,
-    metatags: result.metatags
-    });
-
-  });
-
-  tmp.save(function(err, doc){
-    if(err||!doc) {
-    return defer.reject(err);
-  }
-    defer.resolve(doc);
-  });
-
-  return defer.promise;
-}
-
 var storedKw;
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -112,16 +74,14 @@ for (var i = 0; i < savedKeyword.length; i++) {
     storedKw = savedKeyword[i];
 
 
- return fromKeywordChecks(storedKw.id);
+ return listKeywordDetails(storedKw.id);
 }
   })
   .then(function(sites){
     console.log(sites);
       })
   
-  .then(function(checkResult){
-    return saveKeywordCheck(storedKw._id, checkResult);
-  })
+ 
   .catch(function(err){
     if(util.isError(err)) {
       console.error(err.stack);
