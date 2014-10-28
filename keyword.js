@@ -50,7 +50,7 @@ function listKeywordDetails(keywordId) {
 
   KeywordCheck.find(
         {keyword_id: keywordId},
-{"date" : 1},
+{url : 1},
   function (err, doc) {
       if(err || !doc) {
       return defer.reject(err);
