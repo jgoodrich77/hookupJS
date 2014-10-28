@@ -1,5 +1,10 @@
 'use strict';
 
+// experiments from 10/27
+// adding ability to parse, dump and examine the object from
+// the custom search API
+// because looks wrong in rockmongo
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 var
@@ -103,16 +108,22 @@ function saveKeywordCheck(keywordId, resultRows) {
 
   resultRows.forEach(function(result){
 
-//var urlParse = require('url').parse;
-//var parsed = urlParse(url);
-//var domain = parsed.hostname;
-  tmp.results.push({
-    domain: result.domain,
-    url: result.url,
+var urlParse = require('url').parse;
+var parsed = urlParse(result.link);
+var webdomain = parsed.hostname;
+
+console.log( 'title is ' + result.title );
+console.log( 'link is ' + result.link );
+console.log( 'domain is ' + webdomain );
+
+tmp.results.push({
+    website: webdomain,
+    url: result.link,
     title: result.title,
     snippet: result.snippet,
     metatags: result.metatags
     });
+
   });
 
   tmp.save(function(err, doc){
@@ -126,8 +137,8 @@ function saveKeywordCheck(keywordId, resultRows) {
 }
 
 var
-testKeyword = 'my keyword',
-testPages = 2,
+testKeyword = 'Data',
+testPages = 3,
 testPageSize = 10,
 storedKw;
 
