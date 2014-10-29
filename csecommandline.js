@@ -137,9 +137,10 @@ tmp.results.push({
 }
 
 var
-testKeyword = 'Data',
+testKeyword = 'digital cameras',
 testPages = 3,
 testPageSize = 10,
+userId = 'jeremy',
 storedKw;
 
 // Connect to database

@@ -1,9 +1,8 @@
 'use strict';
 
-// experiments from 10/27
-// adding ability to parse, dump and examine the object from
-// the custom search API
-// because looks wrong in rockmongo
+//
+// command line keyword management
+//
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -11,13 +10,7 @@ var
 util = require('util'),
 Q = require('q'),
 mongoose = require('mongoose'),
-GoogleApis = require('googleapis'),
-GoogleCustomSearch = GoogleApis.customsearch('v1'),
 config = require('./server/config/environment');
-
-var // global consts
-CX = '011021103555954735202:pwnxq-g5oqm',
-API_KEY = 'AIzaSyCUYEYegGBggut_PCV8ePAyRWvEGLPPEaU';
 
 // model classes
 require('./server/api/keyword/keyword.model.js');
@@ -32,6 +25,7 @@ function listKeyword() {
   defer = Q.defer();
 
   Keyword.find(
+  {user_id: userId},
   function (err, doc) {
       if(err || !doc) {
       return defer.reject(err);

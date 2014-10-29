@@ -1,9 +1,8 @@
 'use strict';
 
-// experiments from 10/27
-// adding ability to parse, dump and examine the object from
-// the custom search API
-// because looks wrong in rockmongo
+//
+// command line fetch keywords
+//
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
