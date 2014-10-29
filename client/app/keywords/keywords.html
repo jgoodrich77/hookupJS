@@ -20,12 +20,12 @@
     </a>
 </div>
 
-  <form class="keyword-form">
+  <form class="keyword-form" ng-submit="addKeyword()">
     <label>Attempting to learn how to operate this.</label>
     <p class="input-group">
       <input type="text" class="form-control" placeholder="Add a new keyword here." ng-model="newKeyword">
       <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary" ng-click="addKeyword()">Add New</button>
+        <button type="submit" class="btn btn-primary">Add New</button>
       </span>
     </p>
   </form>

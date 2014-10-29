@@ -9,7 +9,14 @@ $scope.errors = {};
       if($scope.newKeyword === '') {
         return;
       }
-      $http.post('/keywords', { name: $scope.newKeyword });
+      $http
+        .post('/api/keywords', { name: $scope.newKeyword })
+        .success(function(){
+          console.log('success:', arguments);
+        })
+        .error(function(){
+          console.log('error:', arguments);
+        });
       $scope.newKeyword = '';
     };
 
