@@ -13,10 +13,16 @@ angular.module('auditpagesApp')
         templateUrl: 'app/account/signup/signup.html',
         controller: 'SignupCtrl'
       })
+      .state('keywords', {
+        url: '/keywords',
+        templateUrl: 'app/account/keywords/keywords.html',
+        controller: 'KeywordsCtrl'
+      })
       .state('settings', {
         url: '/settings',
         templateUrl: 'app/account/settings/settings.html',
         controller: 'SettingsCtrl',
         authenticate: true
       });
+      
   });
