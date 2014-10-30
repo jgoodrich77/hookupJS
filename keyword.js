@@ -49,7 +49,7 @@ function listKeywordDetails(keywordId) {
 
   KeywordCheck.find(
         {keyword_id: keywordId},
-{"_id":false,"results" : true},
+{"_id":false,"results.url" : true},
   function (err, doc) {
       if(err || !doc) {
       return defer.reject(err);
