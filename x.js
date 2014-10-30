@@ -137,7 +137,7 @@ tmp.results.push({
 }
 
 var
-testKeyword = 'Data',
+testKeyword = 'mobile phone',
 testPages = 3,
 testPageSize = 10,
 storedKw;
