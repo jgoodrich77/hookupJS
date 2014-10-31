@@ -86,7 +86,7 @@ Q([])
       result = result
         .then(listKeywordDetailsPromise(kw._id))
         .then(function(kwdetail) {
-          reindexed[kw._id] = kwdetail;
+          reindexed[kw.keyword] = kwdetail;
           return kwdetail;
         });
     });
