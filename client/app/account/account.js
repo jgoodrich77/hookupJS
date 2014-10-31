@@ -5,13 +5,7 @@ angular.module('auditpagesApp')
     $stateProvider
       .state('app.account', {
         'abstract': true,
-        url: '/account',
-        views: {
-          'content': {
-            templateUrl: 'app/account/account.html',
-            controller: 'AccountCtrl'
-          }
-        }
+        url: '/account'
       })
       .state('app.account.keywords', {
         url: '/keywords',
