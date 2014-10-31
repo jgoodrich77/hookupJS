@@ -15,10 +15,6 @@ KeywordSchema = new Schema({
   categories: [{
     type: Schema.Types.ObjectId,
     ref: 'KeywordCategory'
-  }],
-  checks: [{
-    type: Schema.Types.ObjectId,
-    ref: 'KeywordChecks'
   }]
 });
 

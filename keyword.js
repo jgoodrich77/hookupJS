@@ -48,20 +48,27 @@ function listKeywordDetails(keywordId) {
   defer = Q.defer();
 
   KeywordCheck.find(
-        {keyword_id: keywordId},
-{"_id":false,"results.url" : true},
-  function (err, doc) {
-      if(err || !doc) {
-      return defer.reject(err);
-    }
+    {keyword_id: keywordId},
+    {
+      "_id":false,
+      "results.url" : true
+    }, function(err, docs) {
+      if(err) {
+        return defer.reject(err);
+      }
+      defer.resolve(docs);
+    });
 
-    defer.resolve(doc);
-  });
-//console.log(defer);
   return defer.promise;
       
 }
-var storedKw;
+
+function listKeywordDetailsPromise(keywordId) {
+  return function(out) {
+    return listKeywordDetails(keywordId);
+  };
+}
+
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
 
@@ -70,21 +77,29 @@ Q([])
     return listKeyword();
   })
   .then(function(savedKeyword){
-   console.log(savedKeyword);
-for (var i = 0; i < savedKeyword.length; i++) { 
-    storedKw = savedKeyword[i];
 
-//return listKeyword();
-return listKeywordDetails(storedKw._id);
+    var
+    result = Q([]),
+    reindexed = {};
 
+    savedKeyword.forEach(function(kw){
+      result = result
+        .then(listKeywordDetailsPromise(kw._id))
+        .then(function(kwdetail) {
+          reindexed[kw._id] = kwdetail;
+          return kwdetail;
+        });
+    });
 
-}
+    result = result.then(function(){
+      return reindexed;
+    });
+
+    return result;
   })
   .then(function(sites){
-  console.log(sites);
-      })
-  
- 
+    console.log(sites);
+  })
   .catch(function(err){
     if(util.isError(err)) {
       console.error(err.stack);
