@@ -3,12 +3,13 @@
 angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('app.main', {
-        url: '/',
+      .state('app.keywords', {
+        url: '/keywords',
+	authenticate: true,
         views: {
           'content': {
-            templateUrl: 'app/main/main.html',
-            controller: 'MainCtrl'
+            templateUrl: 'app/keywords/keywords.html',
+            controller: 'KeywordCtrl',
           }
         }
       });

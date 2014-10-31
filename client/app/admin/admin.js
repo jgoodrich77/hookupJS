@@ -3,7 +3,7 @@
 angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('admin', {
+      .state('app.admin', {
         url: '/admin',
         templateUrl: 'app/admin/admin.html',
         controller: 'AdminCtrl'
