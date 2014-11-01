@@ -10,7 +10,7 @@
 'use strict';
 
 var _ = require('lodash');
-var Keyword = require('./listkeyword.model');
+var Keyword = require('./Listkeyword.model');
 
 // Get list of things
 exports.index = function(req, res) {
