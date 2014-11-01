@@ -1,0 +1,23 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">List Keywords</h1>
+    </div>
+  </div>
+
+<div class="list-group">
+    <a data-ng-repeat="post in posts"  class="list-group-item">
+        <p>{{post}}</p>
+    </a>
+</div>
+
+  <form class="keyword-form" ng-submit="addKeyword()">
+    <label>Attempting to learn how to operate this.</label>
+    <p class="input-group">
+      <input type="text" class="form-control" placeholder="Add a new keyword here." ng-model="newKeyword">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary">Add New</button>
+      </span>
+    </p>
+  </form>
+</div>
