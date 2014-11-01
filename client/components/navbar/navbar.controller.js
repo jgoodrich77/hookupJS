@@ -6,6 +6,10 @@ angular.module('auditpagesApp')
       'title': 'Home',
       'link': '/',
     },{
+      'title': 'List Keywords',
+      'state': 'app.account.listkeywords',
+    },
+    {
       'title': 'Keywords',
       'state': 'app.account.keywords',
     }];
