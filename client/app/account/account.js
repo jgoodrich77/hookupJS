@@ -16,6 +16,15 @@ angular.module('auditpagesApp')
           }
         }
       })
+      .state('app.account.listkeywords', {
+        url: '/listkeywords',
+        views: {
+          'content': {
+            templateUrl: 'app/account/listkeywords/listkeywords.html',
+            controller: 'ListkeywordCtrl'
+          }
+        }
+      })
       .state('app.account.settings', {
         url: '/settings',
         authenticate: true,
