@@ -17,7 +17,7 @@ angular.module('auditpagesApp')
         }
       })
       .state('app.account.listkeywords', {
-        url: '/listkeywords',
+        url: '/account/listkeywords',
         views: {
           'content': {
             templateUrl: 'app/account/listkeywords/listkeywords.html',
