@@ -43,28 +43,29 @@ $scope.keywords = [ {
 
 
 $scope.addKeyword = function(form) {
-      $scope.submitted = true;
-
-     // if(form.$valid) {
-        Auth.saveKeyword({
-          //  keyword: $scope.newKeyword,
-          email: $scope.newKeyword,
-          
-        })
-        .then( function() {
-          // Account created, redirect to home
-          $location.path('/');
-        })
-        .catch( function(err) {
-          err = err.data;
-          $scope.errors = {};
-
-          // Update validity of form fields that match the mongoose errors
-          angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
-          });
-        });
+    console.log('fsdf');
+//      $scope.submitted = true;
+//
+//     // if(form.$valid) {
+//        Auth.saveKeyword({
+//          //  keyword: $scope.newKeyword,
+//          email: $scope.newKeyword,
+//          
+//        })
+//        .then( function() {
+//          // Account created, redirect to home
+//          $location.path('/');
+//        })
+//        .catch( function(err) {
+//          err = err.data;
+//          $scope.errors = {};
+//
+//          // Update validity of form fields that match the mongoose errors
+//          angular.forEach(err.errors, function(error, field) {
+//            form[field].$setValidity('mongoose', false);
+//            $scope.errors[field] = error.message;
+//          });
+//        });
      // }
     };
 
