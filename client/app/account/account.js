@@ -3,6 +3,7 @@
 angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
+
 //      .state('app.account', {
 //        'abstract': true,
 //        url: '/account'
@@ -26,6 +27,19 @@ angular.module('auditpagesApp')
 //        }
 //      })
       
+
+     
+      .state('app.keyword', {
+        url: '/keyword',
+        views: {
+          'content': {
+            templateUrl: 'app/account/keyword/keyword.html',
+            controller: 'AccountKeywordsCtrl'
+          }
+        }
+      })
+ 
+
       .state('app.account.settings', {
         url: '/settings',
         authenticate: true,
