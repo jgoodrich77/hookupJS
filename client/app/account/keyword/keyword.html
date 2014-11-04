@@ -2,20 +2,9 @@
   <div class="row">
     <div class="col-sm-12">
         <div class="list-group">
-            <div  ng-init="names=[
-{name:'Jani',country:'Norway'},
-{name:'Hege',country:'Sweden'},
-{name:'Kai',country:'Denmark'}]">
-
-<ul>
-  <li ng-repeat="x in names">
-    {{ x.name + ', ' + x.country }}
-  </li>
-</ul>
-
-</div>
+            
     <div ng-repeat="keyword in keywords"  class="list-group-item">
-        <p>{{keyword}}</p>
+         <input type="text" class="form-control" value="{{keyword.keyword}}" ng-model="newKeyword">
     </div>
 </div>
 
