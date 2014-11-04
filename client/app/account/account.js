@@ -17,18 +17,6 @@ angular.module('auditpagesApp')
          }
        }
      })
-
-      .state('app.keyword', {
-        url: '/keyword',
-        views: {
-          'content': {
-            templateUrl: 'app/account/keyword/keyword.html',
-            controller: 'AccountKeywordsCtrl'
-          }
-        }
-      })
- 
-
       .state('app.account.settings', {
         url: '/settings',
         authenticate: true,
