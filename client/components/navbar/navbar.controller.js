@@ -5,12 +5,11 @@ angular.module('auditpagesApp')
     $scope.menu = [{
       'title': 'Home',
       'link': '/',
+    },
+    {
+      'title': 'Keywords',
+      'state': 'app.account.keyword',
     }];
-//    ,
-//    {
-//      'title': 'Keywords',
-//      'state': 'app.keyword',
-//    }];
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
