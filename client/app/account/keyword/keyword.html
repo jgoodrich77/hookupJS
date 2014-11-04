@@ -1,9 +1,11 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-          
+        <div ng-repeat="listKeywords in keywords">
+            <input type="text" ng-model="newKeyword" value="{{ listKeywords.keyword }}">
+          </div>
 <form class="form" name="form" ng-submit="addKeyword()" novalidate>
-            <input type="text" ng-model="newKeyword">
+            
             <button class="btn btn-inverse btn-lg btn-login" type="submit">
            Add New Keyword
           </button>
