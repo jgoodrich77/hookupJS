@@ -23,7 +23,7 @@ $scope.keywords = [ {
 }	
 
 ];
-    $scope.addKeyword = function() {
+    $scope.addKeyword = function(form) {
       if($scope.newKeyword === '') {
         return;
       }

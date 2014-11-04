@@ -1,15 +1,17 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-12">
-        <div ng-repeat="listKeywords in keywords">
-            {{ listKeywords }}
-            <input type="text" ng-model="newKeyword" value="{{ listKeywords.keyword }}">
-          </div>
-<form class="form" name="form" ng-submit="addKeyword()" novalidate>
-            <input type="text" name="newKeyword" ng-model="newKeyword" >
-            <button class="btn btn-inverse btn-lg btn-login" type="submit">
-           Add New Keyword
-          </button>
+        <div class="list-group">
+    <div data-ng-repeat="keyword in keywords"  class="list-group-item">
+        <p>{{keyword}}</p>
+    </div>
+</div>
+
+ <form class="keyword-form" ng-submit="addKeyword()">
+          <input type="text" class="form-control" placeholder="Add a new keyword here." ng-model="newKeyword">
+            <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary">Add New</button>
+      </span>
         </form>
       
     </div>
