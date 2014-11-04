@@ -5,7 +5,7 @@ angular.module('auditpagesApp')
     $scope.menu = [{
       'title': 'Home',
       'link': '/',
-    }
+    }];
 //    ,
 //    {
 //      'title': 'Keywords',
