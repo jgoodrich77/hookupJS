@@ -7,7 +7,7 @@ angular.module('auditpagesApp')
         'abstract': true,
         url: '/account'
       })
-      .state('app.account.keyword', {
+      .state('app.keyword', {
         url: '/keyword',
         views: {
           'content': {
