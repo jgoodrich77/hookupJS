@@ -5,9 +5,6 @@ angular.module('auditpagesApp')
     $scope.menu = [{
       'title': 'Home',
       'link': '/',
-    },{
-      'title': 'List Keywords',
-      'state': 'app.account.listkeywords',
     },
     {
       'title': 'Keywords',
