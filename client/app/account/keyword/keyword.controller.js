@@ -31,7 +31,7 @@ $scope.keywords = [ {
       console.log($scope.newKeyword);
         console.log('hee');
       $http
-        .post('/api/keyword', { name: $scope.newKeyword })
+        .post('/api/keyword', { keyword: $scope.newKeyword })
         .success(function(){
           console.log('success:', arguments);
         })
