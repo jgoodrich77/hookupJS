@@ -17,7 +17,7 @@ angular
         return;
       }
       $http
-        .post('/api/keywords', { name: $scope.newKeyword })
+        .post('/api/keyword', { name: $scope.newKeyword })
         .success(function(){
           console.log('success:', arguments);
         })
@@ -28,7 +28,7 @@ angular
     };
 
     $scope.deleteKeyword = function(keyword) {
-      $http.delete('/keywords/' + keyword._id);
+      $http.delete('/keyword/' + keyword._id);
     };
 
 });

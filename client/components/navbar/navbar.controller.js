@@ -8,7 +8,7 @@ angular.module('auditpagesApp')
     },
     {
       'title': 'Keywords',
-      'state': 'app.account.keywords',
+      'state': 'app.account.keyword',
     }];
 
     $scope.isCollapsed = true;

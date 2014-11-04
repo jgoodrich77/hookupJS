@@ -7,11 +7,11 @@ angular.module('auditpagesApp')
         'abstract': true,
         url: '/account'
       })
-      .state('app.account.keywords', {
-        url: '/keywords',
+      .state('app.account.keyword', {
+        url: '/keyword',
         views: {
           'content': {
-            templateUrl: 'app/account/keywords/keywords.html',
+            templateUrl: 'app/account/keyword/keyword.html',
             controller: 'AccountKeywordsCtrl'
           }
         }
