@@ -1,15 +1,14 @@
 <div class="container">
   <div class="row">
-    <div class="col-lg-12">
-         <form class="form" name="form" ng-submit="addKeyword()" novalidate>
-            
-       
-        <input  type="text" ng-model="keyword"/>
-        
-         </form>
-        <button class="btn btn-inverse btn-lg btn-login" type="submit">
-           Add New Keyword
-          </button>
+    <div class="col-sm-12">
+          <div ng-controller="ListkeywordCtrl">
+
+      <h1>Login</h1>
+      <p>Accounts are reset on server restart from <code>server/config/seed.js</code>. Default account is <code>test@test.com</code> / <code>test</code></p>
+      <p>Admin account is <code>admin@admin.com</code> / <code>admin</code></p>
     </div>
+    </div>
+ 
   </div>
+  <hr>
 </div>
