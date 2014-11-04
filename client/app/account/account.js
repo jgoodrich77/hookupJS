@@ -4,10 +4,10 @@ angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
 
-//      .state('app.account', {
-//        'abstract': true,
-//        url: '/account'
-//      })
+      .state('app.account', {
+        'abstract': true,
+        url: '/account'
+      })
       .state('app.keyword', {
        url: '/keyword',
        views: {
@@ -17,18 +17,7 @@ angular.module('auditpagesApp')
          }
        }
      })
-//      .state('app.account.keyword', {
-//        url: '/keyword',
-//        views: {
-//          'content': {
-//            templateUrl: 'app/account/keyword/keyword.html',
-//            controller: 'AccountKeywordsCtrl'
-//          }
-//        }
-//      })
-      
 
-     
       .state('app.keyword', {
         url: '/keyword',
         views: {
