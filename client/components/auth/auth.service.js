@@ -70,6 +70,19 @@ angular.module('auditpagesApp')
             return cb(err);
           }.bind(this)).$promise;
       },
+        saveKeyword: function(user) {
+       
+
+        return User.save(user,
+          function(data) {
+         
+            return true;
+          },
+          function(err) {
+            this.logout();
+            return cb(err);
+          }.bind(this)).$promise;
+      },
 
       /**
        * Change password
