@@ -7,15 +7,24 @@ angular.module('auditpagesApp')
         'abstract': true,
         url: '/account'
       })
-      .state('app.account.keyword', {
-        url: '/keyword',
-        views: {
-          'content': {
-            templateUrl: 'app/account/keyword/keyword.html',
-            controller: 'AccountKeywordsCtrl'
-          }
-        }
-      })
+      .state('app.keyword', {
+       url: '/keyword',
+       views: {
+         'content': {
+           templateUrl: 'app/account/keyword/keyword.html',
+           controller: 'AccountKeywordsCtrl'
+         }
+       }
+     })
+//      .state('app.account.keyword', {
+//        url: '/keyword',
+//        views: {
+//          'content': {
+//            templateUrl: 'app/account/keyword/keyword.html',
+//            controller: 'AccountKeywordsCtrl'
+//          }
+//        }
+//      })
       
       .state('app.account.settings', {
         url: '/settings',
