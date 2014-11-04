@@ -27,6 +27,9 @@ $scope.keywords = [ {
       if($scope.newKeyword === '') {
         return;
       }
+    
+      console.log($scope.newKeyword);
+        console.log('hee');
       $http
         .post('/api/keyword', { name: $scope.newKeyword })
         .success(function(){
