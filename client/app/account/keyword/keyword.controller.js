@@ -62,7 +62,8 @@ $scope.keywords = [ {
 
       
         Auth.saveKeyword({
-          name: $scope.newKeyword,
+           name: 'adasf'
+
          
         })
         .then( function() {
