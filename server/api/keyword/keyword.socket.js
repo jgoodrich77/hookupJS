@@ -4,7 +4,7 @@
 
 'use strict';
 
-var thing = require('./keyword.model');
+var keyword = require('./keyword.model');
 
 exports.register = function(socket) {
   keyword.schema.post('save', function (doc) {
