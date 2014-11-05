@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('auditpagesApp')
-  .factory('Auth', function Auth($location, $rootScope, $http,Keyword, User, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
