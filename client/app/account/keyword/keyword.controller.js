@@ -11,7 +11,7 @@ angular
 .controller('AccountKeywordsCtrl', function ($scope, $http) {
 $scope.awesomeThings = [];
 
-    $http.get('/api/things').success(function(awesomeThings) {
+    $http.get('/api/keywords').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
       console.log($scope.awesomeThings);
      
