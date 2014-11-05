@@ -8,7 +8,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('AccountKeywordsCtrl', function ($scope, Auth, $location, $window) {
+.controller('AccountKeywordsCtrl', function ($scope,$http, Auth, $location) {
 $scope.awesomeThings = [];
 
     $http.get('/api/keywords').success(function(awesomeThings) {
