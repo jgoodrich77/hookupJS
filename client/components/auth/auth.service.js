@@ -57,6 +57,7 @@ angular.module('auditpagesApp')
        * @return {Promise}
        */
       createUser: function(user, callback) {
+          console.log('dsaf');
         var cb = callback || angular.noop;
 
         return User.save(user,
