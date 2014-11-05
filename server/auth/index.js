@@ -4,7 +4,7 @@ var express = require('express');
 var passport = require('passport');
 var config = require('../config/environment');
 var User = require('../api/user/user.model');
-
+var Keyword = require('../api/keyword/keyword.model');
 // Passport Configuration
 require('./local/passport').setup(User, config);
 require('./facebook/passport').setup(User, config);
