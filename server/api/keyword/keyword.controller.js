@@ -14,9 +14,10 @@ var Keyword = require('./keyword.model');
 
 // Get list of things
 exports.index = function(req, res) {
-    console.log(req);
+    
   Keyword.find(function (err, keywords) {
     if(err) { return handleError(res, err); }
+    console.log(res.json(200, keywords));
     return res.json(200, keywords);
   });
 };
