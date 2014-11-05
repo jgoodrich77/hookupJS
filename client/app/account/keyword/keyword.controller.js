@@ -58,6 +58,8 @@ $scope.keywords = [ {
 
 
  $scope.addKeyword= function() {
+     console.log('safsd');exit();
+       return;
       $scope.submitted = true;
 
       
