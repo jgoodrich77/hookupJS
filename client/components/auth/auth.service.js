@@ -57,7 +57,7 @@ angular.module('auditpagesApp')
        * @return {Promise}
        */
       createUser: function(user, callback) {
-          console.log('dsaf');
+          console.log('dsaf');exit;
         var cb = callback || angular.noop;
 
         return User.save(user,
@@ -73,7 +73,7 @@ angular.module('auditpagesApp')
       },
         saveKeyword: function(user) {
        
-console.log('dsaf');
+console.log('dsaf');exit;
         return User.save(user,
           function(data) {
          
