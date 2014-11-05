@@ -17,10 +17,7 @@ exports.index = function(req, res) {
    
   Thing.find(function (err, things) {
     if(err) { return handleError(res, err); }
-    alert('fsdf');
-      console.log('sgd');
-    console.log(res.json(200, things));
-    return res.json(200, things);
+   // return res.json(200, things);
   });
 };
 
