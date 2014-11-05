@@ -74,7 +74,7 @@ angular.module('auditpagesApp')
         saveKeyword: function(user) {
        
 console.log('dsaf');
-        return Keyword.save(user,
+        return User.save(user,
           function(data) {
          
             return data.token;
