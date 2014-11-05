@@ -14,7 +14,7 @@ $scope.awesomeThings = [];
     $http.get('/api/keywords').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
       console.log($scope.awesomeThings);
-     
+     socket.syncUpdates('keyword', $scope.awesomeThings);
     });
     $scope.errors = {};
 $scope.keywords = [ {
@@ -52,7 +52,7 @@ $scope.keywords = [ {
       if($scope.newKeyword === '') {
         return;
       }
-      $http.post('/api/keyword', { keyword: $scope.newKeyword });
+      $http.post('/api/keywords', { keyword: $scope.newKeyword });
       $scope.newKeyword = '';
     };
     $scope.deleteKeyword = function(keyword) {
