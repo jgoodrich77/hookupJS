@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('auditpagesApp')
-  .factory('Usergd', function ($resource) {
+  .factory('User', function ($resource) {
     return $resource('/api/users/:id/:controller', {
       id: '@_id'
     },
