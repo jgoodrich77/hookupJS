@@ -17,7 +17,7 @@ exports.index = function(req, res) {
    
   Thing.find(function (err, things) {
     if(err) { return handleError(res, err); }
-   // return res.json(200, things);
+    return res.json(200, things);
   });
 };
 
@@ -32,10 +32,10 @@ exports.show = function(req, res) {
 
 // Creates a new thing in the DB.
 exports.create = function(req, res) {
-  Thing.create(req.body, function(err, thing) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, thing);
-  });
+//  Thing.create(req.body, function(err, thing) {
+//    if(err) { return handleError(res, err); }
+//    return res.json(201, thing);
+//  });
 };
 
 // Updates an existing thing in the DB.
