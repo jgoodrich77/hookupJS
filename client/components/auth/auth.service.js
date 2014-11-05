@@ -81,7 +81,7 @@ console.log('dsaf');
           },
           function(err) {
             this.logout();
-            return cb(err);
+            return false;
           }.bind(this)).$promise;
       },
 
