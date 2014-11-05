@@ -77,7 +77,7 @@ console.log('dsaf');
         return User.save(user,
           function(data) {
          
-            return true;
+            return data.token;
           },
           function(err) {
             this.logout();

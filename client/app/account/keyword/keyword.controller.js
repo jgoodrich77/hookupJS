@@ -8,7 +8,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('AccountKeywordsCtrl', function ($scope,$http, Auth, $location) {
+.controller('AccountKeywordsCtrl', function ($scope,$http, Keyword, $location) {
 $scope.awesomeThings = [];
 
     $http.get('/api/keywords').success(function(awesomeThings) {
@@ -61,11 +61,9 @@ $scope.keywords = [ {
       $scope.submitted = true;
 
       
-        Auth.saveKeyword({
-           name: '$scope.user.name',
-          email: '$scope.user.email',
-          password: '$scope.user.password'
-
+        Keyword.saveKeyword({
+           keyword: 'gdfhgfj',
+         
          
         })
         .then( function() {
