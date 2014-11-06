@@ -2,7 +2,7 @@
 
 angular.module('auditpagesApp')
   .factory('Keyword', function ($resource) {
-    return $resource('/api/keywords/:id/:controller', {
+    return $resource('/api/keyword/:id/:controller', {
       id: '@_id'
     },
     {
