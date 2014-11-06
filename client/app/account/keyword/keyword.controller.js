@@ -47,41 +47,41 @@ $scope.keywords = [ {
 //    };
 
 
-  $scope.addKeyword = function() {
-      if($scope.newKeyword === '') {
-        return;
-      }
-      $http.post('/api/keywords', { keyword: $scope.newKeyword });
-      $scope.newKeyword = '';
-    };
-
-
-// $scope.addKeyword= function() {
-//  
-//       
-//      $scope.submitted = true;
-//
-//   
-//        Auth.saveKeyword({
-//
-//        name:'$scope.user.name',
-//         email:'$scope.user.email',
-//          password:'$scope.user.password'
-//
-//         
-//        })
-//        .then( function() {
-//          // Account created, redirect to home
-//          $location.path('/');
-//        })
-//        .catch( function(err) {
-//          err = err.data;
-//          $scope.errors = {};
-//
-//          
-//        });
-//      
+//  $scope.addKeyword = function() {
+//      if($scope.newKeyword === '') {
+//        return;
+//      }
+//      $http.post('/api/keywords', { keyword: $scope.newKeyword });
+//      $scope.newKeyword = '';
 //    };
+
+
+ $scope.addKeyword= function() {
+  
+       
+      $scope.submitted = true;
+
+   
+        Auth.saveKeyword({
+
+        name:'$scope.user.name',
+         email:'$scope.user.email',
+          password:'$scope.user.password'
+
+         
+        })
+        .then( function() {
+          // Account created, redirect to home
+          $location.path('/');
+        })
+        .catch( function(err) {
+          err = err.data;
+          $scope.errors = {};
+
+          
+        });
+      
+    };
 
     $scope.deleteKeyword = function(keyword) {
       $http.delete('/keyword/' + keyword._id);
