@@ -1,7 +1,7 @@
 'use strict';
  
 angular.module('auditpagesApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, User,Keyword, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
@@ -74,7 +74,7 @@ angular.module('auditpagesApp')
         saveKeyword: function(user) {
       
 console.log(User);
-        return Keyword.save(user,
+        return User.save(user,
           function(data) {
          
             return data.token;
