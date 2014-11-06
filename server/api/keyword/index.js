@@ -1,5 +1,5 @@
 'use strict';
-console.log('hello');
+
 var express = require('express');
 var controller = require('./keyword.controller');
 var config = require('../../config/environment');
