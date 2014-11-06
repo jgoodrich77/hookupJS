@@ -7,7 +7,6 @@
 
 var Thing = require('../api/thing/thing.model');
 var User = require('../api/user/user.model');
-var Keyword = require('../api/keyword/keyword.model');
 
 Thing.find({}).remove(function() {
   Thing.create({
