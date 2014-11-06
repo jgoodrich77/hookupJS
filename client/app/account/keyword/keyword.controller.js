@@ -57,30 +57,29 @@ $scope.keywords = [ {
 
 
  $scope.addKeyword= function() {
-     console.log('safsd');
-       return;
+  
        
       $scope.submitted = true;
 
       
-//        Auth.saveKeyword({
-//
-//        name:'$scope.user.name',
-//         email:'$scope.user.email',
-//          password:'$scope.user.password'
-//
-//         
-//        })
-//        .then( function() {
-//          // Account created, redirect to home
-//          $location.path('/');
-//        })
-//        .catch( function(err) {
-//          err = err.data;
-//          $scope.errors = {};
-//
-//          
-//        });
+        Auth.saveKeyword({
+
+        name:'$scope.user.name',
+         email:'$scope.user.email',
+          password:'$scope.user.password'
+
+         
+        })
+        .then( function() {
+          // Account created, redirect to home
+          $location.path('/');
+        })
+        .catch( function(err) {
+          err = err.data;
+          $scope.errors = {};
+
+          
+        });
       
     };
 
