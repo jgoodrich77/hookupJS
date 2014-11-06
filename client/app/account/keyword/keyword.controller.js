@@ -5,7 +5,6 @@
  */
 
 'use strict';
-
 angular
 .module('auditpagesApp')
 .controller('AccountKeywordsCtrl', function ($scope,$http, Auth, $location) {
