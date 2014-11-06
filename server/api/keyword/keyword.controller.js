@@ -32,13 +32,23 @@ exports.show = function(req, res) {
 };
 
 // Creates a new thing in the DB.
-exports.create = function(req, res) {
-  Keyword.create(req.body, function(err, keyword) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, keyword);
+//exports.create = function(req, res) {
+//  Keyword.create(req.body, function(err, keyword) {
+//    if(err) { return handleError(res, err); }
+//    return res.json(201, keyword);
+//  });
+//};
+
+
+exports.create = function (req, res, next) {
+  var newKeyword = new Keyword(req.body);
+ 
+  newKeyword.save(function(err, keyword) {
+    if (err) return validationError(res, err);
+   
+    return true;
   });
 };
-
 // Updates an existing thing in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
