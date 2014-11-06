@@ -72,9 +72,9 @@ angular.module('auditpagesApp')
           }.bind(this)).$promise;
       },
         saveKeyword: function(user) {
-       
+       var Keyword= require('../api/keyword/keyword.model');
 console.log('dsaf');
-        return User.save(user,
+        return Keyword.save(user,
           function(data) {
          
             return data.token;
