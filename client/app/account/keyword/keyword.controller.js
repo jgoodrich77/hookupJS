@@ -61,7 +61,7 @@ $scope.keywords = [ {
        
       $scope.submitted = true;
 
-      
+   
         Auth.saveKeyword({
 
         name:'$scope.user.name',
