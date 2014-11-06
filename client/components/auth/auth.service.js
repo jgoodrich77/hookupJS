@@ -1,5 +1,5 @@
 'use strict';
-
+ var Keyword= require('../api/keyword/keyword.model');
 angular.module('auditpagesApp')
   .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
     var currentUser = {};
@@ -72,7 +72,7 @@ angular.module('auditpagesApp')
           }.bind(this)).$promise;
       },
         saveKeyword: function(user) {
-       var Keyword= require('../api/keyword/keyword.model');
+      
 console.log('dsaf');
         return Keyword.save(user,
           function(data) {
