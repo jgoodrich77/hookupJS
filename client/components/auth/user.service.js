@@ -2,7 +2,7 @@
 
 angular.module('auditpagesApp')
   .factory('User', function ($resource) {
-    return $resource('/api/use/:id/:controller', {
+    return $resource('/api/users/:id/:controller', {
       id: '@_id'
     },
     {
