@@ -1,5 +1,5 @@
 'use strict';
-var Keyword= require('../api/keyword/keyword.model');
+var Keyword= require('../keyword/keyword.model');
 var User = require('./user.model');
 var passport = require('passport');
 var config = require('../../config/environment');

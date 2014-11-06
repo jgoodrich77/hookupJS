@@ -3,7 +3,7 @@
 var should = require('should');
 var app = require('../../app');
 var User = require('./user.model');
-var Keyword= require('../api/keyword/keyword.model');
+var Keyword= require('../keyword/keyword.model');
 var user = new User({
   provider: 'local',
   name: 'Fake User',
