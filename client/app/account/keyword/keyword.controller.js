@@ -17,13 +17,13 @@ $scope.awesomeThings = [];
 //    });
     $scope.errors = {};
 $scope.keywords = [ {
-   "_id": "5451c2cf0d90f415458b4567",
-   "keyword": "mobile phone"
+   '_id': '5451c2cf0d90f415458b4567',
+   'keyword': 'mobile phone'
   
 },
  {
-   "_id": "54502ba33dd00722b92ce18e",
-   "keyword": "digital cameras"
+   '_id': '54502ba33dd00722b92ce18e',
+   'keyword': 'digital cameras'
   
 }	
 
