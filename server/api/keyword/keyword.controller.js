@@ -44,8 +44,8 @@ exports.show = function(req, res) {
 
 
 exports.create = function (req, res, next) {
-   
-   var dd= Keyword.create(req.body, function(err, keyword) {
+ 
+    Keyword.create(req.body, function(err, keyword) {
     if(err) { return handleError(res, err); }
     return res.json(201, keyword);
   });
