@@ -3,9 +3,13 @@
 angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
-      .state('main', {
+      .state('app.main', {
         url: '/',
-        templateUrl: 'app/main/main.html',
-        controller: 'MainCtrl'
+        views: {
+          'content': {
+            templateUrl: 'app/main/main.html',
+            controller: 'MainCtrl'
+          }
+        }
       });
   });

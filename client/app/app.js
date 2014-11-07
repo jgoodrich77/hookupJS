@@ -12,8 +12,30 @@ angular.module('auditpagesApp', [
     $urlRouterProvider
       .otherwise('/');
 
+    // abstract state for all others to iniherit
+    $stateProvider
+      .state('app', {
+        'abstract': true ,
+        templateUrl: 'app/app.layout.html',
+        resolve: {
+          authorize: ['Authorizer', function (Authorizer) {
+            return Authorizer.authorize();
+          }]
+        }
+      });
+
     $locationProvider.html5Mode(true);
     $httpProvider.interceptors.push('authInterceptor');
+  })
+
+  .factory('Authorizer', function ($q) {
+    return {
+      authorize: function() {
+        var defer = $q.defer();
+        defer.resolve({});
+        return defer.promise;
+      }
+    };
   })
 
   .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {

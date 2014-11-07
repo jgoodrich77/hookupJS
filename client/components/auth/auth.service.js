@@ -1,7 +1,7 @@
 'use strict';
-
+ 
 angular.module('auditpagesApp')
-  .factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
+  .factory('Auth', function Auth($location, $rootScope, $http, User, Keyword, $cookieStore, $q) {
     var currentUser = {};
     if($cookieStore.get('token')) {
       currentUser = User.get();
@@ -57,6 +57,7 @@ angular.module('auditpagesApp')
        * @return {Promise}
        */
       createUser: function(user, callback) {
+       
         var cb = callback || angular.noop;
 
         return User.save(user,
@@ -68,6 +69,19 @@ angular.module('auditpagesApp')
           function(err) {
             this.logout();
             return cb(err);
+          }.bind(this)).$promise;
+      },
+        saveKeyword: function(user) {
+      
+console.log(Keyword);
+        return Keyword.save(user,
+          function(data) {
+         
+            return data.token;
+          },
+          function(err) {
+            this.logout();
+            return false;
           }.bind(this)).$promise;
       },
 
