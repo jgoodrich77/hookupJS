@@ -1,5 +1,11 @@
 'use strict';
 
+function errorCatcher() {
+  return function(err) {
+    console.log('Error:', err);
+  }
+}
+
 angular.module('auditpagesApp', [
   'ngCookies',
   'ngResource',
@@ -18,19 +24,28 @@ angular.module('auditpagesApp', [
       'abstract': true ,
       templateUrl: 'app/app.layout.html',
       resolve: {
-        authorize: ['Authorizer', function (Authorizer) {
-          console.log('resolving auth state');
+        authorize: ['Authorizer', 'stateRedirector', function (Authorizer, stateRedirector) {
           return Authorizer.authorize()
-            .then(function (output) {
-              console.log('resolved authorize result:', output);
-              return output;
-            });
+            .then(stateRedirector());
         }]
       }
     });
 
   $locationProvider.html5Mode(true);
   $httpProvider.interceptors.push('authInterceptor');
+})
+
+.factory('stateRedirector', function ($state) {
+  return function() {
+   return function (redirectTo) {
+
+      if(redirectTo) {
+        return $state.transitionTo(redirectTo.state, redirectTo.params); // forward to promise
+      }
+
+      return redirectTo;
+    }
+  };
 })
 
 .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
@@ -58,7 +73,7 @@ angular.module('auditpagesApp', [
   };
 })
 
-.run(function ($rootScope, Authorizer) {
+.run(function ($rootScope, Authorizer, stateRedirector) {
   var firstRouteLoad = true;
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams) {
 
@@ -67,12 +82,8 @@ angular.module('auditpagesApp', [
     $rootScope.nextStateParams = nextParams;
 
     if(!firstRouteLoad) {
-      console.log('$stateChangeStart authorizing');
       Authorizer.authorize()
-        .then(function (output) {
-          console.log('$stateChangeStart auth result:', output);
-          return output;
-        });
+        .then(stateRedirector());
     }
     else {
       firstRouteLoad = false;

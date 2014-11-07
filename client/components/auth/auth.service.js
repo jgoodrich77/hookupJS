@@ -18,35 +18,35 @@ angular
       roles      = (!!next.data && !!next.data.roles) ? next.data.roles : false;
 
       if(!roles) { // authorized
-        console.log(next.name, 'requires no roles');
-        defer.resolve(true);
-        return defer.promise;
+        defer.resolve(false); // no redirect needed
       }
+      else {
 
-      console.log(next.name, 'getting user state');
+        Auth.isLoggedInAsync(function (loggedIn) {
+          if(!loggedIn) {
 
-      Auth.isLoggedInAsync(function (loggedIn) {
-        if(!loggedIn) {
-          console.log(next.name, 'not logged in');
-          $rootScope.returnToState       = next;
-          $rootScope.returnToStateParams = nextParams;
-          $state.transitionTo(stateLogin);
-          return defer.resolve(false);
-        }
+            // remember current state for when we login
+            $rootScope.returnToState       = next;
+            $rootScope.returnToStateParams = nextParams;
 
-        var
-        user = Auth.getCurrentUser(),
-        userRole = user.role,
-        allowed = angular.isArray(roles) ? (roles.indexOf(userRole) !== -1) : (roles === userRole);
+            // resolve to login page
+            defer.resolve({state: stateLogin, params: {}});
+            return;
+          }
 
-        console.log(next.name, 'allowed:', allowed);
+          var
+          user = Auth.getCurrentUser(),
+          userRole = user.role,
+          allowed = angular.isArray(roles) ? (roles.indexOf(userRole) !== -1) : (roles === userRole);
 
-        if(!allowed) { // transistion to new state:
-          $state.transitionTo(stateAccessDenied);
-        }
-
-        defer.resolve(allowed);
-      });
+          if(!allowed) { // resolve to access denied page
+            defer.resolve({state: stateAccessDenied, params: {}});
+          }
+          else { // resolve original state name and params
+            defer.resolve(false); // no redirect needed
+          }
+        });
+      }
 
       return defer.promise;
     }
