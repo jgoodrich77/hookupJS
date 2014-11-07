@@ -1,5 +1,10 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
+<ui-breadcrumbs
+  displayname-property="data.breadcrumbTitle"
+  abstract-proxy-property="data.breadcrumbProxy"
+  template-url="app/breadcrumbs.html"></ui-breadcrumbs>
+
 <div ui-view="content-header"></div>
 
 <div class="template-content" ui-view="content"></div>

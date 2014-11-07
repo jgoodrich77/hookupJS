@@ -4,10 +4,10 @@ angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
       .state('app.account', {
-        'abstract': true,
         url: '/account',
         data: {
-          roles: ['admin', 'user']
+          roles: ['admin', 'user'],
+          breadcrumbTitle: 'My Account'
         },
         views: {
           'content': {
@@ -18,6 +18,9 @@ angular.module('auditpagesApp')
       .state('app.account.settings', {
         url: '/settings',
         authenticate: true,
+        data: {
+          breadcrumbTitle: 'Account Settings'
+        },
         views: {
           'account-content': {
             templateUrl: 'app/account/settings/settings.html',

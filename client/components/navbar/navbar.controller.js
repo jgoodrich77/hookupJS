@@ -2,22 +2,30 @@
 
 angular.module('auditpagesApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
+
+    //
+    // Menu items with 'link' property instead of 'state'
+    // have a bug right now. Trying to find a way to conditionally
+    // add the directive 'ui-sref-active' only when item  has a 'state'
+    // property set.
+    //
+
     $scope.menu = [{
       'caption': 'Home',
       'title': 'Go back to home page',
       'state': 'app.main',
       'glyph': 'glyphicon glyphicon-home'
     },{
+      'caption': 'Administration',
+      'title': 'Administration page',
+      'state': 'app.admin',
+      'roles': ['admin']
+    }/*,{
       'caption': 'External Link',
       'title': 'Go back to Google.com',
       'link': 'http://google.com/',
       'external': true
-    },{
-      'caption': 'Role-specific',
-      'title': 'Example of a link that will only appear for certain roles',
-      'state': 'app.account.settings',
-      'roles': ['admin']
-    }];
+    }*/];
 
     $scope.userMenu = [{
       'caption': 'Settings',

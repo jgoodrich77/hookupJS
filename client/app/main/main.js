@@ -5,6 +5,9 @@ angular.module('auditpagesApp')
     $stateProvider
       .state('app.main', {
         url: '/',
+        data: {
+          breadcrumbTitle: 'Home page'
+        },
         views: {
           'content': {
             templateUrl: 'app/main/main.html',

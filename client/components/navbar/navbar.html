@@ -11,7 +11,7 @@
     </div>
     <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
-        <li ng-repeat="item in menu" ui-sref-active="active" navbar-item="item"></li>
+        <li ng-repeat="item in menu" navbar-item="item"></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
@@ -24,9 +24,9 @@
         <li ng-show="isLoggedIn()" class="dropdown">
           <a class="dropdown-toggle" href="" type="button" id="userMenu" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{currentUser().name}} <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="userMenu">
-            <li ng-repeat="item in userMenu" ui-sref-active="active" navbar-item="item"></li>
+            <li ng-repeat="item in userMenu" navbar-item="item"></li>
             <li class="divider"></li>
-            <li ui-sref-active="active">
+            <li>
               <a href="" ng-click="logout()">Logout</a>
             </li>
           </ul>

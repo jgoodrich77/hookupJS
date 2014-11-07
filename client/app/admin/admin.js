@@ -4,10 +4,10 @@ angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
       .state('app.admin', {
-        'abstract': true,
         url: '/admin',
         data: {
-          roles: ['admin']
+          roles: ['admin'],
+          breadcrumbTitle: 'Administration Panel'
         },
         views: {
           'content': {
@@ -17,6 +17,9 @@ angular.module('auditpagesApp')
       })
       .state('app.admin.users', {
         url: '/users',
+        data: {
+          breadcrumbTitle: 'User Administration'
+        },
         views: {
           'admin-content': {
             templateUrl: 'app/admin/users/users.html',

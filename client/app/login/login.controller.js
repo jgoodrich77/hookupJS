@@ -5,6 +5,11 @@ angular.module('auditpagesApp')
     $scope.user = {};
     $scope.errors = {};
 
+    $scope.debugSetCredentials = function(username, password) {
+      $scope.user.email = username;
+      $scope.user.password = password;
+    };
+
     $scope.login = function(form) {
       $scope.submitted = true;
 

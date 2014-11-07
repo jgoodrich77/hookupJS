@@ -2,8 +2,8 @@
   <div class="row">
     <div class="col-sm-12">
       <h1>Login</h1>
-      <p>Accounts are reset on server restart from <code>server/config/seed.js</code>. Default account is <code>test@test.com</code> / <code>test</code></p>
-      <p>Admin account is <code>admin@admin.com</code> / <code>admin</code></p>
+      <p>Accounts are reset on server restart from <code>server/config/seed.js</code>. Default account is <em ng-click="debugSetCredentials('test@test.com', 'test')"><code>test@test.com</code> / <code>test</code></em></p>
+      <p>Admin account is <em ng-click="debugSetCredentials('admin@admin.com', 'admin')"><code>admin@admin.com</code> / <code>admin</code></em></p>
     </div>
     <div class="col-sm-12">
       <form class="form" name="form" ng-submit="login(form)" novalidate>

@@ -12,7 +12,8 @@ angular.module('auditpagesApp', [
   'ngSanitize',
   'btford.socket-io',
   'ui.router',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'angularUtils.directives.uiBreadcrumbs'
 ])
 .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
   $urlRouterProvider
@@ -23,6 +24,9 @@ angular.module('auditpagesApp', [
     .state('app', {
       'abstract': true ,
       templateUrl: 'app/app.layout.html',
+      data: {
+        breadcrumbProxy: 'app.main'
+      },
       resolve: {
         authorize: ['Authorizer', 'stateRedirector', function (Authorizer, stateRedirector) {
           return Authorizer.authorize()
@@ -89,4 +93,8 @@ angular.module('auditpagesApp', [
       firstRouteLoad = false;
     }
   });
+
+  // $rootScope.$on('$stateChangeSuccess', function (event, toState, toStateParams, fromState, fromStateParams) {
+  //   console.log('stateChangeSuccess TO:', toState, 'FROM:', fromState);
+  // });
 });

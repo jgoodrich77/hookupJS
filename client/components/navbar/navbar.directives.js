@@ -4,7 +4,7 @@ angular
 .module('auditpagesApp')
 .directive('navbarItem', function ($q, $compile, Auth) {
 
-  function linkItemTemplate(item) {
+  function tplItem(item) {
 
     var
     target = !!item.target ? item.target : (!!item.external ? '_blank' : false),
@@ -27,13 +27,6 @@ angular
       tpl += ' title="{{item.title}}"';
     }
 
-    if(item.roles) {
-      tpl += ' ng-show="roleTest(item.roles)"'
-    }
-    else if(angular.isFunction(item.showIf)) {
-      tpl += ' ng-show="{{item.showIf}}"'
-    }
-
     return tpl + '>'+icon+caption+'</a>';
   }
 
@@ -42,37 +35,52 @@ angular
     scope: {
       item: '=navbarItem'
     },
-    link: function(scope, iElement, iAttrs) {
+    transclude: true,
+    replace: true,
+    template: function(elements, attrs) {
+      var tag = elements[0].nodeName;
+      return '<'+tag+' ng-show="canShowItem(item)" ui-sref-active="active"></'+tag+'>';
 
-      scope.roleTest = function(roles) {
-        if(!roles) {
-          return true;
+      // TODO: find a way to add "ui-sref-active" only when item has a state.
+      // causes error in js console if no state in nav item.
+    },
+    link: function(scope, element, attrs) {
+
+      scope.canShowItem = function(item) {
+        if(item.roles) { // perform role testing
+          var roles = item.roles;
+
+          if(!Auth.isLoggedIn()) {
+            return false;
+          }
+
+          var
+          user = Auth.getCurrentUser(),
+          allowed = false;
+
+          if(angular.isArray(roles)) {
+            allowed = (roles.indexOf(user.role) !== -1);
+          }
+          else if(angular.isString(roles)) {
+            allowed = (roles === user.role);
+          }
+
+          return allowed;
         }
-        else if(!Auth.isLoggedIn()) {
-          return false;
+        else if(angular.isFunction(item.showIf)) { // custom function
+          return item.showIf();
         }
 
-        var
-        user = Auth.getCurrentUser(),
-        allowed = false;
-
-        if(angular.isArray(roles)) {
-          allowed = (roles.indexOf(user.role) !== -1);
-        }
-        else if(angular.isString(roles)) {
-          allowed = (roles === user.role);
-        }
-
-        return allowed;
+        return true;
       };
 
-      scope.$watch(iAttrs.navbarItem, function (nV) {
-        if(!nV) return;
+      var
+      item = scope.$eval(attrs.navbarItem);
 
-        iElement.html(linkItemTemplate(nV)).show();
-
-        $compile(iElement.contents())(scope);
-      });
+      if(!!item) {
+        element.html(tplItem(item));
+        $compile(element.contents())(scope);
+      }
     }
   };
 });
