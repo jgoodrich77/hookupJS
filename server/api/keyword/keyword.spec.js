@@ -21,11 +21,5 @@ describe('GET /api/keywords', function() {
         done();
       });
   });
-  keyword.save(function() {
-      var keywordDup = new Keyword(keyword);
-      keywordDup.save(function(err) {
-        should.exist(err);
-        done();
-      });
-    });
+  
 });
