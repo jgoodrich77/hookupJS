@@ -37,3 +37,9 @@
     color: #000;
     padding: 0.2em 0;
 }
+
+.tab-body > .container-fluid {
+  border: 1px solid #ddd;
+  border-width: 0 1px 1px;
+  padding: 15px;
+}

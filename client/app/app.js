@@ -94,7 +94,7 @@ angular.module('auditpagesApp', [
     }
   });
 
-  // $rootScope.$on('$stateChangeSuccess', function (event, toState, toStateParams, fromState, fromStateParams) {
-  //   console.log('stateChangeSuccess TO:', toState, 'FROM:', fromState);
-  // });
+  $rootScope.$on('$stateChangeSuccess', function (event, toState, toStateParams, fromState, fromStateParams) {
+    $rootScope.currentState = toState.name;
+  });
 });

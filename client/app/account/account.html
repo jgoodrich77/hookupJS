@@ -4,4 +4,12 @@
   </ul>
 </div>
 
-<div ui-view="account-content"></div>
+<div class="container tab-body" ng-show="currentState === 'app.account'">
+  <div class="container-fluid text-center">
+    <h3>Howdy,</h3>
+    <p class="lead">This is the default account page</p>
+    <p>Click a tab to do other interesting stuff.</p>
+  </div>
+</div>
+
+<div class="container tab-body" ui-view="account-content"></div>
