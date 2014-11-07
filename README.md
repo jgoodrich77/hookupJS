@@ -16,22 +16,18 @@ Init script:
 
 I found this makes life a little easier, you'll need to tweak this file according to your environment.
 
-+ __For development mode (hookupjs-start-dev.sh):__
+__For development mode:__ `hookupjs-start-development.sh`
 
->  #!/bin/sh
->
->  export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs-dev"
->  export PORT=9991
->
->  cd /path/to/hookupjs
->  grunt serve
+    #!/bin/sh
+    export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs-dev"
+    export PORT=9991
+    cd /path/to/hookupjs
+    grunt serve
 
-+ __For production mode (hookupjs-start-production.sh):__
+__For production mode:__ `hookupjs-start-production.sh`
 
->  #!/bin/sh
->
->  export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs"
->  export PORT=9990
->
->  cd /path/to/hookupjs
->  grunt serve:dist --force
+    #!/bin/sh
+    export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs"
+    export PORT=9990
+    cd /path/to/hookupjs
+    grunt serve:dist --force
