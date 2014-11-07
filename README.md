@@ -8,8 +8,8 @@ API Integration from Google Custom Search
 Installation:
 ======
 
-`git clone /path/to/hookupjs.git`
-`npm install && bower install`
++ `git clone /path/to/hookupjs.git`
++ `npm install && bower install`
 
 Init script:
 ======
