@@ -12,6 +12,11 @@
 var _ = require('lodash');
 var Keyword = require('./keyword.model');
 
+
+
+var express = require('express');
+var router = express.Router();
+module.exports = router;
 // Get list of things
 exports.index = function(req, res) {
     
