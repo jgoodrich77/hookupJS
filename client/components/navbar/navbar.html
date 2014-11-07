@@ -11,16 +11,11 @@
     </div>
     <div collapse="isCollapsed" class="navbar-collapse collapse" id="navbar-main">
       <ul class="nav navbar-nav">
-        <li ng-repeat="item in menu" navbar-item="item"></li>
+        <li ng-repeat="item in menuLeft" navbar-item="item"></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
-
-        <!-- guest features -->
-        <li ng-hide="isLoggedIn()" ui-sref-active="active"><a ui-sref="app.signup">Sign up</a></li>
-        <li ng-hide="isLoggedIn()" ui-sref-active="active"><a ui-sref="app.login">Login</a></li>
-
-        <!-- logged in features -->
+        <li ng-repeat="item in menuRight" navbar-item="item"></li>
         <li ng-show="isLoggedIn()" class="dropdown">
           <a class="dropdown-toggle" href="" type="button" id="userMenu" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{currentUser().name}} <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="userMenu">

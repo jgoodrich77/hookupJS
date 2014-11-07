@@ -3,6 +3,12 @@
 angular.module('auditpagesApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
 
+    var
+    loggedIn = Auth.isLoggedIn,
+    loggedOut = function(){
+      return !loggedIn();
+    };
+
     //
     // Menu items with 'link' property instead of 'state'
     // have a bug right now. Trying to find a way to conditionally
@@ -10,7 +16,7 @@ angular.module('auditpagesApp')
     // property set.
     //
 
-    $scope.menu = [{
+    $scope.menuLeft = [{
       'caption': 'Home',
       'title': 'Go back to home page',
       'state': 'app.main',
@@ -27,6 +33,18 @@ angular.module('auditpagesApp')
       'external': true
     }*/];
 
+    $scope.menuRight = [{
+      'caption': 'Sign up',
+      'title': 'Create a new account',
+      'state': 'app.signup',
+      'showIf': loggedOut
+    },{
+      'caption': 'Login',
+      'title': 'Login to your existing account',
+      'state': 'app.login',
+      'showIf': loggedOut
+    }];
+
     $scope.userMenu = [{
       'caption': 'Settings',
       'title': 'Change your user settings',
@@ -36,7 +54,6 @@ angular.module('auditpagesApp')
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
-    $scope.isAdmin = Auth.isAdmin;
     $scope.currentUser = Auth.getCurrentUser;
 
     $scope.logout = function() {
