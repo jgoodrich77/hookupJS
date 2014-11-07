@@ -10,7 +10,7 @@
 'use strict';
 
 var _ = require('lodash');
-var Keyword = require('./keyword.model');
+var Keyword = require('./keyword.model').Keyword;
 
 // Get list of things
 exports.index = function(req, res) {
@@ -43,7 +43,7 @@ exports.show = function(req, res) {
 exports.create = function (req, res, next) {
   var newKeyword = new Keyword(req.body);
  
-  newKeyword.save(function(err, keyword) {
+  newKeyword.create(function(err, keyword) {
     if (err) return validationError(res, err);
     
    return res.json(keyword);
