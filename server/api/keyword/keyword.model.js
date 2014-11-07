@@ -22,4 +22,4 @@ KeywordSchema = new Schema({
   active: Boolean
 });
 
-mongoose.model('Keyword', KeywordSchema);
+module.exports = mongoose.model('Keyword', KeywordSchema);
