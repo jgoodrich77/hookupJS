@@ -14,6 +14,9 @@ angular.module('auditpagesApp')
       })
       .state('app.errors.accessdenied', {
         url: '/accessdenied',
+        data: {
+          breadcrumbTitle: 'Access Denied'
+        },
         views: {
           'error-content': {
             templateUrl: 'app/errors/accessdenied/accessdenied.html',

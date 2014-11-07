@@ -6,7 +6,7 @@ angular
 
   var
   stateLogin        = 'app.login',
-  stateAccessDenied = 'app.error.accessdenied';
+  stateAccessDenied = 'app.errors.accessdenied';
 
   return {
     authorize: function() {
