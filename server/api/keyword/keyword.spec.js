@@ -2,13 +2,13 @@
 
 var should = require('should');
 var app = require('../../app');
-var request = require('supertest');
+
 var Keyword = require('./keyword.model');
 
 
 describe('GET /api/keywords', function() {
 
-  it('', function(done) {
+  it('should respond with JSON array', function(done) {
     request(app)
       .get('/api/keywords')
       .expect(200)
