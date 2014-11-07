@@ -63,7 +63,7 @@ $scope.keywords = [ {
 
    
         Auth.saveKeyword({
-    keyword:'$scope.user.password'
+    keyword:$scope.newKeyword
 //        name:'$scope.user.name',
 //         email:'$scope.user.email',
 //          password:'$scope.user.password'
