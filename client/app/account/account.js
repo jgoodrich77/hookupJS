@@ -3,27 +3,25 @@
 angular.module('auditpagesApp')
   .config(function ($stateProvider) {
     $stateProvider
-
       .state('app.account', {
         'abstract': true,
-        url: '/account'
+        url: '/account',
+        data: {
+          roles: ['admin', 'user']
+        },
+        views: {
+          'content': {
+            templateUrl: 'app/account/account.html'
+          }
+        }
       })
-      .state('app.keyword', {
-       url: '/keyword',
-       views: {
-         'content': {
-           templateUrl: 'app/account/keyword/keyword.html',
-           controller: 'AccountKeywordsCtrl'
-         }
-       }
-     })
       .state('app.account.settings', {
         url: '/settings',
         authenticate: true,
         views: {
-          'content': {
+          'account-content': {
             templateUrl: 'app/account/settings/settings.html',
-            controller: 'SettingsCtrl' // rename to AccountSettingsCtrl
+            controller: 'AccountSettingsCtrl'
           }
         }
       })
@@ -45,5 +43,4 @@ angular.module('auditpagesApp')
           }
         }
       });
-      
   });

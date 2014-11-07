@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('auditpagesApp')
-  .controller('SettingsCtrl', function ($scope, User, Auth) {
+  .controller('AccountSettingsCtrl', function ($scope, User, Auth) {
     $scope.errors = {};
 
     $scope.changePassword = function(form) {
