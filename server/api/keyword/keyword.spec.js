@@ -5,6 +5,11 @@ var app = require('../../app');
 var request = require('supertest');
 var Keyword = require('./keyword.model');
 
+var express = require('express');
+var router = express.Router();
+module.exports = router;
+
+
 describe('GET /api/keywords', function() {
 
   it('should respond with JSON array', function(done) {
