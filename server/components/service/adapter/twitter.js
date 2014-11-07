@@ -4,4 +4,10 @@
 
 'use strict';
 
-module.exports = {};
+var
+model = require('./twitter.model.js');
+
+module.exports = {
+  typeString: 'twitter',
+  typeName: 'Twitter'
+};

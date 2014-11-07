@@ -4,4 +4,10 @@
 
 'use strict';
 
-module.exports = {};
+var
+model = require('./facebook-page.model.js');
+
+module.exports = {
+  typeString: 'facebook-page',
+  typeName: 'Facebook Page'
+};

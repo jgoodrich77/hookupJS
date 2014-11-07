@@ -4,4 +4,10 @@
 
 'use strict';
 
-module.exports = {};
+var
+model = require('./facebook-user.model.js');
+
+module.exports = {
+  typeString: 'facebook-user',
+  typeName: 'Facebook User'
+};
