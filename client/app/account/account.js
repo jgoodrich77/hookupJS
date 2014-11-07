@@ -24,23 +24,5 @@ angular.module('auditpagesApp')
             controller: 'AccountSettingsCtrl'
           }
         }
-      })
-      .state('app.login', {
-        url: '/login',
-        views: {
-          'content': {
-            templateUrl: 'app/account/login/login.html',
-            controller: 'LoginCtrl'
-          }
-        }
-      })
-      .state('app.signup', {
-        url: '/signup',
-        views: {
-          'content': {
-            templateUrl: 'app/account/signup/signup.html',
-            controller: 'SignupCtrl'
-          }
-        }
       });
   });

@@ -15,7 +15,7 @@ angular.module('auditpagesApp')
       .state('app.group.services', {
         url: '/services',
         views: {
-          'content': {
+          'group-content': {
             templateUrl: 'app/group/service/service.html',
             controller: 'GroupServiceCtrl'
           }

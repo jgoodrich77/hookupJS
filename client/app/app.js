@@ -19,10 +19,10 @@ angular.module('auditpagesApp', [
       templateUrl: 'app/app.layout.html',
       resolve: {
         authorize: ['Authorizer', function (Authorizer) {
-          console.log('authorizing');
+          console.log('resolving auth state');
           return Authorizer.authorize()
             .then(function (output) {
-              console.log('authorize result:', output);
+              console.log('resolved authorize result:', output);
               return output;
             });
         }]
@@ -31,56 +31,6 @@ angular.module('auditpagesApp', [
 
   $locationProvider.html5Mode(true);
   $httpProvider.interceptors.push('authInterceptor');
-})
-
-.factory('Authorizer', function ($q, $rootScope, $state, Auth) {
-  var
-  stateLogin        = 'app.login',
-  stateAccessDenied = 'app.error.accessdenied';
-  return {
-    authorize: function() {
-
-      var
-      defer      = $q.defer(),
-      next       = $rootScope.nextState,
-      nextParams = $rootScope.nextStateParams,
-      roles      = (!!next.data && !!next.data.roles) ? next.data.roles : false;
-
-      if(!roles) { // authorized
-        console.log('state requires no roles');
-        defer.resolve(true);
-        console.log('resolve executed');
-        return defer.promise;
-      }
-
-      console.log('authorizing state request');
-
-      Auth.isLoggedInAsync(function (loggedIn) {
-        if(!loggedIn) {
-          console.log('not logged in');
-          $rootScope.returnToState       = next;
-          $rootScope.returnToStateParams = nextParams;
-          $state.transitionTo(stateLogin);
-          return defer.resolve(false);
-        }
-
-        var
-        user = Auth.getCurrentUser(),
-        userRole = user.role,
-        allowed = angular.isArray(roles) ? (roles.indexOf(userRole) !== -1) : (roles === userRole);
-
-        console.log('allowed:', allowed);
-
-        if(!allowed) { // transistion to new state:
-          $state.transitionTo(stateAccessDenied);
-        }
-
-        defer.resolve(allowed);
-      });
-
-      return defer.promise;
-    }
-  };
 })
 
 .factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
@@ -98,7 +48,6 @@ angular.module('auditpagesApp', [
     responseError: function(response) {
       if(response.status === 401) {
         $location.path('/login');
-        // remove any stale tokens
         $cookieStore.remove('token');
         return $q.reject(response);
       }
@@ -109,13 +58,24 @@ angular.module('auditpagesApp', [
   };
 })
 
-.run(function ($rootScope, $location, Auth, Authorizer) {
+.run(function ($rootScope, Authorizer) {
+  var firstRouteLoad = true;
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams) {
 
     // used by state Authorizor
     $rootScope.nextState       = next;
     $rootScope.nextStateParams = nextParams;
 
-    //Authorizer.authorize();
+    if(!firstRouteLoad) {
+      console.log('$stateChangeStart authorizing');
+      Authorizer.authorize()
+        .then(function (output) {
+          console.log('$stateChangeStart auth result:', output);
+          return output;
+        });
+    }
+    else {
+      firstRouteLoad = false;
+    }
   });
 });
