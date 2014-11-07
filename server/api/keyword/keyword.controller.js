@@ -13,10 +13,6 @@ var _ = require('lodash');
 var Keyword = require('./keyword.model');
 
 
-
-var express = require('express');
-var router = express.Router();
-module.exports = router;
 // Get list of things
 exports.index = function(req, res) {
     
@@ -46,13 +42,18 @@ exports.show = function(req, res) {
 
 
 exports.create = function (req, res, next) {
-  var newKeyword = new Keyword(req.body);
- 
-  newKeyword.save(function(err, keyword) {
-    if (err) return validationError(res, err);
     
-   return res.json(keyword);
+    Keyword.create(req.body, function(err, keyword) {
+    if(err) { return handleError(res, err); }
+    return res.json(201, keyword);
   });
+//  var newKeyword = new Keyword(req.body);
+// 
+//  newKeyword.save(function(err, keyword) {
+//    if (err) return validationError(res, err);
+//    
+//   return res.json(keyword);
+//  });
 };
 // Updates an existing thing in the DB.
 exports.update = function(req, res) {
