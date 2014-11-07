@@ -26,5 +26,17 @@ angular.module('auditpagesApp')
             controller: 'AdminUsersCtrl'
           }
         }
+      })
+      .state('app.admin.groups', {
+        url: '/groups',
+        data: {
+          breadcrumbTitle: 'Group Administration'
+        },
+        views: {
+          'admin-content': {
+            templateUrl: 'app/admin/groups/groups.html',
+            controller: 'AdminGroupsCtrl'
+          }
+        }
       });
   });

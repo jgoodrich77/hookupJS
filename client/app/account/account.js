@@ -27,5 +27,18 @@ angular.module('auditpagesApp')
             controller: 'AccountSettingsCtrl'
           }
         }
+      })
+      .state('app.account.groups', {
+        url: '/groups',
+        authenticate: true,
+        data: {
+          breadcrumbTitle: 'Account Groups'
+        },
+        views: {
+          'account-content': {
+            templateUrl: 'app/account/groups/groups.html',
+            controller: 'AccountGroupsCtrl'
+          }
+        }
       });
   });

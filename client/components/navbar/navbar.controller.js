@@ -46,6 +46,11 @@ angular.module('auditpagesApp')
     }];
 
     $scope.userMenu = [{
+      'caption': 'Groups',
+      'title': 'Choose which groups you are associated with,',
+      'state': 'app.account.groups',
+      'glyph': 'glyphicon glyphicon-plane'
+    },{
       'caption': 'Settings',
       'title': 'Change your user settings',
       'state': 'app.account.settings',
