@@ -45,8 +45,8 @@ exports.create = function (req, res, next) {
  
   newKeyword.save(function(err, keyword) {
     if (err) return validationError(res, err);
-   
-    return true;
+    
+   return res.json(keyword);
   });
 };
 // Updates an existing thing in the DB.
