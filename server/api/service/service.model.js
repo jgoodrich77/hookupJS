@@ -9,10 +9,11 @@ ServiceSchema = new Schema({
   name: String,
   description: String,
   free: Boolean,
+  tags: [String],
   adapter: {
     factoryClass: String,
     defaultParams: Object
   }
 });
 
-mongoose.model('Service', ServiceSchema);
+module.exports = mongoose.model('Service', ServiceSchema);
