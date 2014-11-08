@@ -5,6 +5,13 @@ Node / Mongoose database
 Angular / Express front end & backend
 API Integration from Google Custom Search
 
+Requirements:
+======
+
++ NPM / NodeJS
++ Git
++ Ruby 1.9.3+
+
 Installation:
 ======
 
