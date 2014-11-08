@@ -24,6 +24,10 @@ var socketio = require('socket.io')(server, {
   serveClient: (config.env === 'production') ? false : true,
   path: '/socket.io-client'
 });
+
+app.use(require('./config/winston.logger'));
+
+require('./config/mailer')(app);
 require('./config/socketio')(socketio);
 require('./config/express')(app);
 require('./routes')(app);

@@ -1,6 +1,7 @@
 'use strict';
 
 var path = require('path');
+var winston = require('winston');
 var _ = require('lodash');
 
 function requiredProcessEnv(name) {
@@ -32,15 +33,6 @@ var all = {
   // List of user roles
   userRoles: ['guest', 'user', 'admin'],
 
-  // MongoDB connection options
-  mongo: {
-    options: {
-      db: {
-        safe: true
-      }
-    }
-  },
-
   facebook: {
     clientID:     process.env.FACEBOOK_ID || 'id',
     clientSecret: process.env.FACEBOOK_SECRET || 'secret',
@@ -57,6 +49,40 @@ var all = {
     clientID:     process.env.GOOGLE_ID || 'id',
     clientSecret: process.env.GOOGLE_SECRET || 'secret',
     callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
+  },
+
+  // MongoDB connection options
+  mongo: {
+    options: {
+      db: {
+        safe: true
+      }
+    }
+  },
+
+  mailer: {
+  },
+
+  expressWinston: {
+
+    transports: [
+      new (winston.transports.Console)({
+        json: false,
+        timestamp: true
+      })
+    ],
+
+    dumpExceptions: true,
+    showStack: true,
+
+    meta: false, // optional: control whether you want to log the meta data about the request (default to true)
+    msg: "HTTP {{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+  },
+
+  log: {
+    transports: [],
+    exceptionHandlers: [],
+    exitOnError: false
   }
 };
 
