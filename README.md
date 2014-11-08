@@ -38,4 +38,4 @@ __For production mode:__ `hookupjs-start-production.sh`
     export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs"
     export PORT=9990
     cd /path/to/hookupjs
-    grunt serve:dist --force
+    grunt serve:dist
