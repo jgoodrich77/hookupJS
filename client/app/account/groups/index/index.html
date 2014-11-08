@@ -17,7 +17,7 @@
   <div ng-show="!loading && groups.length">
 
     <ul class="nav nav-pills pull-right">
-      <li><a title="Reload the current screen" ng-click="reload()" href><span class="glyphicon glyphicon-refresh"></span> Reload</a></li>
+      <li><a tooltip="Reload the current screen" ng-click="reload()" href><span class="glyphicon glyphicon-refresh"></span> Reload</a></li>
     </ul>
 
     <h2>My Groups</h2>
@@ -25,13 +25,13 @@
     <div class="list-group">
       <div class="list-group-item" dir-paginate="group in groups | itemsPerPage: perPage">
         <ul class="nav nav-pills pull-right">
-          <li ng-if="canEdit(group.role)"><a title="Edit {{group.name}}" ui-sref="app.account.groups.update({id: group._id})"><span class="glyphicon glyphicon-pencil"></span></a></li>
-          <li ng-if="canEdit(group.role)"><a title="Service configuration for {{group.name}}" ui-sref="app.account.groups.servicecfg({id: group._id})"><span class="glyphicon glyphicon-cog"></span></a></li>
-          <li><a title="View stats for {{group.name}}" ui-sref="app.account.groups.stats({id: group._id})"><span class="glyphicon glyphicon-stats"></span></a></li>
-          <li><a title="Members in {{group.name}}" ui-sref="app.account.groups.members({id: group._id})"><span class="glyphicon glyphicon-user"></span></a></li>
+          <li ng-if="canEdit(group.role)"><a tooltip="Edit {{group.name}} settings" ui-sref="app.account.groups.update({id: group._id})"><span class="glyphicon glyphicon-pencil"></span></a></li>
+          <li ng-if="canEdit(group.role)"><a tooltip="{{group.name}} Service configuration" ui-sref="app.account.groups.servicecfg({id: group._id})"><span class="glyphicon glyphicon-cog"></span></a></li>
+          <li><a tooltip="{{group.name}} Stats" ui-sref="app.account.groups.stats({id: group._id})"><span class="glyphicon glyphicon-stats"></span></a></li>
+          <li><a tooltip="{{group.name}} Members" ui-sref="app.account.groups.members({id: group._id})"><span class="glyphicon glyphicon-user"></span></a></li>
         </ul>
 
-        <h4 class="list-group-item-heading"><a ui-sref="app.account.groups.stats({id: group._id})" ng-bind="group.name"></a></h4>
+        <h4 class="list-group-item-heading"><a ui-sref="app.account.groups.stats({id: group._id})" tooltip="View current stats for {{group.name}}" ng-bind="group.name"></a></h4>
         <p class="list-group-item-text" ng-bind="group.description"></p>
 
         <div class="clearfix"></div>

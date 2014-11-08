@@ -16,9 +16,13 @@ angular.module('auditpagesApp', [
   'angularUtils.directives.uiBreadcrumbs',
   'angularUtils.directives.dirPagination'
 ])
-.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider) {
   $urlRouterProvider
     .otherwise('/');
+
+  $tooltipProvider.options({
+    popupDelay: 500
+  });
 
   // abstract state for all others to iniherit
   $stateProvider
