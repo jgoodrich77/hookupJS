@@ -1,0 +1,10 @@
+<div ng-show="groups.length">
+  <h1>My Groups</h1>
+
+  <div ng-repeat="group in groups">
+    <p ng-bind="group.name"></p>
+  </div>
+</div>
+<div ng-hide="groups.length">
+  <p class="muted">You are currently not subscribed to any groups.</p>
+</div>

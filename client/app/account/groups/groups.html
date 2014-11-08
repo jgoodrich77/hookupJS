@@ -1,23 +1,13 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-xs-3">
+    <div class="col-sm-3">
       <ul class="nav nav-tabs nav-tabs-left">
-        <li><a href="#"><span class="glyphicon glyphicon-plus"></span> New Group</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-tag"></span> Another Item 1</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-tag"></span> Another Item 2</a></li>
+        <li ui-sref-active="active"><a ui-sref="app.account.groups.create"><span class="glyphicon glyphicon-plus"></span> New Group</a></li>
       </ul>
     </div>
-    <div class="col-sm-9">
-      <div ng-show="groups.length">
-        <h1>My Groups</h1>
-
-        <div ng-repeat="group in groups">
-          <p ng-bind="group.name"></p>
-        </div>
-      </div>
-      <div ng-hide="groups.length">
-        <p class="muted">You are currently not subscribed to any groups.</p>
-      </div>
+    <div class="col-sm-9" ng-hide="currentState === 'app.account.groups'" ui-view="account-group-content"></div>
+    <div class="col-sm-9" ng-show="currentState === 'app.account.groups'">
+      <div ng-include="'app/account/groups/index/index.html'" ng-controller="AccountGroupsIndexCtrl" ></div>
     </div>
   </div>
 </div>

@@ -17,27 +17,13 @@ angular.module('auditpagesApp')
       })
       .state('app.account.settings', {
         url: '/settings',
-        authenticate: true,
         data: {
-          breadcrumbTitle: 'Account Settings'
+          breadcrumbTitle: 'Settings'
         },
         views: {
           'account-content': {
             templateUrl: 'app/account/settings/settings.html',
             controller: 'AccountSettingsCtrl'
-          }
-        }
-      })
-      .state('app.account.groups', {
-        url: '/groups',
-        authenticate: true,
-        data: {
-          breadcrumbTitle: 'Account Groups'
-        },
-        views: {
-          'account-content': {
-            templateUrl: 'app/account/groups/groups.html',
-            controller: 'AccountGroupsCtrl'
           }
         }
       });
