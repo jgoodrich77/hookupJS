@@ -1,9 +1,11 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<ui-breadcrumbs
-  displayname-property="data.breadcrumbTitle"
-  abstract-proxy-property="data.breadcrumbProxy"
-  template-url="app/breadcrumbs.html"></ui-breadcrumbs>
+<div ng-if="currentState !== 'app.main'">
+  <ui-breadcrumbs
+    displayname-property="data.breadcrumbTitle"
+    abstract-proxy-property="data.breadcrumbProxy"
+    template-url="app/breadcrumbs.html"></ui-breadcrumbs>
+</div>
 
 <div ui-view="content-header"></div>
 
