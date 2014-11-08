@@ -10,6 +10,7 @@ Installation:
 
 + `git clone /path/to/hookupjs.git`
 + `npm install && bower install`
++ `gem install sass bourbon`
 
 Init script:
 ======

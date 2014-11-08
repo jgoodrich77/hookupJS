@@ -1,3 +1,7 @@
+@import 'bourbon/dist/bourbon';
+@import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+@import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/variables';
+@import 'font-awesome/scss/font-awesome';
 
 /**
  * Bootstrap Fonts
@@ -42,4 +46,49 @@
   border: 1px solid #ddd;
   border-width: 0 1px 1px;
   padding: 15px;
+}
+
+.nav-tabs {
+
+  &.nav-tabs-left {
+    border: none;
+
+    & ~ .tabbody {
+      border: none;
+      width: auto;
+      padding: 15px 3px 15px 15px;
+
+      @media screen and (min-width: 768px) {
+        width: 74%;
+      }
+    }
+
+    li {
+      float: none;
+      margin-bottom: 0;
+      margin-right: -1px;
+
+      & > a {
+        margin-right: 0;
+        margin-bottom: 2px;
+        border-radius: 5px;
+
+        &:hover {
+          border-color: transparent;
+        }
+      }
+    }
+
+    li.active > a,
+    li.active > a:focus,
+    li.active > a:hover {
+      border-color: #ddd;
+      background-color: rgba(#dddddd, 0.1);
+    }
+  }
+
+  &.nav-tabs-left,
+  &.nav-tabs-left ~ .tabbody {
+    vertical-align: top;
+  }
 }
