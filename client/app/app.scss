@@ -7,8 +7,86 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 @import 'font-awesome/scss/font-awesome';
 
 /**
- * App-wide Styles
+ * App-wide configurations
  */
+
+$well-default-bg:     $well-bg;
+$well-default-text:   $text-color;
+$well-default-border: $well-border;
+$well-primary-bg:     $btn-primary-bg;
+$well-primary-text:   $btn-primary-color;
+$well-primary-border: $btn-primary-border;
+$well-success-bg:     $btn-success-bg;
+$well-success-text:   $btn-success-color;
+$well-success-border: $btn-success-border;
+$well-info-bg:        $btn-info-bg;
+$well-info-text:      $btn-info-color;
+$well-info-border:    $btn-info-border;
+$well-warning-bg:     $btn-warning-bg;
+$well-warning-text:   $btn-warning-color;
+$well-warning-border: $btn-warning-border;
+$well-danger-bg:      $btn-danger-bg;
+$well-danger-text:    $btn-danger-color;
+$well-danger-border:  $btn-danger-border;
+
+/**
+ * App-wide styles
+ */
+
+@mixin well-variant(
+  $well-bg-color,
+  $well-border-color,
+  $well-text-color
+) {
+  background-color: $well-bg-color;
+  border-color: $well-border-color;
+  color: $well-text-color;
+}
+
+.well {
+  &.well-default {
+    @include well-variant(
+      $well-default-bg,
+      $well-default-border,
+      $well-default-text
+    );
+  }
+  &.well-primary {
+    @include well-variant(
+      $well-primary-bg,
+      $well-primary-border,
+      $well-primary-text
+    );
+  }
+  &.well-success {
+    @include well-variant(
+      $well-success-bg,
+      $well-success-border,
+      $well-success-text
+    );
+  }
+  &.well-info {
+    @include well-variant(
+      $well-info-bg,
+      $well-info-border,
+      $well-info-text
+    );
+  }
+  &.well-warning {
+    @include well-variant(
+      $well-warning-bg,
+      $well-warning-border,
+      $well-warning-text
+    );
+  }
+  &.well-danger {
+    @include well-variant(
+      $well-danger-bg,
+      $well-danger-border,
+      $well-danger-text
+    );
+  }
+}
 
 .browsehappy {
     margin: 0.2em 0;

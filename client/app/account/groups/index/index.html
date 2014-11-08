@@ -1,10 +1,32 @@
-<div ng-show="groups.length">
-  <h1>My Groups</h1>
-
-  <div ng-repeat="group in groups">
-    <p ng-bind="group.name"></p>
+<div ng-init="reload()">
+  <div class="well well-info" ng-show="loading">
+    <p>Please wait, loading available groups.</p>
   </div>
-</div>
-<div ng-hide="groups.length">
-  <p class="muted">You are currently not subscribed to any groups.</p>
+
+  <div class="well well-danger" ng-show="!loading && loadErr">
+    <h2>Oh $#!7..</h2>
+    <p>Something went wrong, sorry 'bout that.. <pre>{{ loadErr | json }}</pre></p>
+  </div>
+
+  <div ng-show="!loading && groups.length">
+    <h1>My Groups</h1>
+
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="group in groups">
+        <ul class="nav nav-pills pull-right">
+          <li><a title="Edit {{group.name}}" ui-sref="app.account.groups.update({id: group._id})"><span class="glyphicon glyphicon-pencil"></span></a></li>
+          <li><a title="Service configuration for {{group.name}}" ui-sref="app.account.groups.servicecfg({id: group._id})"><span class="glyphicon glyphicon-cog"></span></a></li>
+          <li><a title="View stats for {{group.name}}" ui-sref="app.account.groups.stats({id: group._id})"><span class="glyphicon glyphicon-stats"></span></a></li>
+          <li><a title="Members in {{group.name}}" ui-sref="app.account.groups.members({id: group._id})"><span class="glyphicon glyphicon-user"></span></a></li>
+        </ul>
+
+        <h4 class="list-group-item-header" ng-bind="group.name"></h4>
+        <p class="list-group-item-body" ng-bind="group.description"></p>
+      </div>
+    </div>
+
+  </div>
+  <div ng-show="!loading && !groups.length">
+    <p class="muted">You are currently not subscribed to any groups.</p>
+  </div>
 </div>

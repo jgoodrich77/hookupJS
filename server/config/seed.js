@@ -74,7 +74,7 @@ function seedGroups() {
 
       Group.create({
         name: 'Gold Group',
-        description: 'Internal group',
+        description: 'Gold test group',
         primaryDomain: 'http://hookupjs.org/',
         servicePlan: 'gold'
       }, {

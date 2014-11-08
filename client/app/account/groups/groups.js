@@ -28,14 +28,70 @@ angular.module('auditpagesApp')
         }
       })
       .state('app.account.groups.update', {
-        url: '/update',
+        url: '/update/:id',
         data: {
-          breadcrumbTitle: 'Update Existing'
+          breadcrumbTitle: 'Update "{{group.name}}"'
         },
         views: {
           'account-group-content': {
             templateUrl: 'app/account/groups/update/update.html',
             controller: 'AccountGroupsUpdateCtrl'
+          }
+        },
+        resolve: {
+          group: function($stateParams, Group) {
+            return Group.getBasic($stateParams).$promise;
+          }
+        }
+      })
+      .state('app.account.groups.servicecfg', {
+        url: '/service-config/:id',
+        data: {
+          breadcrumbTitle: 'Service configs for "{{group.name}}"'
+        },
+        views: {
+          'account-group-content': {
+            templateUrl: 'app/account/groups/servicecfg/servicecfg.html',
+            controller: 'AccountGroupsServiceCfgCtrl'
+          }
+        },
+        resolve: {
+          group: function($stateParams, Group) {
+            return Group.getBasic($stateParams).$promise;
+          }
+        }
+      })
+      .state('app.account.groups.stats', {
+        url: '/stats/:id',
+        data: {
+          breadcrumbTitle: 'Stats for "{{group.name}}"'
+        },
+        views: {
+          'account-group-content': {
+            templateUrl: 'app/account/groups/stats/stats.html',
+            controller: 'AccountGroupsStatsCtrl'
+          }
+        },
+        resolve: {
+          group: function($stateParams, Group) {
+            return Group.getBasic($stateParams).$promise;
+          }
+        }
+      })
+      .state('app.account.groups.members', {
+        url: '/members/:id',
+        data: {
+          breadcrumbTitle: 'Members in "{{group.name}}"'
+        },
+        views: {
+          'account-group-content': {
+            templateUrl: 'app/account/groups/members/members.html',
+            controller: 'AccountGroupsMembersCtrl'
+          }
+        },
+        resolve: {
+          group: function($stateParams, Group) {
+            return Group.getBasic($stateParams).$promise;
           }
         }
       });

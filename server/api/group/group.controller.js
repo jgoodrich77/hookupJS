@@ -11,53 +11,46 @@
 
 var _ = require('lodash');
 var Group = require('./group.model');
+var requestUtils = require('../requestUtils');
 
-exports.index = function(req, res) {
-  Group.find(function (err, groups) {
-    if(err) { return handleError(res, err); }
-    return res.json(200, groups);
-  });
+// get basic information for a single group
+exports.getBasic = function(req, res, next) {
+  Group.findById(req.param('id'), '_id name description')
+    .exec(requestUtils.nData(res));
 };
 
-exports.show = function(req, res) {
-  Group.findById(req.params.id, function (err, group) {
-    if(err) { return handleError(res, err); }
-    if(!group) { return res.send(404); }
-    return res.json(group);
-  });
+// get detailed information for a single group
+exports.getDetail= function(req, res, next) {
+  Group.findById(req.param('id'), '_id name description')
+    .exec(requestUtils.nData(res));
 };
 
-exports.create = function(req, res) {
-  Group.create(req.body, function(err, group) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, group);
-  });
+// list all groups in system
+exports.listAll = function(req, res, next) {
+  Group.find({}, '_id name description')
+    .sort({ name: 1 })
+    .exec(requestUtils.nData(res));
 };
 
-exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Group.findById(req.params.id, function (err, group) {
-    if (err) { return handleError(res, err); }
-    if(!group) { return res.send(404); }
-    var updated = _.merge(group, req.body);
-    updated.save(function (err) {
-      if (err) { return handleError(res, err); }
-      return res.json(200, group);
+// list all groups that the current user has access to
+exports.listSubscribed = function(req, res, next) {
+  Group.find({ 'members.user': req.user._id }, '_id name description')
+    .sort({ name: 1 })
+    .exec(requestUtils.nData(res));
+};
+
+// list all services defined in the supplied group
+exports.listServices = function(req, res, next) {
+  Group.findById(req.param('id'))
+    .populate('services', '_id name')
+    .exec(function (err, group) {
+      if(err) {
+        return next(err);
+      }
+      if(!group) {
+        return requestUtils.missing(res);
+      }
+
+      return requestUtils.data(res, group.services);
     });
-  });
 };
-
-exports.destroy = function(req, res) {
-  Group.findById(req.params.id, function (err, group) {
-    if(err) { return handleError(res, err); }
-    if(!group) { return res.send(404); }
-    group.remove(function(err) {
-      if(err) { return handleError(res, err); }
-      return res.send(204);
-    });
-  });
-};
-
-function handleError(res, err) {
-  return res.send(500, err);
-}
