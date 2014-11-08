@@ -197,6 +197,22 @@ GroupSchema.methods = {
     }
 
     return this.modifyRegisteredUser(tUserRelPri, tRelationship);
+  },
+
+  getSubscriptionDetail: function(user) {
+    var
+    userIndex = this.findUserIndex(user);
+
+    if(userIndex === -1) {
+      return false;
+    }
+
+    return {
+      '_id':         this._id,
+      'name':        this.name,
+      'description': this.description,
+      'role':        this.members[userIndex].relationship
+    };
   }
 };
 

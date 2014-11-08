@@ -16,6 +16,10 @@ angular
     $scope.perPage = 5;
     $scope.pageSizes = [1, 5, 10, 25];
 
+    $scope.canEdit = function(role) {
+      return !!role && role !== 'viewer';
+    };
+
     $scope.reload = function() {
       $scope.loading = true;
 

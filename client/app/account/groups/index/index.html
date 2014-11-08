@@ -25,8 +25,8 @@
     <div class="list-group">
       <div class="list-group-item" dir-paginate="group in groups | itemsPerPage: perPage">
         <ul class="nav nav-pills pull-right">
-          <li><a title="Edit {{group.name}}" ui-sref="app.account.groups.update({id: group._id})"><span class="glyphicon glyphicon-pencil"></span></a></li>
-          <li><a title="Service configuration for {{group.name}}" ui-sref="app.account.groups.servicecfg({id: group._id})"><span class="glyphicon glyphicon-cog"></span></a></li>
+          <li ng-if="canEdit(group.role)"><a title="Edit {{group.name}}" ui-sref="app.account.groups.update({id: group._id})"><span class="glyphicon glyphicon-pencil"></span></a></li>
+          <li ng-if="canEdit(group.role)"><a title="Service configuration for {{group.name}}" ui-sref="app.account.groups.servicecfg({id: group._id})"><span class="glyphicon glyphicon-cog"></span></a></li>
           <li><a title="View stats for {{group.name}}" ui-sref="app.account.groups.stats({id: group._id})"><span class="glyphicon glyphicon-stats"></span></a></li>
           <li><a title="Members in {{group.name}}" ui-sref="app.account.groups.members({id: group._id})"><span class="glyphicon glyphicon-user"></span></a></li>
         </ul>

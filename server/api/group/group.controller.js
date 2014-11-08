@@ -34,9 +34,15 @@ exports.listAll = function(req, res, next) {
 
 // list all groups that the current user has access to
 exports.listSubscribed = function(req, res, next) {
-  Group.find({ 'members.user': req.user._id }, '_id name description')
+  Group.find({ 'members.user': req.user._id }, '_id name description members')
     .sort({ name: 1 })
-    .exec(requestUtils.nData(res));
+    .exec(function (err, rows) {
+      if(err) return next(err);
+
+      requestUtils.data(res, rows.map(function (row) {
+        return row.getSubscriptionDetail(req.user._id);
+      }))
+    });
 };
 
 // list all services defined in the supplied group
