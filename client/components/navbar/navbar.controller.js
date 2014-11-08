@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('auditpagesApp')
-  .controller('NavbarCtrl', function ($scope, $location, Auth) {
+  .controller('NavbarCtrl', function ($scope, $location, $state, Auth) {
 
     var
     loggedIn = Auth.isLoggedIn,
@@ -20,7 +20,10 @@ angular.module('auditpagesApp')
       'caption': 'Home',
       'title': 'Go back to home page',
       'state': 'app.main',
-      'glyph': 'glyphicon glyphicon-home'
+      'glyph': 'glyphicon glyphicon-home',
+      'showIf': function() {
+        return $state.current.name !== 'app.main';
+      }
     },{
       'caption': 'Administration',
       'title': 'Administration page',
