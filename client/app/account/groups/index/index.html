@@ -1,6 +1,12 @@
 <div ng-init="reload()">
   <div class="well well-info" ng-show="loading">
-    <p>Please wait, loading available groups.</p>
+    <em><span class="glyphicon glyphicon-time"></span> Please wait, loading available groups.</em>
+  </div>
+
+  <div class="well well-warning" ng-show="!loading && !groups.length">
+    <a ui-sref="app.account.groups.create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Add a new group</a>
+    <em><span class="glyphicon glyphicon-info-sign"></span> You are currently not subscribed to any groups.</em>
+    <div class="clearfix"></div>
   </div>
 
   <div class="well well-danger" ng-show="!loading && loadErr">
@@ -9,10 +15,15 @@
   </div>
 
   <div ng-show="!loading && groups.length">
-    <h1>My Groups</h1>
+
+    <ul class="nav nav-pills pull-right">
+      <li><a title="Reload the current screen" ng-click="reload()" href><span class="glyphicon glyphicon-refresh"></span> Reload</a></li>
+    </ul>
+
+    <h2>My Groups</h2>
 
     <div class="list-group">
-      <div class="list-group-item" ng-repeat="group in groups">
+      <div class="list-group-item" dir-paginate="group in groups | itemsPerPage: perPage">
         <ul class="nav nav-pills pull-right">
           <li><a title="Edit {{group.name}}" ui-sref="app.account.groups.update({id: group._id})"><span class="glyphicon glyphicon-pencil"></span></a></li>
           <li><a title="Service configuration for {{group.name}}" ui-sref="app.account.groups.servicecfg({id: group._id})"><span class="glyphicon glyphicon-cog"></span></a></li>
@@ -22,11 +33,13 @@
 
         <h4 class="list-group-item-header" ng-bind="group.name"></h4>
         <p class="list-group-item-body" ng-bind="group.description"></p>
+        <div class="clearfix"></div>
       </div>
     </div>
 
-  </div>
-  <div ng-show="!loading && !groups.length">
-    <p class="muted">You are currently not subscribed to any groups.</p>
+    <site-paginator
+      total-items="groups.length"
+      items-per-page="perPage"
+      page-sizes="pageSizes"></site-paginator>
   </div>
 </div>

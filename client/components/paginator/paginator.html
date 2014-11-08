@@ -1,0 +1,12 @@
+<div ng-if="totalItems > pageSizes[0]">
+  <div class="pull-right">
+    <dir-pagination-controls
+      template-url="app/pagination.html"></dir-pagination-controls>
+  </div>
+
+  <ul class="nav nav-pills pull-left">
+    <li ng-repeat="choice in pageSizes" ng-class="{active: itemsPerPage === choice}"><a href ng-click="setItemsPerPage(choice)" ng-bind="choice"></a></li>
+  </ul>
+
+  <div class="clearfix"></div>
+</div>

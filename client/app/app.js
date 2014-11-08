@@ -13,7 +13,8 @@ angular.module('auditpagesApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'angularUtils.directives.uiBreadcrumbs'
+  'angularUtils.directives.uiBreadcrumbs',
+  'angularUtils.directives.dirPagination'
 ])
 .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
   $urlRouterProvider
