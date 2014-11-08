@@ -31,8 +31,9 @@
           <li><a title="Members in {{group.name}}" ui-sref="app.account.groups.members({id: group._id})"><span class="glyphicon glyphicon-user"></span></a></li>
         </ul>
 
-        <h4 class="list-group-item-header" ng-bind="group.name"></h4>
-        <p class="list-group-item-body" ng-bind="group.description"></p>
+        <h4 class="list-group-item-heading"><a ui-sref="app.account.groups.stats({id: group._id})" ng-bind="group.name"></a></h4>
+        <p class="list-group-item-text" ng-bind="group.description"></p>
+
         <div class="clearfix"></div>
       </div>
     </div>

@@ -90,7 +90,7 @@ GroupSchema.methods = {
           found = index;
         }
 
-        return (found !== -1);
+        return (found === -1);
       });
     }
 
@@ -109,7 +109,7 @@ GroupSchema.methods = {
           found = index;
         }
 
-        return (found !== -1);
+        return (found === -1);
       });
     }
 
