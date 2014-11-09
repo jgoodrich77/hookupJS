@@ -83,7 +83,7 @@ angular.module('auditpagesApp', [
   };
 })
 
-.run(function ($rootScope, Authorizer, stateRedirector) {
+.run(function ($rootScope, $state, Authorizer, stateRedirector) {
   var firstRouteLoad = true;
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams) {
 
@@ -102,5 +102,16 @@ angular.module('auditpagesApp', [
 
   $rootScope.$on('$stateChangeSuccess', function (event, toState, toStateParams, fromState, fromStateParams) {
     $rootScope.currentState = toState.name;
+  });
+
+  $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
+    switch(error.status) {
+      case 404:
+      $state.go('app.errors.pagenotfound', { error: error });
+      break;
+      case 403:
+      $state.go('app.errors.accessdenied', { error: error });
+      break;
+    }
   });
 });

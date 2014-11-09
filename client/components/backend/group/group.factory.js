@@ -9,12 +9,25 @@ angular
     },
     {
       // admin methods
-      listAll: { // fetches all available groups
+      list: { // fetches all available groups
         method: 'GET',
         isArray: true,
         params: {
-          controller: 'list',
-          fn: 'all'
+          controller: 'list'
+        }
+      },
+      basicInfo: { // fetches basic info for a single group
+        method: 'GET',
+        params: {
+          controller: 'get',
+          fn: 'basic'
+        }
+      },
+      detailedInfo: { // fetches detailed info for a single group
+        method: 'GET',
+        params: {
+          controller: 'get',
+          fn: 'detail'
         }
       },
 
@@ -23,55 +36,22 @@ angular
         method: 'GET',
         isArray: true,
         params: {
-          controller: 'list',
-          fn: 'subscribed'
+          controller: 'list-subscribed'
         }
       },
-      listServices: { // fetches services group is subscribed to
-        method: 'GET',
-        isArray: true,
-        params: {
-          controller: 'list',
-          fn: 'services'
-        }
-      },
-      listServicePlans: { // fetches all available service plans for groups
-        method: 'GET',
-        isArray: true,
-        params: {
-          controller: 'list',
-          fn: 'service-plans'
-        }
-      },
-      listBillingSchedules: { // fetches all available billing schedules for groups
-        method: 'GET',
-        isArray: true,
-        params: {
-          controller: 'list',
-          fn: 'billing-schedules'
-        }
-      },
-      listBillingMethods: { // fetches all available billing methods for groups
-        method: 'GET',
-        isArray: true,
-        params: {
-          controller: 'list',
-          fn: 'billing-methods'
-        }
-      },
-      getBasic: {
+      basicInfoSubscribed: { // fetches basic info for a single group
         method: 'GET',
         params: {
-          controller: 'get',
+          controller: 'get-subscribed',
           fn: 'basic'
         }
       },
-      getDetail: {
+      detailedInfoSubscribed: { // fetches detailed info for a single group
         method: 'GET',
         params: {
-          controller: 'get',
+          controller: 'get-subscribed',
           fn: 'detail'
         }
-      }
+      },
     });
   });;

@@ -23,5 +23,17 @@ angular.module('auditpagesApp')
             controller: 'ErrorsAccessDeniedCtrl'
           }
         }
+      })
+      .state('app.errors.pagenotfound', {
+        url: '/pagenotfound',
+        data: {
+          breadcrumbTitle: 'Page Not Found'
+        },
+        views: {
+          'error-content': {
+            templateUrl: 'app/errors/pagenotfound/pagenotfound.html',
+            controller: 'ErrorsPageNotFoundCtrl'
+          }
+        }
       });
   });

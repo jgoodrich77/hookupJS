@@ -7,9 +7,6 @@ angular
   function fetchSubscribed() {
     return Group.listSubscribed().$promise;
   }
-  function fetchGroupServices(group) {
-    return Group.listGroupServices(group).$promise;
-  }
   function fetchServicePlans() {
     return Plan.listActive().$promise;
   }
@@ -42,7 +39,6 @@ angular
   function editableRole(r) {
     return !!r && r !== 'viewer';
   }
-
 
   function findAndTest(arr, arrItem, arrProp, test) {
     if(!arr || !arr.length || !arrItem || !angular.isFunction(test)) return false;
@@ -128,7 +124,6 @@ angular
 
   return {
     subscribed:        fetchSubscribed,
-    groupServices:     fetchGroupServices,
     servicePlans:      fetchServicePlans,
     billingSchedules:  fetchBillingSchedules,
     billingMethods:    fetchBillingMethods,

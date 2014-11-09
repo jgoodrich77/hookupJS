@@ -124,7 +124,7 @@ GroupSchema.methods = {
     userId = user._id || user,
     found = -1;
 
-    if(this.members.length) {
+    if(!!this.members && this.members.length) {
       this.members.every(function (member, index) {
 
         if(member.user.equals(userId)) {
@@ -221,7 +221,7 @@ GroupSchema.methods = {
     return this.modifyRegisteredUser(tUserRelPri, tRelationship);
   },
 
-  getSubscriptionDetail: function(user) {
+  getSubscriptionDetail: function(user, detailed) {
     var
     userIndex = this.findUserIndex(user);
 
@@ -229,11 +229,21 @@ GroupSchema.methods = {
       return false;
     }
 
-    return {
+    return (!!detailed) ? {
+      '_id':             this._id,
+      'role':            this.members[userIndex].relationship,
+      'name':            this.name,
+      'description':     this.description,
+      'primaryDomain':   this.primaryDomain,
+      'servicePlan':     this.servicePlan,
+      'billingSchedule': this.billingSchedule,
+      'billingMethod':   this.billingMethod,
+      'services':        this.services
+    } : {
       '_id':         this._id,
+      'role':        this.members[userIndex].relationship,
       'name':        this.name,
-      'description': this.description,
-      'role':        this.members[userIndex].relationship
+      'description': this.description
     };
   }
 };

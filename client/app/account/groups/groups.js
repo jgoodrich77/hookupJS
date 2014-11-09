@@ -40,7 +40,7 @@ angular.module('auditpagesApp')
         },
         resolve: {
           group: function($stateParams, Group) {
-            return Group.getDetail($stateParams).$promise;
+            return Group.detailedInfoSubscribed($stateParams).$promise;
           }
         }
       })
@@ -57,7 +57,7 @@ angular.module('auditpagesApp')
         },
         resolve: {
           group: function($stateParams, Group) {
-            return Group.getBasic($stateParams).$promise;
+            return Group.basicInfoSubscribed($stateParams).$promise;
           }
         }
       })
@@ -74,7 +74,7 @@ angular.module('auditpagesApp')
         },
         resolve: {
           group: function($stateParams, Group) {
-            return Group.getBasic($stateParams).$promise;
+            return Group.basicInfoSubscribed($stateParams).$promise;
           }
         }
       })
@@ -91,7 +91,7 @@ angular.module('auditpagesApp')
         },
         resolve: {
           group: function($stateParams, Group) {
-            return Group.getBasic($stateParams).$promise;
+            return Group.basicInfoSubscribed($stateParams).$promise;
           }
         }
       });

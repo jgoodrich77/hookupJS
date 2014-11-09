@@ -7,13 +7,13 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 // admin only functionality
-router.get('/list/all', auth.hasRole('admin'), controller.listAll);
-router.get('/list/active', auth.hasRole('admin'), controller.listActive);
+router.get('/list',        auth.hasRole('admin'), controller.list);
+router.get('/get/basic',   auth.hasRole('admin'), controller.getBasic);
+router.get('/get/detail',  auth.hasRole('admin'), controller.getDetail);
 
 // logged-in user functionality
-router.get('/list/subscribed', auth.isAuthenticated(), controller.listSubscribed);
-router.get('/list/services/:groupId', auth.isAuthenticated(), controller.listServices);
-router.get('/get/basic', auth.isAuthenticated(), controller.getBasic);
-router.get('/get/detail', auth.isAuthenticated(), controller.getDetail);
+router.get('/list-subscribed',        auth.isAuthenticated(), controller.listSubscribed);
+router.get('/get-subscribed/basic',   auth.isAuthenticated(), controller.getBasicSubscribed);
+router.get('/get-subscribed/detail',  auth.isAuthenticated(), controller.getDetailSubscribed);
 
 module.exports = router;
