@@ -6,19 +6,73 @@ mongoose = require('mongoose'),
 Schema = mongoose.Schema;
 
 var
+RELATION_OWNER        = 'owner',
+RELATION_EDITOR       = 'editor',
+RELATION_VIEWER       = 'viewer',
+
+SVCPLAN_BRONZE        = 'bronze',
+SVCPLAN_SILVER        = 'silver',
+SVCPLAN_GOLD          = 'gold',
+
+BILLING_MONTHLY       = 'monthly',
+BILLING_QUARTERLY     = 'quarterly',
+BILLING_YEARLY        = 'annually',
+
+BILLING_METHOD_CC     = 'creditcard',
+BILLING_METHOD_PAYPAL = 'paypal';
+
+var
 GroupSchema = new Schema({
-  name: String,
+  name: {
+    type: String,
+    required: true
+  },
+  primaryDomain: {
+    type: String,
+    required: true
+  },
   description: String,
-  primaryDomain: String,
+  active: {
+    type: Boolean,
+    default: true
+  },
   servicePlan: {
     type: String,
-    default: 'bronze',
+    required: true,
+    default: SVCPLAN_BRONZE,
     enum: [
-      'bronze',
-      'silver',
-      'gold'
+      SVCPLAN_BRONZE,
+      SVCPLAN_SILVER,
+      SVCPLAN_GOLD
     ]
   },
+  billingSchedule: {
+    type: String,
+    default: BILLING_MONTHLY,
+    enum: [
+      BILLING_MONTHLY,
+      BILLING_QUARTERLY,
+      BILLING_YEARLY
+    ]
+  },
+  billingMethod: {
+    method: {
+      type: String,
+      enum: [
+        BILLING_METHOD_CC,
+        BILLING_METHOD_PAYPAL
+      ]
+    },
+    detail: Object
+  },
+  billingHistory: [{
+    method: Object,
+    date: {
+      type: Date,
+      default: Date.now
+    },
+    amount: Number
+  }],
   members: [{
     user: {
       type: Schema.Types.ObjectId,
@@ -27,9 +81,9 @@ GroupSchema = new Schema({
     relationship: {
       type: String,
       enum: [
-        'owner',
-        'editor',
-        'viewer'
+        RELATION_OWNER,
+        RELATION_EDITOR,
+        RELATION_VIEWER
       ]
     }
   }],
@@ -43,38 +97,60 @@ GroupSchema = new Schema({
 });
 
 GroupSchema.statics = {
-  RELATION_OWNER: 'owner',
-  RELATION_EDITOR: 'editor',
-  RELATION_VIEWER: 'viewer',
-  SVCPLAN_BRONZE: 'bronze',
-  SVCPLAN_SILVER: 'silver',
-  SVCPLAN_GOLD:   'gold',
+  RELATION_OWNER:        RELATION_OWNER,
+  RELATION_EDITOR:       RELATION_EDITOR,
+  RELATION_VIEWER:       RELATION_VIEWER,
+  SVCPLAN_BRONZE:        SVCPLAN_BRONZE,
+  SVCPLAN_SILVER:        SVCPLAN_SILVER,
+  SVCPLAN_GOLD:          SVCPLAN_GOLD,
+  BILLING_MONTHLY:       BILLING_MONTHLY,
+  BILLING_QUARTERLY:     BILLING_QUARTERLY,
+  BILLING_YEARLY:        BILLING_YEARLY,
+  BILLING_METHOD_CC:     BILLING_METHOD_CC,
+  BILLING_METHOD_PAYPAL: BILLING_METHOD_PAYPAL,
+
+  memberRelationships: [ // order is important here (for promotion / demotion algorithm)!
+    RELATION_OWNER,
+    RELATION_EDITOR,
+    RELATION_VIEWER
+  ],
+
+  servicePlans: [
+    SVCPLAN_BRONZE,
+    SVCPLAN_SILVER,
+    SVCPLAN_GOLD
+  ],
+
+  billingSchedules: [
+    BILLING_MONTHLY,
+    BILLING_QUARTERLY,
+    BILLING_YEARLY
+  ],
+
+  billingMethods: [
+    BILLING_METHOD_CC,
+    BILLING_METHOD_PAYPAL
+  ],
 
   relationshipPriority: function(rel) {
-    return GroupSchema.statics.memberRelationships.indexOf(rel);
+    return this.memberRelationships.indexOf(rel);
   },
 
   // should be enfored on model level via enum,
   // but this is here incase we need to validate programmatically.
   validRelationship: function(r) {
-    return GroupSchema.statics.memberRelationships.indexOf(r) > -1;
+    return this.memberRelationships.indexOf(r) > -1;
   },
   validPlan: function(r) {
-    return GroupSchema.statics.servicePlans.indexOf(r) > -1;
+    return this.servicePlans.indexOf(r) > -1;
+  },
+  validBillingSchedule: function(r) {
+    return this.billingSchedules.indexOf(r) > -1;
+  },
+  validBillingMethod: function(r) {
+    return this.billingMethods.indexOf(r) > -1;
   }
 };
-
-GroupSchema.statics.memberRelationships = [ // order is important here (for promotion / demotion algorithm)!
-  GroupSchema.statics.RELATION_OWNER,
-  GroupSchema.statics.RELATION_EDITOR,
-  GroupSchema.statics.RELATION_VIEWER
-];
-
-GroupSchema.statics.servicePlans = [
-  GroupSchema.statics.SVCPLAN_BRONZE,
-  GroupSchema.statics.SVCPLAN_SILVER,
-  GroupSchema.statics.SVCPLAN_GOLD
-];
 
 GroupSchema.methods = {
 

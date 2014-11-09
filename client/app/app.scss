@@ -1,5 +1,6 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 $fa-font-path: "/bower_components/font-awesome/fonts";
+$badge-border-radius: 3px;
 
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/variables';
@@ -29,6 +30,27 @@ $well-danger-bg:      $btn-danger-bg;
 $well-danger-text:    $btn-danger-color;
 $well-danger-border:  $btn-danger-border;
 
+$badge-default-bg:     $badge-bg;
+$badge-default-text:   $badge-color;
+$badge-default-border: $badge-border-radius;
+$badge-primary-bg:     $btn-primary-bg;
+$badge-primary-text:   $btn-primary-color;
+$badge-primary-border: $badge-border-radius;
+$badge-success-bg:     $btn-success-bg;
+$badge-success-text:   $btn-success-color;
+$badge-success-border: $badge-border-radius;
+$badge-info-bg:        $btn-info-bg;
+$badge-info-text:      $btn-info-color;
+$badge-info-border:    $badge-border-radius;
+$badge-warning-bg:     $btn-warning-bg;
+$badge-warning-text:   $btn-warning-color;
+$badge-warning-border: $badge-border-radius;
+$badge-danger-bg:      $btn-danger-bg;
+$badge-danger-text:    $btn-danger-color;
+$badge-danger-border:  $badge-border-radius;
+
+
+
 /**
  * App-wide styles
  */
@@ -41,6 +63,16 @@ $well-danger-border:  $btn-danger-border;
   background-color: $well-bg-color;
   border-color: $well-border-color;
   color: $well-text-color;
+}
+
+@mixin badge-variant(
+  $badge-bg-color,
+  $badge-text-color,
+  $badge-border-radius
+) {
+  background-color: $badge-bg-color;
+  color: $badge-text-color;
+  border-radius: $badge-border-radius;
 }
 
 .well {
@@ -84,6 +116,51 @@ $well-danger-border:  $btn-danger-border;
       $well-danger-bg,
       $well-danger-border,
       $well-danger-text
+    );
+  }
+}
+
+.badge {
+  &.badge-default {
+    @include badge-variant(
+      $badge-default-bg,
+      $badge-default-border,
+      $badge-default-text
+    );
+  }
+  &.badge-primary {
+    @include badge-variant(
+      $badge-primary-bg,
+      $badge-primary-border,
+      $badge-primary-text
+    );
+  }
+  &.badge-success {
+    @include badge-variant(
+      $badge-success-bg,
+      $badge-success-border,
+      $badge-success-text
+    );
+  }
+  &.badge-info {
+    @include badge-variant(
+      $badge-info-bg,
+      $badge-info-border,
+      $badge-info-text
+    );
+  }
+  &.badge-warning {
+    @include badge-variant(
+      $badge-warning-bg,
+      $badge-warning-border,
+      $badge-warning-text
+    );
+  }
+  &.badge-danger {
+    @include badge-variant(
+      $badge-danger-bg,
+      $badge-danger-border,
+      $badge-danger-text
     );
   }
 }

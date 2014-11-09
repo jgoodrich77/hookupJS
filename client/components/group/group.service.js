@@ -35,6 +35,30 @@ angular
           fn: 'services'
         }
       },
+      listServicePlans: { // fetches all available service plans for groups
+        method: 'GET',
+        isArray: true,
+        params: {
+          controller: 'list',
+          fn: 'service-plans'
+        }
+      },
+      listBillingSchedules: { // fetches all available billing schedules for groups
+        method: 'GET',
+        isArray: true,
+        params: {
+          controller: 'list',
+          fn: 'billing-schedules'
+        }
+      },
+      listBillingMethods: { // fetches all available billing methods for groups
+        method: 'GET',
+        isArray: true,
+        params: {
+          controller: 'list',
+          fn: 'billing-methods'
+        }
+      },
       getBasic: {
         method: 'GET',
         params: {

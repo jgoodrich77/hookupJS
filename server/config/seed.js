@@ -7,6 +7,7 @@
 
 var
 Q = require('q'),
+moment = require('moment'),
 User = require('../api/user/user.model'),
 Group = require('../api/group/group.model'),
 Service = require('../api/service/service.model');
@@ -61,6 +62,31 @@ function seedGroups() {
   var
   defer = Q.defer();
 
+  var
+  billingMethodMock = [
+    {
+      method: Group.BILLING_METHOD_CC,
+      detail: {
+        name: 'XX YY ZZ',
+        cardType: 'mastercard',
+        cardNumber: '12345-12345-12345-12345',
+        cardExpire: '2014-12',
+        cardCV: '123'
+      }
+    },
+    {
+      method: Group.BILLING_METHOD_PAYPAL,
+      detail: {
+        name: 'XX YY ZZ',
+        ppAggreementId: '12345-12345-12345-12345',
+        ppHolderEmail: 'xxx@yyy.com'
+      }
+    }
+  ],
+  dateToday = moment(),
+  dateBeginMonth = moment(dateToday).startOf('month').utc().toString(),
+  dateLastMonth = moment(dateBeginMonth).subtract(1, 'month').utc().toString();
+
   console.log('search & destroy existing groups..');
 
   Group
@@ -76,17 +102,39 @@ function seedGroups() {
         name: 'Gold Group',
         description: 'Gold test group',
         primaryDomain: 'http://hookupjs.org/',
-        servicePlan: 'gold'
+        servicePlan: Group.SVCPLAN_GOLD,
+        billingSchedule: Group.BILLING_YEARLY,
+        billingMethod: billingMethodMock[0],
+        billingHistory: [{ // fake billing history
+          method: billingMethodMock[0],
+          date: dateBeginMonth,
+          amount: 1000
+        }, {
+          method: billingMethodMock[0],
+          date: dateLastMonth,
+          amount: 1000
+        }],
       }, {
         name: 'Silver Group',
         description: 'Silver test group',
         primaryDomain: 'http://hookupjs.org/',
-        servicePlan: 'silver'
+        servicePlan: Group.SVCPLAN_SILVER,
+        billingSchedule: Group.BILLING_MONTHLY,
+        billingMethod: billingMethodMock[1],
+        billingHistory: [{ // fake billing history
+          method: billingMethodMock[1],
+          date: dateBeginMonth,
+          amount: 250
+        }, {
+          method: billingMethodMock[1],
+          date: dateLastMonth,
+          amount: 250
+        }],
       }, {
         name: 'Bronze Group',
         description: 'Bronze test group',
         primaryDomain: 'http://hookupjs.org/',
-        servicePlan: 'bronze'
+        servicePlan: Group.SVCPLAN_BRONZE
       }, function (err, goldGroup, silverGroup, bronzeGroup) {
           if(err) {
             return defer.reject(err);

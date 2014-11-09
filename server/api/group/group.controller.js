@@ -67,3 +67,63 @@ exports.listServices = function(req, res, next) {
       return requestUtils.data(res, group.services);
     });
 };
+
+exports.listServicePlans = function(req, res, next) {
+
+  // TODO: should be stored / configurable in mongo.
+  requestUtils.data(res, [{
+      id: 'bronze',
+      name: 'Bronze Plan',
+      description: 'Description goes here',
+      baseCost: 0
+    },{
+      id: 'silver',
+      name: 'Silver Plan',
+      description: 'Description goes here',
+      baseCost: 250
+    },{
+      id: 'gold',
+      name: 'Gold Plan',
+      description: 'Description goes here',
+      baseCost: 1000
+    }]);
+};
+exports.listBillingSchedules = function(req, res, next) {
+
+  // TODO: should be stored / configurable in mongo.
+  requestUtils.data(res, [{
+      id: 'monthly',
+      name: 'Monthly',
+      description: 'Description goes here',
+      discount: 0
+    },{
+      id: 'quarterly',
+      name: 'Quarterly',
+      description: 'Description goes here',
+      discount: 5
+    },{
+      id: 'annually',
+      name: 'Annually',
+      description: 'Description goes here',
+      discount: 15
+    }]);
+};
+exports.listBillingMethods = function(req, res, next) {
+
+  // TODO: should be stored / configurable in mongo.
+  requestUtils.data(res, [{
+      id: 'creditcard',
+      name: 'Credit card',
+      options: {
+        types: [
+          ['mastercard', 'Mastercard'],
+          ['visa', 'Visa'],
+          ['amex', 'American Express']
+        ]
+      }
+    },{
+      id: 'paypal',
+      name: 'Paypal',
+      options: {}
+    }]);
+};
