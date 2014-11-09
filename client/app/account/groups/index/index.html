@@ -3,16 +3,18 @@
     <em><span class="glyphicon glyphicon-time"></span> Please wait, loading available groups.</em>
   </div>
 
-  <div class="well well-warning" ng-show="!loading && !groups.length">
+  <div class="well well-warning" ng-show="!loading && !groups.length && !loadErr">
     <a ui-sref="app.account.groups.create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Add a new group</a>
     <em><span class="glyphicon glyphicon-info-sign"></span> You are currently not subscribed to any groups.</em>
     <div class="clearfix"></div>
   </div>
 
-  <div class="well well-danger" ng-show="!loading && loadErr">
-    <h2>Oh $#!7..</h2>
-    <p>Something went wrong, sorry 'bout that.. <pre>{{ loadErr | json }}</pre></p>
-  </div>
+  <error-display
+    error-title="loadErr.statusText || 'Load Error'"
+    error-message="loadErr.data.message || 'Something went wrong while your subscribed groups, sorry about that..'"
+    error-detail="loadErr"
+    ng-show="!loading && loadErr"
+  ></error-display>
 
   <div ng-show="!loading && groups.length">
 

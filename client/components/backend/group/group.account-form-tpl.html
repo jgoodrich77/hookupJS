@@ -1,0 +1,150 @@
+<div ng-init="resetFn(true)">
+  <h2 ng-bind="title||'Group Form'" ng-hide="saving"></h2>
+  <p class="text-muted" ng-hide="saving" ng-bind="description||'Group form description'"></p>
+
+  <div class="well well-info" ng-if="saving">
+    <em><span class="glyphicon glyphicon-time"></span> {{saveMessage||'Please wait, saving group..'}}</em>
+  </div>
+  <div class="well well-info" ng-show="loading">
+    <em><span class="glyphicon glyphicon-time"></span> {{loadMessage||'Please wait, loading..'}}.</em>
+  </div>
+
+  <error-display
+    error-title="loadError.statusText||loadErrorTitle||'Load Error'"
+    error-message="loadError.data.message||loadErrorMessage||'Problem while loading..'"
+    error-detail="loadError"
+    ng-if="!loading && loadError"
+  ></error-display>
+
+  <error-display
+    error-title="saveErrorTitle||'Save Error'"
+    error-message="saveErrorMessage||'Problem while saving..'"
+    error-detail="saveError"
+    ng-if="!saving && saveError"
+  ></error-display>
+
+  <form class="container-fluid form" name="newgroup" ng-submit="saveFn()" ng-hide="loading||saving||loadError">
+    <div class="row">
+      <dl class="col-sm-6 form-group">
+        <dt><label>Group Name</label></dt>
+        <dd><input class="form-control" type="TEXT" ng-model="model.name" placeholder="Company name, or domain name.." /></dd>
+      </dl>
+
+      <dl class="col-sm-6 form-group">
+        <dt><label>Primary Domain</label></dt>
+        <dd><input class="form-control" type="TEXT" ng-model="model.primaryDomain" placeholder="http://yourdomain.com/" /></dd>
+      </dl>
+    </div>
+    <div class="row">
+      <dl class="col-sm-12 form-group">
+        <dt><label>Description</label></dt>
+        <dd><textarea class="form-control" type="TEXT" ng-model="model.description" placeholder="A short description for this group (optional)"></textarea></dd>
+      </dl>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 form-group">
+        <h3>Service Plan</h3>
+        <p class="text-muted">Choose a plan that works just right for this group.</p>
+        <ul class="list-group">
+          <li class="list-group-item" ng-repeat="item in servicePlans">
+            <div class="badge badge-success pull-right" ng-if="item.monthlyCost > 0"><span ng-bind="item.monthlyCost | currency"></span> <em>monthly</em></div>
+            <div class="badge badge-warning pull-right" ng-if="item.monthlyCost === 0"><em>FREE!</em></div>
+
+            <h4 class="list-group-item-heading"><label><input type="radio" ng-model="model.servicePlan" name="serviceplan" value="{{item._id}}" /> <span ng-bind="item.name"></span></label></h4>
+            <p class="list-group-item-text" ng-bind="item.description"></p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row" ng-if="!loading && isBillable()">
+      <div class="col-sm-12 form-group">
+        <h3>Billing Schedule</h3>
+        <p class="text-muted">Select how often you would like us to bill you:</p>
+        <ul class="list-group">
+          <li class="list-group-item" ng-repeat="item in billingSchedules">
+            <div class="badge badge-success pull-right" ng-if="item.discount.amount > 0">
+              <span ng-show="item.discount.method === 'percent'" ng-bind="item.discount.amount | percentage"></span>
+              <span ng-show="item.discount.method === 'fixed'" ng-bind="item.discount.amount | currency"></span> <em>savings</em></div>
+
+            <h4 class="list-group-item-heading"><label><input type="radio" ng-model="model.billingSchedule" name="billingschedule" value="{{item._id}}" /> <span ng-bind="item.name"></span></label></h4>
+            <p class="list-group-item-text" ng-bind="item.description"></p>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <div class="row" ng-if="!loading && isBillable()">
+      <div class="col-sm-12">
+        <h3>Billing Information</h3>
+        <p class="text-muted">Select your preferred billing information below:</p>
+      </div>
+    </div>
+
+    <div class="row" ng-if="!loading && isBillable()">
+      <dl class="form-group col-sm-6">
+        <dt><label>Payment Method</label></dt>
+        <dd><select class="form-control" ng-model="model.billingMethod.method" ng-options="o._id as o.name for o in billingMethods"></select></dd>
+      </dl>
+
+      <dl class="col-sm-6 form-group" ng-if="isBillableCC()">
+        <dt><label>Card Type</label></dt>
+        <dd><select class="form-control" ng-model="model.billingMethod.detail.cardType" ng-options="o[0] as o[1] for o in billingMethods[0].adapter.options.types"></select></dd>
+      </dl>
+
+      <dl class="col-sm-6 form-group" ng-if="isBillablePaypal()">
+        <dt><label>Paypal E-mail</label></dt>
+        <dd><input type="TEXT" class="form-control" ng-readonly="isPaypalAgreement()" ng-model="model.billingMethod.detail.ppHolderEmail" /></dd>
+      </dl>
+    </div>
+
+    <div class="row" ng-if="!loading && isBillable() && isBillableCC()">
+      <dl class="col-sm-6 form-group">
+        <dt><label>Card Number</label></dt>
+        <dd><input type="TEXT" class="form-control" ng-model="model.billingMethod.detail.cardNumber" /></dd>
+      </dl>
+      <dl class="col-sm-3 form-group">
+        <dt><label>Expiration Year</label></dt>
+        <dd><select class="form-control" ng-model="model.billingMethod.detail.cardExpireYear" ng-options="o as o for o in ccYears"></select></dd>
+      </dl>
+      <dl class="col-sm-3 form-group">
+        <dt><label>Month</label></dt>
+        <dd><select class="form-control" ng-model="model.billingMethod.detail.cardExpireMonth" ng-options="o as o for o in ccMonths"></select></dd>
+      </dl>
+    </div>
+
+    <div class="row" ng-if="!loading && isBillable() && isBillableCC()">
+      <dl class="col-sm-6 form-group">
+        <dt><label>Card Holder</label></dt>
+        <dd><input type="TEXT" class="form-control" ng-model="model.billingMethod.detail.cardHolder" /></dd>
+      </dl>
+      <dl class="col-sm-6 form-group">
+        <dt><label>Security Number</label></dt>
+        <dd><input type="TEXT" class="form-control" ng-model="model.billingMethod.detail.cardCV" /></dd>
+      </dl>
+    </div>
+
+    <div class="row" ng-if="!loading && isBillable() && isBillablePaypal() && isPaypalAgreement()">
+      <dl class="col-sm-6 form-group">
+        <dt><label>Paypal Account Holder</label></dt>
+        <dd><span ng-bind="model.billingMethod.detail.ppAccountHolder"></span></dd>
+      </dl>
+
+      <dl class="col-sm-6 form-group">
+        <dt><label>Paypal Aggreement</label></dt>
+        <dd><span ng-bind="model.billingMethod.detail.ppAggreementId"></span></dd>
+      </dl>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 text-right">
+        <hr />
+
+        <button class="btn btn-lg btn-default" type="submit">{{saveGroupButton||'Save Group'}}</button>
+        <button class="btn btn-lg btn-danger" type="button" ng-click="resetFn()">{{resetGroupButton||'Reset'}}</button>
+      </div>
+    </div>
+  </form>
+</div>

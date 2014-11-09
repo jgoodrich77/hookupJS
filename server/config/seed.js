@@ -10,7 +10,10 @@ Q = require('q'),
 moment = require('moment'),
 User = require('../api/user/user.model'),
 Group = require('../api/group/group.model'),
-Service = require('../api/service/service.model');
+Service = require('../api/service/service.model'),
+Plan = require('../api/plan/plan.model'),
+BillingSchedule = require('../api/billing/schedule/schedule.model'),
+BillingMethod = require('../api/billing/method/method.model');
 
 //
 // Un-associated entries
@@ -51,100 +54,6 @@ function seedUsers() {
           console.log('finished seeding %d test users', users.length);
 
           defer.resolve(users);
-        }
-      );
-    });
-
-  return defer.promise;
-}
-
-function seedGroups() {
-  var
-  defer = Q.defer();
-
-  var
-  billingMethodMock = [
-    {
-      method: Group.BILLING_METHOD_CC,
-      detail: {
-        name: 'XX YY ZZ',
-        cardType: 'mastercard',
-        cardNumber: '12345-12345-12345-12345',
-        cardExpire: '2014-12',
-        cardCV: '123'
-      }
-    },
-    {
-      method: Group.BILLING_METHOD_PAYPAL,
-      detail: {
-        name: 'XX YY ZZ',
-        ppAggreementId: '12345-12345-12345-12345',
-        ppHolderEmail: 'xxx@yyy.com'
-      }
-    }
-  ],
-  dateToday = moment(),
-  dateBeginMonth = moment(dateToday).startOf('month').utc().toString(),
-  dateLastMonth = moment(dateBeginMonth).subtract(1, 'month').utc().toString();
-
-  console.log('search & destroy existing groups..');
-
-  Group
-    .find({})
-    .remove(function(err) {
-      if(err) {
-        return defer.reject(err);
-      }
-
-      console.log('seeding test groups..');
-
-      Group.create({
-        name: 'Gold Group',
-        description: 'Gold test group',
-        primaryDomain: 'http://hookupjs.org/',
-        servicePlan: Group.SVCPLAN_GOLD,
-        billingSchedule: Group.BILLING_YEARLY,
-        billingMethod: billingMethodMock[0],
-        billingHistory: [{ // fake billing history
-          method: billingMethodMock[0],
-          date: dateBeginMonth,
-          amount: 1000
-        }, {
-          method: billingMethodMock[0],
-          date: dateLastMonth,
-          amount: 1000
-        }],
-      }, {
-        name: 'Silver Group',
-        description: 'Silver test group',
-        primaryDomain: 'http://hookupjs.org/',
-        servicePlan: Group.SVCPLAN_SILVER,
-        billingSchedule: Group.BILLING_MONTHLY,
-        billingMethod: billingMethodMock[1],
-        billingHistory: [{ // fake billing history
-          method: billingMethodMock[1],
-          date: dateBeginMonth,
-          amount: 250
-        }, {
-          method: billingMethodMock[1],
-          date: dateLastMonth,
-          amount: 250
-        }],
-      }, {
-        name: 'Bronze Group',
-        description: 'Bronze test group',
-        primaryDomain: 'http://hookupjs.org/',
-        servicePlan: Group.SVCPLAN_BRONZE
-      }, function (err, goldGroup, silverGroup, bronzeGroup) {
-          if(err) {
-            return defer.reject(err);
-          }
-
-          var groups = [goldGroup, silverGroup, bronzeGroup];
-
-          console.log('finished seeding %d test groups', groups.length);
-
-          defer.resolve(groups);
         }
       );
     });
@@ -247,9 +156,277 @@ function seedServices() {
 }
 
 
+function seedPlans() {
+  var defer = Q.defer();
+
+  console.log('search & destroy existing plans..');
+
+  Plan
+    .find({})
+    .remove(function(err) {
+      if(err) {
+        return defer.reject(err);
+      }
+
+      console.log('seeding test plans..');
+
+      Plan.create({
+        groupDefault: true,
+        order: 1,
+        name: 'Bronze Plan',
+        description: 'Description for bronze plan goes here',
+        monthlyCost: 0
+      }, {
+        order: 2,
+        name: 'Silver Plan',
+        description: 'Description for silver plan goes here',
+        monthlyCost: 250
+      }, {
+        order: 3,
+        name: 'Gold Plan',
+        description: 'Description for gold plan goes here',
+        monthlyCost: 1000
+      }, function (err, svBronze, svSilver, svGold) {
+          if(err) {
+            return defer.reject(err);
+          }
+
+          var plans = [svBronze, svSilver, svGold];
+
+          console.log('finished seeding %d test plans', plans.length);
+
+          defer.resolve(plans);
+        }
+      );
+
+    });
+
+  return defer.promise;
+}
+
+function seedBillingSchedules() {
+  var defer = Q.defer();
+
+  console.log('search & destroy existing billing schedules..');
+
+  BillingSchedule
+    .find({})
+    .remove(function(err) {
+      if(err) {
+        return defer.reject(err);
+      }
+
+      console.log('seeding test billing schedules..');
+
+      BillingSchedule.create({
+        order: 1,
+        interval: BillingSchedule.INT_MONTHLY,
+        name: 'Monthly',
+        description: 'Description of monthly billing schedule can go here'
+      },{
+        order: 2,
+        interval: BillingSchedule.INT_QUARTERLY,
+        name: 'Quarterly',
+        description: 'Description of quarterly billing schedule can go here',
+        discount: {
+          amount: 5,
+          method: BillingSchedule.DCMETH_PERC
+        }
+      },{
+        order: 3,
+        interval: BillingSchedule.INT_YEARLY,
+        name: 'Annually',
+        description: 'Description of annual billing schedule can go here',
+        discount: {
+          amount: 15,
+          method: BillingSchedule.DCMETH_PERC
+        }
+      }, function (err, bsMonthly, bsQuarterly, bsAnnual) {
+          if(err) {
+            return defer.reject(err);
+          }
+
+          var billingSchedules = [bsMonthly, bsQuarterly, bsAnnual];
+
+          console.log('finished seeding %d test billing schedules', billingSchedules.length);
+
+          defer.resolve(billingSchedules);
+        }
+      );
+
+    });
+
+  return defer.promise;
+}
+
+function seedBillingMethods() {
+  var defer = Q.defer();
+
+  console.log('search & destroy existing billing methods..');
+
+  BillingMethod
+    .find({})
+    .remove(function(err) {
+      if(err) {
+        return defer.reject(err);
+      }
+
+      console.log('seeding test billing methods..');
+
+      BillingMethod.create({
+        order: 1,
+        name: 'Credit Card',
+        adapter: {
+          factoryClass: 'credit-card',
+          options: {
+            types: [
+              ['visa', 'Visa'],
+              ['mastercard', 'Mastercard'],
+              ['amex', 'American Express'],
+              ['discover', 'Discover'],
+              ['diners', 'Dinerscard']
+            ]
+          }
+        }
+      },{
+        order: 2,
+        name: 'Paypal',
+        adapter: {
+          factoryClass: 'paypal'
+        }
+      }, function (err, bmCreditCard, bmPaypal) {
+          if(err) {
+            return defer.reject(err);
+          }
+
+          var billingMethods = [bmCreditCard, bmPaypal];
+
+          console.log('finished seeding %d test billing schedules', billingMethods.length);
+
+          defer.resolve(billingMethods);
+        }
+      );
+
+    });
+
+  return defer.promise;
+}
+
 //
 // Complex associations
 //
+
+function seedGroups(plans, bSchedule, bMethod) {
+  var
+  defer = Q.defer(),
+
+  // plans
+  svBronze = plans[0],
+  svSilver = plans[1],
+  svGold   = plans[2],
+
+  // billing schedules
+  bsMonthly   = bSchedule[0],
+  bsQuarterly = bSchedule[1],
+  bsAnnual    = bSchedule[2],
+
+  // billing methods
+  bmCreditCard = bMethod[0],
+  bmPaypal     = bMethod[1],
+
+  bmMock = [
+    {
+      method: bmCreditCard,
+      detail: {
+        cardHolder: 'XX YY ZZ',
+        cardType: 'mastercard',
+        cardNumber: '12345-12345-12345-12345',
+        cardExpireYear: '2023',
+        cardExpireMonth: '12',
+        cardCV: '123'
+      }
+    },
+    {
+      method: bmPaypal,
+      detail: {
+        ppAccountHolder: 'XX YY ZZ',
+        ppAggreementId: '12345-12345-12345-12345',
+        ppHolderEmail: 'xxx@yyy.com'
+      }
+    }
+  ],
+  dateToday = (new Date()).toISOString(),
+  dateBeginMonth = moment(dateToday).startOf('month').utc().toString(),
+  dateLastMonth = moment(dateToday).startOf('month').subtract(1, 'month').utc().toString();
+
+  console.log('search & destroy existing groups..');
+
+  Group
+    .find({})
+    .remove(function(err) {
+      if(err) {
+        return defer.reject(err);
+      }
+
+      console.log('seeding test groups..');
+
+      Group.create({
+        name: 'Gold Group',
+        description: 'Gold test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svGold,
+        billingSchedule: bsAnnual,
+        billingMethod: bmMock[0],
+        billingHistory: [{ // fake billing history
+          method: bmMock[0].method,
+          detail: bmMock[0].detail,
+          date: dateBeginMonth,
+          amount: 1000
+        }, {
+          method: bmMock[0].method,
+          detail: bmMock[0].detail,
+          date: dateLastMonth,
+          amount: 1000
+        }],
+      }, {
+        name: 'Silver Group',
+        description: 'Silver test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svSilver,
+        billingSchedule: bsMonthly,
+        billingMethod: bmMock[1],
+        billingHistory: [{ // fake billing history
+          method: bmMock[1].method,
+          detail: bmMock[1].detail,
+          date: dateBeginMonth,
+          amount: 250
+        }, {
+          method: bmMock[1].method,
+          detail: bmMock[1].detail,
+          date: dateLastMonth,
+          amount: 250
+        }],
+      }, {
+        name: 'Bronze Group',
+        description: 'Bronze test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svBronze
+      }, function (err, goldGroup, silverGroup, bronzeGroup) {
+          if(err) {
+            return defer.reject(err);
+          }
+
+          var groups = [goldGroup, silverGroup, bronzeGroup];
+
+          console.log('finished seeding %d test groups', groups.length);
+
+          defer.resolve(groups);
+        }
+      );
+    });
+
+  return defer.promise;
+}
 
 function seedGroupsServices(groups, services) {
   var
@@ -367,24 +544,27 @@ function seedUsersGroups(users, groups) {
   ]);
 }
 
-Q.allSettled([ // create primitives
+Q.allSettled([ // create fixtures
+  seedPlans(),
+  seedBillingSchedules(),
+  seedBillingMethods(),
   seedUsers(),
-  seedGroups(),
   seedServices()
-])
-.then(function (results) { // create complex associations
+]).spread(function (seededPlans, seededBillingSchedules, seededBillingMethods, seededUsers, seededServices) {
 
-  var
-  testUsers = results[0].value,
-  testGroups = results[1].value,
-  testServices = results[2].value;
-
-  return Q.allSettled([
-    seedGroupsServices(testGroups, testServices),
-    seedUsersGroups(testUsers, testGroups)
-  ]);
+  // seed groups with other seeded fixtures.
+  return seedGroups(seededPlans.value, seededBillingSchedules.value, seededBillingMethods.value)
+    .then(function (seededGroups) {
+      return seedGroupsServices(seededGroups, seededServices.value)
+        .then(function (modifiedGroups) {
+          return seedUsersGroups(seededUsers.value, seededGroups)
+        })
+        .then(function (modifiedUsers) {
+          return [seededPlans.value, seededBillingSchedules.value, seededBillingMethods.value, seededUsers.value, seededServices.value, seededGroups];
+        });
+    });
 })
-.then(function () {
+.then(function (results) {
   console.log('All data seeded successfully');
 })
 .catch(function (err){

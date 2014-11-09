@@ -40,7 +40,7 @@ angular.module('auditpagesApp')
         },
         resolve: {
           group: function($stateParams, Group) {
-            return Group.getBasic($stateParams).$promise;
+            return Group.getDetail($stateParams).$promise;
           }
         }
       })

@@ -1,6 +1,20 @@
-<div>
-  <a class="pull-right" ui-sref="app.account.groups"><span class="glyphicon glyphicon-share-alt"></span> <span class="visible-md-inline visible-lg-inline">Back to group list</span></a>
-  <h2>Update Page <small><i class="fa fa-anchor"></i> under construction</small></h2>
+<a class="pull-right" ui-sref="app.account.groups" ng-hide="saving"><span class="glyphicon glyphicon-share-alt"></span> <span class="visible-md-inline visible-lg-inline">Back to group list</span></a>
 
-  <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eu lectus sodales, malesuada elit eu, pretium turpis. Morbi odio leo, tristique id massa et, fringilla gravida turpis. Morbi faucibus a ante quis posuere. Nullam tempus vitae velit ut laoreet. Donec a lacinia massa.</p>
-</div>
+<account-group-form
+  form-model="group"
+  form-loading="loading"
+  form-saving="saving"
+  form-load-error="loadErr"
+  form-save-error="saveErr"
+  on-save-fn="save"
+  on-reset-fn="reset"
+  form-service-plans="servicePlans"
+  form-billing-schedules="billingSchedules"
+  form-billing-methods="billingMethods"
+  form-title="Update &quot;{{master.name}}&quot;"
+  form-save-group-button="Update"
+  form-description="Fill out the form below to create your new group."
+  form-saving-message="Please wait, updating &quot;{{master.name}}&quot;.."
+  form-load-message="Please wait, loading required group data.."
+  form-save-error-message="Something went wrong while saving your group info, sorry about that.."
+></account-group-form>

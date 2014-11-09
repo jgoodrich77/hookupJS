@@ -24,11 +24,6 @@ angular.module('auditpagesApp')
       'showIf': function() {
         return $state.current.name !== 'app.main';
       }
-    },{
-      'caption': 'Administration',
-      'title': 'Administration page',
-      'state': 'app.admin',
-      'roles': ['admin']
     }/*,{
       'caption': 'External Link',
       'title': 'Go back to Google.com',
@@ -46,6 +41,12 @@ angular.module('auditpagesApp')
       'title': 'Login to your existing account',
       'state': 'app.login',
       'showIf': loggedOut
+    },,{
+      'caption': 'Administration',
+      'title': 'Administration page',
+      'state': 'app.admin',
+      'glyph': 'glyphicon glyphicon-star',
+      'roles': ['admin']
     }];
 
     $scope.userMenu = [{

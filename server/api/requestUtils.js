@@ -48,6 +48,18 @@ function nHandlerData(res) {
     return respondData(res, data);
   }
 }
+function nHandlerDataOneRec(res) {
+  return function (err, rec) {
+    if(!!err) {
+      return respondError(res, err);
+    }
+    if(!rec) {
+      return respondMissing(res);
+    }
+
+    return respondData(res, rec);
+  }
+}
 function nHandlerOk(res) {
   return function (err, output) {
     if(!!err) {
@@ -68,5 +80,6 @@ module.exports = {
   qOk:     qHandlerOk,
   nError:  nHandlerError,
   nData:   nHandlerData,
+  oneRec:  nHandlerDataOneRec,
   nOk:     nHandlerOk
 };

@@ -6,23 +6,16 @@ mongoose = require('mongoose'),
 Schema = mongoose.Schema;
 
 var
-RELATION_OWNER        = 'owner',
-RELATION_EDITOR       = 'editor',
-RELATION_VIEWER       = 'viewer',
-
-SVCPLAN_BRONZE        = 'bronze',
-SVCPLAN_SILVER        = 'silver',
-SVCPLAN_GOLD          = 'gold',
-
-BILLING_MONTHLY       = 'monthly',
-BILLING_QUARTERLY     = 'quarterly',
-BILLING_YEARLY        = 'annually',
-
-BILLING_METHOD_CC     = 'creditcard',
-BILLING_METHOD_PAYPAL = 'paypal';
+RELATION_OWNER = 'owner',
+RELATION_EDITOR = 'editor',
+RELATION_VIEWER = 'viewer';
 
 var
 GroupSchema = new Schema({
+  active: {
+    type: Boolean,
+    default: true
+  },
   name: {
     type: String,
     required: true
@@ -32,41 +25,28 @@ GroupSchema = new Schema({
     required: true
   },
   description: String,
-  active: {
-    type: Boolean,
-    default: true
-  },
   servicePlan: {
-    type: String,
-    required: true,
-    default: SVCPLAN_BRONZE,
-    enum: [
-      SVCPLAN_BRONZE,
-      SVCPLAN_SILVER,
-      SVCPLAN_GOLD
-    ]
+    type: Schema.Types.ObjectId,
+    ref: 'Plan',
+    required: true
   },
   billingSchedule: {
-    type: String,
-    default: BILLING_MONTHLY,
-    enum: [
-      BILLING_MONTHLY,
-      BILLING_QUARTERLY,
-      BILLING_YEARLY
-    ]
+    type: Schema.Types.ObjectId,
+    ref: 'BillingSchedule'
   },
   billingMethod: {
     method: {
-      type: String,
-      enum: [
-        BILLING_METHOD_CC,
-        BILLING_METHOD_PAYPAL
-      ]
+      type: Schema.Types.ObjectId,
+      ref: 'BillingMethod'
     },
     detail: Object
   },
   billingHistory: [{
-    method: Object,
+    method: {
+      type: Schema.Types.ObjectId,
+      ref: 'BillingMethod'
+    },
+    detail: Object,
     date: {
       type: Date,
       default: Date.now
@@ -100,36 +80,11 @@ GroupSchema.statics = {
   RELATION_OWNER:        RELATION_OWNER,
   RELATION_EDITOR:       RELATION_EDITOR,
   RELATION_VIEWER:       RELATION_VIEWER,
-  SVCPLAN_BRONZE:        SVCPLAN_BRONZE,
-  SVCPLAN_SILVER:        SVCPLAN_SILVER,
-  SVCPLAN_GOLD:          SVCPLAN_GOLD,
-  BILLING_MONTHLY:       BILLING_MONTHLY,
-  BILLING_QUARTERLY:     BILLING_QUARTERLY,
-  BILLING_YEARLY:        BILLING_YEARLY,
-  BILLING_METHOD_CC:     BILLING_METHOD_CC,
-  BILLING_METHOD_PAYPAL: BILLING_METHOD_PAYPAL,
 
   memberRelationships: [ // order is important here (for promotion / demotion algorithm)!
     RELATION_OWNER,
     RELATION_EDITOR,
     RELATION_VIEWER
-  ],
-
-  servicePlans: [
-    SVCPLAN_BRONZE,
-    SVCPLAN_SILVER,
-    SVCPLAN_GOLD
-  ],
-
-  billingSchedules: [
-    BILLING_MONTHLY,
-    BILLING_QUARTERLY,
-    BILLING_YEARLY
-  ],
-
-  billingMethods: [
-    BILLING_METHOD_CC,
-    BILLING_METHOD_PAYPAL
   ],
 
   relationshipPriority: function(rel) {
@@ -140,15 +95,6 @@ GroupSchema.statics = {
   // but this is here incase we need to validate programmatically.
   validRelationship: function(r) {
     return this.memberRelationships.indexOf(r) > -1;
-  },
-  validPlan: function(r) {
-    return this.servicePlans.indexOf(r) > -1;
-  },
-  validBillingSchedule: function(r) {
-    return this.billingSchedules.indexOf(r) > -1;
-  },
-  validBillingMethod: function(r) {
-    return this.billingMethods.indexOf(r) > -1;
   }
 };
 

@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.directive('navbarItem', function ($q, $compile, Auth) {
+.directive('navbarItem', function ($q, $compile, $state, Auth) {
 
   function tplItem(item) {
 
@@ -39,14 +39,18 @@ angular
     replace: true,
     template: function(elements, attrs) {
       var tag = elements[0].nodeName;
-      return '<'+tag+' ng-show="canShowItem(item)" ui-sref-active="active"></'+tag+'>';
-
-      // TODO: find a way to add "ui-sref-active" only when item has a state.
-      // causes error in js console if no state in nav item.
+      return '<'+tag+' ng-show="canShowItem(item)" ng-class="{active: isItemActive(item)}"></'+tag+'>';
     },
     link: function(scope, element, attrs) {
 
+      scope.isItemActive = function(item) {
+        if(!item) return false;
+        return !!item.state ? $state.includes(item.state) : false;
+      };
+
       scope.canShowItem = function(item) {
+        if(!item) return false;
+
         if(item.roles) { // perform role testing
           var roles = item.roles;
 

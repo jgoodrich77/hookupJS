@@ -13,6 +13,10 @@ ServiceSchema = new Schema({
   adapter: {
     factoryClass: String,
     defaultParams: Object
+  },
+  active: {
+    type: Boolean,
+    default: true
   }
 });
 
