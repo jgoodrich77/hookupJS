@@ -233,6 +233,7 @@ function seedBillingSchedules() {
           method: BillingSchedule.DCMETH_PERC
         }
       },{
+        groupDefault: true,
         order: 3,
         interval: BillingSchedule.INT_YEARLY,
         name: 'Annually',
@@ -274,6 +275,7 @@ function seedBillingMethods() {
       console.log('seeding test billing methods..');
 
       BillingMethod.create({
+        groupDefault: true,
         order: 1,
         name: 'Credit Card',
         adapter: {

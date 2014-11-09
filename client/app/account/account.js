@@ -14,17 +14,5 @@ angular.module('auditpagesApp')
             templateUrl: 'app/account/account.html'
           }
         }
-      })
-      .state('app.account.settings', {
-        url: '/settings',
-        data: {
-          breadcrumbTitle: 'Settings'
-        },
-        views: {
-          'account-content': {
-            templateUrl: 'app/account/settings/settings.html',
-            controller: 'AccountSettingsCtrl'
-          }
-        }
       });
   });

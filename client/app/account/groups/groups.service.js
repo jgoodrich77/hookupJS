@@ -58,6 +58,28 @@ angular
     return match;
   }
 
+  function findDefault(arr, arrProp, keepProp) {
+    var item = false;
+
+    arr.every(function (T) {
+      if(!!T[arrProp]) {
+        item = !!keepProp ? T[keepProp] : T;
+      }
+      return !item;
+    });
+
+    return item;
+  }
+
+  function findDefaultPlan (ap) {
+    return findDefault(ap, 'groupDefault', '_id');
+  }
+  function findDefaultBillingSchedule (bs) {
+    return findDefault(bs, 'groupDefault', '_id');
+  }
+  function findDefaultBillingMethod (bm) {
+    return findDefault(bm, 'groupDefault', '_id');
+  }
   function isPlanBillable (p, ap) {
     return findAndTest(ap, p, '_id', function (itm) {
       return itm.monthlyCost > 0;
@@ -76,7 +98,7 @@ angular
   function isPaypalAgreement (bm, abm) {
     return isBillablePaypal (bm.method, abm) &&
       !!bm.detail.ppAggreementId &&
-      !!bm.detail.ppAccountHolder
+      !!bm.detail.ppAccountHolder;
   }
   function modelFormReset(scope, master, modelProp, loadingProp, loadErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
     return function(reloadDeps) {
@@ -89,6 +111,27 @@ angular
             scope[servicePlansProp]     = deps.servicePlans;
             scope[billingSchedulesProp] = deps.billingSchedules;
             scope[billingMethodsProp]   = deps.billingMethods;
+
+            var
+            defaultPlan = findDefaultPlan(deps.servicePlans),
+            defaultSched = findDefaultBillingSchedule(deps.billingSchedules),
+            defaultMethod = findDefaultBillingMethod(deps.billingMethods);
+
+            if(!!defaultPlan && !scope[modelProp].servicePlan) {
+              scope[modelProp].servicePlan = defaultPlan;
+            }
+
+            if(!!defaultSched && !scope[modelProp].billingSchedule) {
+              scope[modelProp].billingSchedule = defaultSched;
+            }
+
+            if(!!defaultMethod && (!scope[modelProp].billingMethod||!scope[modelProp].billingMethod.method)) {
+              if(!scope[modelProp].billingMethod) {
+                scope[modelProp].billingMethod = {};
+              }
+
+              scope[modelProp].billingMethod.method = defaultMethod;
+            }
           })
           .catch(function (error) {
             scope[loadErrorProp] = error;

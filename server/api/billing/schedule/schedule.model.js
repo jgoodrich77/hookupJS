@@ -19,6 +19,7 @@ DCMETH_FIXED  = 'fixed';
 var
 BillingScheduleSchema = new Schema({
   order: Number,
+  groupDefault: Boolean,
   interval: {
     type: String,
     required: true,

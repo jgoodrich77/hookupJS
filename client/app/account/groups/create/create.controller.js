@@ -5,13 +5,7 @@ angular
   .controller('AccountGroupsCreateCtrl', function ($q, $scope, $accountGroups) {
 
     var
-    master = {
-      servicePlan: 'bronze',
-      billingSchedule: 'monthly',
-      billingMethod: {
-        method: 'creditcard'
-      }
-    },
+    master = {},
     propModel = 'group',
     propServicePlans = 'servicePlans',
     propBillingSchedules = 'billingSchedules',

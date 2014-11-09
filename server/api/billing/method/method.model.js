@@ -8,6 +8,7 @@ Schema = mongoose.Schema;
 var
 BillingMethodSchema = new Schema({
   order: Number,
+  groupDefault: Boolean,
   name: {
     type: String,
     required: true

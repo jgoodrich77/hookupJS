@@ -6,7 +6,7 @@ angular.module('auditpagesApp')
       .state('app.account.groups', {
         url: '/groups',
         data: {
-          breadcrumbTitle: 'Groups'
+          breadcrumbTitle: 'My Groups'
         },
         views: {
           'account-content': {
