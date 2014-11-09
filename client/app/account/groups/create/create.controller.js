@@ -2,56 +2,19 @@
 
 angular
   .module('auditpagesApp')
-  .controller('AccountGroupsCreateCtrl', function ($q, $scope, Group) {
+  .controller('AccountGroupsCreateCtrl', function ($q, $scope, $creditCard, $accountGroups, Group) {
 
-    var
-    master = {
-      servicePlan: 'bronze',
-      billingSchedule: 'monthly',
-      billingMethod: {
-        method: 'creditcard'
-      }
-    };
-
-    $scope.loading = false;
-    $scope.loadErr = false;
-
-    function fetchServicePlans() {
-      return Group.listServicePlans().$promise;
-    }
-    function fetchBillingSchedules() {
-      return Group.listBillingSchedules().$promise;
-    }
-    function fetchBillingMethods() {
-      return Group.listBillingMethods().$promise;
-    }
-    function fetchAllDependencies() {
-      var tServicePlans, tBillingSchedules;
-
-      return fetchServicePlans()
-        .then(function (plans) {
-          tServicePlans = plans;
-          return fetchBillingSchedules();
-        })
-        .then(function (billingSchedules) {
-          tBillingSchedules = billingSchedules;
-          return fetchBillingMethods();
-        })
-        .then(function (billingMethods) {
-          return {
-            servicePlans: tServicePlans,
-            billingSchedules: tBillingSchedules,
-            billingMethods: billingMethods
-          };
-        });
-    }
+    $scope.loading  = false;
+    $scope.loadErr  = false;
+    $scope.ccYears  = $creditCard.listYears();
+    $scope.ccMonths = $creditCard.listMonths();
 
     $scope.reset = function(reloadDeps) {
-      $scope.group = angular.copy(master);
+      $scope.group = angular.copy($accountGroups.master);
 
       if(reloadDeps) {
         $scope.loading = true;
-        fetchAllDependencies()
+        $accountGroups.formDependencies()
           .then(function (deps) {
             $scope.servicePlans     = deps.servicePlans;
             $scope.billingSchedules = deps.billingSchedules;
@@ -66,43 +29,13 @@ angular
           });
       }
     };
-
-    $scope.ccYears = function() {
-      var
-      years = [],
-      amount = 15,
-      year = parseInt((new Date()).getFullYear()) + 1,
-      yearEnd = year + amount;
-
-      for(; year <= yearEnd; year++) {
-        years.push(year);
-      }
-
-      return years;
-    };
-
-    $scope.ccMonths = function(){
-      var
-      months = [],
-      month = 1;
-
-      for(; month <= 12; month++) {
-        months.push((month < 10) ? '0' + month : String(month));
-      }
-
-      return months;
-    };
-
     $scope.isBillable = function() {
-      return $scope.group.servicePlan !== 'bronze';
-    }
+      return $accountGroups.isBillable($scope.group.servicePlan);
+    };
     $scope.isBillableCC = function() {
-      return $scope.group.billingMethod.method === 'creditcard';
-    }
+      return $accountGroups.isBillableCC($scope.group.billingMethod.method);
+    };
     $scope.isBillablePaypal = function() {
-      return $scope.group.billingMethod.method === 'paypal';
-    }
-
-
-    return;
+      return $accountGroups.isBillablePaypal($scope.group.billingMethod.method);
+    };
   });

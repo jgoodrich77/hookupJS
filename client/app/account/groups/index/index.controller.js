@@ -2,36 +2,26 @@
 
 angular
   .module('auditpagesApp')
-  .controller('AccountGroupsIndexCtrl', function ($scope, Group) {
+  .controller('AccountGroupsIndexCtrl', function ($scope, $paginationOpts, $accountGroups, Group) {
 
-    function fetchSubscribedGroups() {
-      return Group.listSubscribed().$promise;
-    }
-    function fetchGroupServices(group) {
-      return Group.listGroupServices(group).$promise;
-    }
-
-    $scope.loading = false;
-    $scope.loadErr = false;
-    $scope.perPage = 5;
-    $scope.pageSizes = [1, 5, 10, 25];
-
-    $scope.canEdit = function(role) {
-      return !!role && role !== 'viewer';
-    };
+    $scope.loading   = false;
+    $scope.loadErr   = false;
+    $scope.perPage   = $paginationOpts.perPage;
+    $scope.pageSizes = $paginationOpts.pageSizes;
+    $scope.canEdit   = $accountGroups.canEdit;
 
     $scope.reload = function() {
       $scope.loading = true;
 
-      return fetchSubscribedGroups()
+      return $accountGroups.subscribed()
         .then(function (groups) {
-
           $scope.groups = groups;
-          $scope.loading = false;
         })
         .catch(function (error) {
-          $scope.loading = false;
           $scope.loadErr = error;
+        })
+        .finally(function () {
+          $scope.loading = false;
         });
     };
   });
