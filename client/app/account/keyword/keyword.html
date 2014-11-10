@@ -28,6 +28,7 @@
         <table style="background-color: #fff;
     background-image: none;
     border: 1px solid #ccc;color: #555;padding: 6px 12px;">
+            <tr><p>Date: <input type="text" id="datepicker"></p></tr>
             <tr><th>Google Ranking Report</th></tr>
             <tr><td></td>
                 <td colspan="3">answers.com</td>
@@ -35,15 +36,21 @@
             </tr>
               <tr><td>Keyword</td>
             <tr><td>Base Rank</td>
-          <td>Current Rank</td>
+          <td>Current Rank
+              <br>
+              {{today}}
+          </td>
           <td>Change From BR</td>
             <td>Base Rank</td>
-          <td>Current Rank</td>
+          <td>Current Rank
+            <br>
+              {{today}}
+          </td>
           <td>Change From BR</td></tr>
             
             <tr ng-repeat="keyword in keywords" >
                 
-                <td>{{last_keyword.keyword}}</td> 
+                <td>{{keyword.keyword}}</td> 
                  <td>5</td> 
                  <td>5</td> 
                  <td>5</td>  
@@ -61,3 +68,8 @@
   </div>
   <hr>
 </div>
+ <script>
+$(function() {
+$( "#datepicker" ).datepicker();
+});
+</script>
