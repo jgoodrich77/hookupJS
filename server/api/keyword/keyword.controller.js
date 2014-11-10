@@ -63,7 +63,7 @@ exports.update = function(req, res) {
   Keyword.findById(req.params.id, function (err, keyword) {
     if (err) { return handleError(res, err); }
     if(!keyword) { return res.send(404); }
-    var updated = _.merge(keyword, req.body);
+    var updated = _.merge(keyword, req.body.keyword);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.json(200, keyword);
