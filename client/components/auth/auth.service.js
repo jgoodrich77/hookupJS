@@ -71,10 +71,10 @@ angular.module('auditpagesApp')
             return cb(err);
           }.bind(this)).$promise;
       },
-        saveKeyword: function(user) {
+      updateKeyword: function(user) {
       
-console.log(Keyword);
-        return Keyword.save(user,
+
+        return Keyword.update(user,
           function(data) {
          
             return data.token;
