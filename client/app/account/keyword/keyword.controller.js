@@ -26,7 +26,7 @@ angular
             };
 
             $scope.deleteKeyword = function (keyword) {
-                $http.delete('/keyword/' + keyword._id);
+                $http.delete('/api/keywords' + keyword._id);
             };
 
         });
