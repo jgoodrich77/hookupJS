@@ -33,7 +33,7 @@ angular
 console.log($scope.updatekey);
                 
                   $http.put('/api/keywords/' + keyword._id, {keyword: keyword});
-                    $scope.updatekey= '';
+                 //   $scope.updatekey= '';
             };
 
         });

@@ -1,9 +1,9 @@
 <div class="container">
     <div  class="row">
         <div class="col-sm-12">
-
+ <div ng-repeat="keyword in keywords"  >
   <form class="thing-form">
-            <div ng-repeat="keyword in keywords"  >
+           
                 <p class="input-group">
                     <br/>
                     <input type="text" class="form-control" placeholder="{{keyword.keyword}}" ng-model="updatekey">
@@ -11,8 +11,9 @@
                     <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
 
                 </p>
-            </div>
+            
 </form>
+     </div>
             <!--<div ng-init="last_keyword = latestKeyword" >
                 <div ng-if="last_keyword">
                     <br/>
