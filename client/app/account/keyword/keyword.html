@@ -6,18 +6,19 @@
             <div ng-repeat="keyword in keywords"  >
                 <p class="input-group">
                     <br/>
-                    <input type="text" class="form-control" placeholder="{{keyword.keyword}}" ng-model="keyw">
-                    <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
+                    <input type="text" class="form-control" placeholder="{{keyword.keyword}}" ng-model="updatekey">
                     <span class="input-group-btn"><button type="button" class="btn btn-primary" ng-click="editKeyword(keyword)">Edit</button></span>
+                    <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
+
                 </p>
             </div>
 
-            <div ng-init="last_keyword = latestKeyword" >
+            <!--<div ng-init="last_keyword = latestKeyword" >
                 <div ng-if="last_keyword">
                     <br/>
                     <input type="text" class="form-control" placeholder="{{last_keyword.keyword}}" ng-model="keyw">
                 </div>
-            </div>
+            </div>-->
 
             <form class="thing-form">
                 <p class="input-group">
