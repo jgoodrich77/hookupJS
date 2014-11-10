@@ -28,21 +28,29 @@ $scope.keywords = [ {
 }	
 
 ];
- $scope.addKeyword= function() {   
-      $scope.submitted = true;
-      Auth.saveKeyword({
-    keyword:$scope.newKeyword
-  })
-        .then( function() {
-          $location.path('/');
-        })
-        .catch( function(err) {
-          err = err.data;
-          $scope.errors = {};
+// $scope.addKeyword= function() {   
+//      $scope.submitted = true;
+//      Auth.saveKeyword({
+//    keyword:$scope.newKeyword
+//  })
+//        .then( function() {
+//          $location.path('/');
+//        })
+//        .catch( function(err) {
+//          err = err.data;
+//          $scope.errors = {};
+//
+//          
+//        });
+//      
+//    };
 
-          
-        });
-      
+$scope.addKeyword= function() {
+      if($scope.newKeyword=== '') {
+        return;
+      }
+      $http.post('/api/keywords', { keyword: $scope.newKeyword});
+      $scope.newKeyword = '';
     };
 
     $scope.deleteKeyword = function(keyword) {
