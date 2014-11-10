@@ -6,7 +6,7 @@
     <div ng-repeat="keyword in keywords"  >
          <br/>
          <input type="text" class="form-control" placeholder="{{keyword.keyword}}" ng-model="keyw">
-         <span><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
+          <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
     </div>
 
     <div ng-init="last_keyword=latestKeyword" >
