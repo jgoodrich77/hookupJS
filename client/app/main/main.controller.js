@@ -6,7 +6,6 @@ angular.module('auditpagesApp')
 
     $http.get('/api/things').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
-      console.log($scope.awesomeThings);
       socket.syncUpdates('thing', $scope.awesomeThings);
     });
 

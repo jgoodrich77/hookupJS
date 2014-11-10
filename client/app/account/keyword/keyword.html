@@ -9,7 +9,12 @@
         
     </div>
 
-
+    <div ng-init="last_keyword=latestKeyword" >
+        <div ng-if="last_keyword">
+         <br/>
+         <input type="text" class="form-control" placeholder="{{last_keyword.keyword}}" ng-model="keyw">
+        </div>
+    </div>
  
   <form class="thing-form">
        <p class="input-group">
