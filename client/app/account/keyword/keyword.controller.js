@@ -29,7 +29,7 @@ angular
                 $http.delete('/api/keywords/' + keyword._id);
             };
              $scope.editKeyword = function (keyword) {
-                 console.log(keyword);
+                 console.log($scope.keyw);
                   $http.put('/api/keywords/' + keyword._id, {keyword: keyword});
             };
 
