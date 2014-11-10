@@ -6,6 +6,7 @@ angular
 
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
+                console.log($scope.keywords);
                 socket.syncUpdates('keyword', $scope.keywords);
             });
             $scope.errors = {};
