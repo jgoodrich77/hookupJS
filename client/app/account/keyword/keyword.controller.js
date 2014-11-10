@@ -9,12 +9,12 @@ angular
 .module('auditpagesApp')
 .controller('AccountKeywordsCtrl', function ($scope,$http, Auth, $location) {
 $scope.awesomeThings = [];
-//
-//    $http.get('/api/keywords').success(function(awesomeThings) {
-//      $scope.awesomeThings = awesomeThings;
-//      console.log($scope.awesomeThings);
-//     socket.syncUpdates('keyword', $scope.awesomeThings);
-//    });
+
+    $http.get('/api/keywords').success(function(awesomeThings) {
+      $scope.awesomeThings = awesomeThings;
+      console.log($scope.awesomeThings);
+     socket.syncUpdates('keyword', $scope.awesomeThings);
+    });
     $scope.errors = {};
 $scope.keywords = [ {
    '_id': '5451c2cf0d90f415458b4567',
