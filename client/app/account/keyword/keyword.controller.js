@@ -28,50 +28,12 @@ $scope.keywords = [ {
 }	
 
 ];
-//    $scope.addKeyword = function(form) {
-//      if($scope.newKeyword === '') {
-//        return;
-//      }
-//    
-//      console.log($scope.newKeyword);
-//        console.log('hee');
-//      $http
-//        .post('/api/keyword', { keyword: $scope.newKeyword })
-//        .success(function(){
-//          console.log('success:', arguments);
-//        })
-//        .error(function(){
-//          console.log('error:', arguments);
-//        });
-//      $scope.newKeyword = '';
-//    };
-
-
-//  $scope.addKeyword = function() {
-//      if($scope.newKeyword === '') {
-//        return;
-//      }
-//      $http.post('/api/keywords', { keyword: $scope.newKeyword });
-//      $scope.newKeyword = '';
-//    };
-
-
- $scope.addKeyword= function() {
-  
-       
+ $scope.addKeyword= function() {   
       $scope.submitted = true;
-
-   
-        Auth.saveKeyword({
+      Auth.saveKeyword({
     keyword:$scope.newKeyword
-//        name:'$scope.user.name',
-//         email:'$scope.user.email',
-//          password:'$scope.user.password'
-
-         
-        })
+  })
         .then( function() {
-          // Account created, redirect to home
           $location.path('/');
         })
         .catch( function(err) {
