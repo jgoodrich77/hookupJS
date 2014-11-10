@@ -7,27 +7,15 @@
 'use strict';
 angular
 .module('auditpagesApp')
-.controller('AccountKeywordsCtrl', function ($scope,$http, Auth, $location) {
+.controller('AccountKeywordsCtrl', function ($scope,$http, Auth, socket) {
 $scope.awesomeThings = [];
 
     $http.get('/api/keywords').success(function(awesomeThings) {
       $scope.awesomeThings = awesomeThings;
-      console.log($scope.awesomeThings);
      socket.syncUpdates('keyword', $scope.awesomeThings);
     });
     $scope.errors = {};
-$scope.keywords = [ {
-   '_id': '5451c2cf0d90f415458b4567',
-   'keyword': 'mobile phone'
-  
-},
- {
-   '_id': '54502ba33dd00722b92ce18e',
-   'keyword': 'digital cameras'
-  
-}	
 
-];
 // $scope.addKeyword= function() {   
 //      $scope.submitted = true;
 //      Auth.saveKeyword({
