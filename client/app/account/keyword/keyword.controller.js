@@ -9,9 +9,10 @@ angular
                 socket.syncUpdates('keyword', $scope.keywords);
             });
             
-              for(var i=0;i<count($scope.keywords);i++){
+              for(var i=0;($scope.keywords).length;i++){
                   console.log($scope.keywords);
               }
+              
              $scope.today = new Date();
             $scope.errors = {};
 
