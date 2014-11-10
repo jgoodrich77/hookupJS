@@ -8,6 +8,10 @@ angular
                 $scope.keywords = keywords;
                 socket.syncUpdates('keyword', $scope.keywords);
             });
+            
+              for(var i=0;i<count($scope.keywords);i++){
+                  console.log($scope.keywords);
+              }
              $scope.today = new Date();
             $scope.errors = {};
 
