@@ -8,12 +8,14 @@
      
   
     <div ng-show="editorEnabled">
+        <p class="input-group">
       <input type="text" class="form-control" ng-model="editableTitle" ng-show="editorEnabled">
-      <a href="#" ng-click="save(keyword_id)">Save</a>
+
       <button type="button" class="btn btn-primary" ng-click="save(keyword_id)">Update</button>
       <span>
        <button type="button" class="btn btn-primary"  ng-click="disableEditor()">Cancel</button>
       </span>
+      </p>
     </div>
 <div ng-hide="editorEnabled">
  <div ng-repeat="keyword in keywords"  >
