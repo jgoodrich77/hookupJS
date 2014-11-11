@@ -3,14 +3,20 @@ angular
         .module('auditpagesApp')
         .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location,$rootScope) {
             $scope.keywords = [];
-    
-    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+    var routesThatDontRequireAuth = ['/login'];
+    var routeClean = function (route) {
+    return _.find(routesThatDontRequireAuth,
+      function (noAuthRoute) {
+        return _.str.startsWith(route, noAuthRoute);
+      });
+  };
+   $rootScope.$on('$routeChangeStart', function (event, next, current) {
     // if route requires auth and user is not logged in
-    if (!Auth.isLoggedIn()) {
+    if (!routeClean($location.url()) && !AuthenticationService.isLoggedIn()) {
       // redirect back to login
       $location.path('/login');
     }
-    });
+  });
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
                 socket.syncUpdates('keyword', $scope.keywords);
