@@ -2,8 +2,8 @@
 
 var should = require('should');
 var app = require('../../app');
-
-var Keyword = require('./keyword.model');
+var request = require('supertest');
+//var Keyword = require('./keyword.model');
 
 
 describe('GET /api/keywords', function() {
