@@ -4,6 +4,8 @@ angular
         .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location,$rootScope) {
             $scope.keywords = [];
   var getCurrentUser = Auth.getCurrentUser();
+   var get = Auth.isLoggedIn();
+   console.log(get.role);
   var redirect=0;
 if(!getCurrentUser.name){
    var redirect=1;
