@@ -30,6 +30,9 @@ angular
             $scope.deleteKeyword = function (keyword) {
                 $http.delete('/api/keywords/' + keyword._id);
             };
+              $scope.$on('$destroy', function () {
+      socket.unsyncUpdates('keyword');
+    });
 
             $scope.editorEnabled = false;
 
