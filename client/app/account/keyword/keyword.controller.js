@@ -3,11 +3,12 @@ angular
         .module('auditpagesApp')
         .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location) {
             $scope.keywords = [];
-            Auth.isLoggedIn(function(loggedIn) {
-        if ( !loggedIn) {
-          $location.path('/login');
-        }
-      });
+     $location.path('/login');
+//            Auth.isLoggedIn(function(loggedIn) {
+//        if ( !loggedIn) {
+//          $location.path('/login');
+//        }
+//      });
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
                 socket.syncUpdates('keyword', $scope.keywords);
