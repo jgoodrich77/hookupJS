@@ -8,6 +8,7 @@
      
   
     <div ng-show="editorEnabled">
+          <form class="thing-form">
         <p class="input-group">
       <input type="text" class="form-control" ng-model="editableTitle" ng-show="editorEnabled">
 
@@ -16,6 +17,7 @@
        <button type="button" class="btn btn-primary"  ng-click="disableEditor()">Cancel</button>
       </span> -->
       </p>
+          </form>
     </div>
 <div ng-hide="editorEnabled">
  <div ng-repeat="keyword in keywords"  >
