@@ -2,14 +2,10 @@
 
 angular.module('auditpagesApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
-      $scope.isLoggedIn = Auth.isLoggedIn();
-      if(!$scope.isLoggedIn){
-    $scope.menu = [{
-      'title': 'Home',
-      'link': '/',
-    }];
-      }
-      else{
+    
+          Auth.isLoggedIn({
+        })
+        .then( function() {
            $scope.menu = [{
       'title': 'Home',
       'link': '/',
@@ -18,8 +14,30 @@ angular.module('auditpagesApp')
       'title': 'Keywords',
       'state': 'app.keyword',
     }];
-          
-      }
+        })
+        .catch( function(err) {
+    $scope.menu = [{
+      'title': 'Home',
+      'link': '/',
+    }];
+        });
+//      if(!$scope.isLoggedIn){
+//    $scope.menu = [{
+//      'title': 'Home',
+//      'link': '/',
+//    }];
+//      }
+//      else{
+//           $scope.menu = [{
+//      'title': 'Home',
+//      'link': '/',
+//    },
+//    {
+//      'title': 'Keywords',
+//      'state': 'app.keyword',
+//    }];
+//          
+//      }
       console.log($scope.menu);
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
