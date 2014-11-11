@@ -10,7 +10,7 @@ if(!getCurrentUser.name){
 }
 if(redirect=='1'){
      $location.path('/login');
-     return;
+    
 }
   
             $http.get('/api/keywords').success(function (keywords) {
