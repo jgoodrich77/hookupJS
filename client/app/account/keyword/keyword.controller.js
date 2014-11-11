@@ -55,7 +55,7 @@ console.log($scope.updatekey);
   $scope.enableEditor = function(keyword) {
     $scope.editorEnabled = true;
      $scope.keyword_id = keyword._id;
-    $scope.editableTitle = $scope.title;
+    $scope.editableTitle = $scope.keyword.keyword;
   };
 
   $scope.disableEditor = function() {
