@@ -1,20 +1,16 @@
 'use strict';
 angular
         .module('auditpagesApp')
-        .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location,$rootScope) {
+        .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location, $rootScope) {
             $scope.keywords = [];
-  var getCurrentUser = Auth.getCurrentUser();
-   var get = Auth.isLoggedIn();
-   console.log(get.role);
-  var redirect=0;
-if(!getCurrentUser.name){
-   var redirect=1;
-}
-if(redirect=='1'){
-     $location.path('/login');
-    
-}
-  
+            var getCurrentUser = Auth.getCurrentUser();
+            var redirect = 0;
+            if (!getCurrentUser.name) {
+                var redirect = 1;
+            }
+            if (redirect == '1') {
+                $location.path('/login');
+            }
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
                 socket.syncUpdates('keyword', $scope.keywords);
@@ -55,8 +51,8 @@ if(redirect=='1'){
                 $http.put('/api/keywords/' + id, {keyword: $scope.editableTitle});
                 $scope.disableEditor();
             };
-            
-            
+
+
         });
 
 
