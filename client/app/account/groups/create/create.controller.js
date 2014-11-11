@@ -9,13 +9,14 @@ angular
     propModel = 'group',
     propServicePlans = 'servicePlans',
     propBillingSchedules = 'billingSchedules',
-    propBillingMethods = 'billingMethods';
+    propBillingMethods = 'billingMethods',
+    propSaveError = 'saveErr';
 
     // generate a new form save function
-    $scope.save = $accountGroups.formSave( $scope, master, propModel, 'saving', 'saveErr',
+    $scope.save = $accountGroups.formSave( $scope, propModel, 'saving', propSaveError,
       propServicePlans, propBillingSchedules, propBillingMethods );
 
     // generate a new form reset function
     $scope.reset = $accountGroups.formReset( $scope, master, propModel, 'loading', 'loadErr',
-      propServicePlans, propBillingSchedules, propBillingMethods );
+      propSaveError, propServicePlans, propBillingSchedules, propBillingMethods );
   });

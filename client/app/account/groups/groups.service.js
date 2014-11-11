@@ -2,42 +2,23 @@
 
 angular
 .module('auditpagesApp')
-.service('$accountGroups', function (Group, Plan, BillingSchedule, BillingMethod) {
+.service('$accountGroups', function ($q, $group, $billingMethod, $billingSchedule, $plan) {
 
-  function fetchSubscribed() {
-    return Group.listSubscribed().$promise;
-  }
-  function fetchServicePlans() {
-    return Plan.listActive().$promise;
-  }
-  function fetchBillingSchedules() {
-    return BillingSchedule.listActive().$promise;
-  }
-  function fetchBillingMethods() {
-    return BillingMethod.listActive().$promise;
-  }
-  function fetchFormDependencies() {
-      var tServicePlans, tBillingSchedules;
+  function fetchFormDependencies(master) {
+    var
+    promiseChain = {
+      servicePlans: $plan.listActive(),
+      billingSchedules: $billingSchedule.listActive(),
+      billingMethods: $billingMethod.listActive()
+    };
 
-    return fetchServicePlans()
-      .then(function (plans) {
-        tServicePlans = plans;
-        return fetchBillingSchedules();
-      })
-      .then(function (billingSchedules) {
-        tBillingSchedules = billingSchedules;
-        return fetchBillingMethods();
-      })
-      .then(function (billingMethods) {
-        return {
-          servicePlans: tServicePlans,
-          billingSchedules: tBillingSchedules,
-          billingMethods: billingMethods
-        };
-      });
-  }
-  function editableRole(r) {
-    return !!r && r !== 'viewer';
+    if(!!master._id) { // updating, should have role.
+      if($group.canEdit(master.role, 'billing')) { // fetch billing information
+        promiseChain.billingInfo = $group.subscribedGetBilling(master.role, { id: master._id});
+      }
+    }
+
+    return $q.all(promiseChain);
   }
 
   function findAndTest(arr, arrItem, arrProp, test) {
@@ -100,38 +81,54 @@ angular
       !!bm.detail.ppAggreementId &&
       !!bm.detail.ppAccountHolder;
   }
-  function modelFormReset(scope, master, modelProp, loadingProp, loadErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
+
+  function applyDefaults(scope, modelProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
+
+      var
+      defaultPlan = findDefaultPlan(scope[servicePlansProp]),
+      defaultSched = findDefaultBillingSchedule(scope[billingSchedulesProp]),
+      defaultMethod = findDefaultBillingMethod(scope[billingMethodsProp]);
+
+      if(!!defaultPlan && !scope[modelProp].servicePlan) {
+        scope[modelProp].servicePlan = defaultPlan;
+      }
+
+      if(!!defaultSched && !scope[modelProp].billingSchedule) {
+        scope[modelProp].billingSchedule = defaultSched;
+      }
+
+      if(!!defaultMethod && (!scope[modelProp].billingMethod||!scope[modelProp].billingMethod.method)) {
+        if(!scope[modelProp].billingMethod) {
+          scope[modelProp].billingMethod = {};
+        }
+
+        scope[modelProp].billingMethod.method = defaultMethod;
+      }
+  }
+
+  function modelFormReset(scope, master, modelProp, loadingProp, loadErrorProp, saveErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
     return function(reloadDeps) {
       scope[modelProp] = angular.copy(scope.master = master); // don't taint master
+      scope[loadErrorProp] = false;
+      scope[saveErrorProp] = false;
 
       if(reloadDeps) {
         scope[loadingProp] = true;
-        fetchFormDependencies()
+
+        fetchFormDependencies(master)
           .then(function (deps) {
+
+            // setup scope with dependencies
             scope[servicePlansProp]     = deps.servicePlans;
             scope[billingSchedulesProp] = deps.billingSchedules;
             scope[billingMethodsProp]   = deps.billingMethods;
 
-            var
-            defaultPlan = findDefaultPlan(deps.servicePlans),
-            defaultSched = findDefaultBillingSchedule(deps.billingSchedules),
-            defaultMethod = findDefaultBillingMethod(deps.billingMethods);
-
-            if(!!defaultPlan && !scope[modelProp].servicePlan) {
-              scope[modelProp].servicePlan = defaultPlan;
+            if(deps.billingInfo) {
+              angular.extend(scope[modelProp], deps.billingInfo);
             }
 
-            if(!!defaultSched && !scope[modelProp].billingSchedule) {
-              scope[modelProp].billingSchedule = defaultSched;
-            }
-
-            if(!!defaultMethod && (!scope[modelProp].billingMethod||!scope[modelProp].billingMethod.method)) {
-              if(!scope[modelProp].billingMethod) {
-                scope[modelProp].billingMethod = {};
-              }
-
-              scope[modelProp].billingMethod.method = defaultMethod;
-            }
+            // apply defaults in form
+            applyDefaults(scope, modelProp, servicePlansProp, billingSchedulesProp, billingMethodsProp);
           })
           .catch(function (error) {
             scope[loadErrorProp] = error;
@@ -141,41 +138,42 @@ angular
             scope[loadingProp] = false;
           });
       }
+      else { // apply defaults from previously loaded data stored in memory
+        applyDefaults(scope, modelProp, servicePlansProp, billingSchedulesProp, billingMethodsProp);
+      }
     }
   }
 
-  function modelFormSave(scope, master, modelProp, savingProp, saveErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
+  function modelFormSave(scope, modelProp, savingProp, saveErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
     return function() {
-      var model = scope[modelProp];
+      var
+      model = scope[modelProp];
 
+      scope[saveErrorProp] = false;
       scope[savingProp] = true;
-      // fetchFormDependencies()
-      //   .then(function (deps) {
-      //     scope[servicePlansProp]     = deps.servicePlans;
-      //     scope[billingSchedulesProp] = deps.billingSchedules;
-      //     scope[billingMethodsProp]   = deps.billingMethods;
-      //   })
-      //   .catch(function (error) {
-      //     scope[loadErrorProp] = error;
-      //     return error;
-      //   })
-      //   .finally(function(){
-      //     scope[loadingProp] = false;
-      //   });
+
+      return $group.save(model)
+        .then(function (doc) {
+          console.log('Saved Doc:', doc, 'original:', model);
+          return doc;
+        })
+        .catch(function (err) {
+          console.log('error:', err);
+          scope[saveErrorProp] = err;
+          return err;
+        })
+        .finally(function () {
+          scope[savingProp] = false;
+        });
     }
   }
 
   return {
-    subscribed:        fetchSubscribed,
-    servicePlans:      fetchServicePlans,
-    billingSchedules:  fetchBillingSchedules,
-    billingMethods:    fetchBillingMethods,
     formDependencies:  fetchFormDependencies,
     isBillable:        isPlanBillable,
     isBillableCC:      isBillableCC,
     isBillablePaypal:  isBillablePaypal,
     isPaypalAgreement: isPaypalAgreement,
-    canEdit:           editableRole,
     formReset:         modelFormReset,
     formSave:          modelFormSave
   };

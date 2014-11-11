@@ -13,71 +13,73 @@ var _ = require('lodash');
 var Group = require('./group.model');
 var requestUtils = require('../requestUtils');
 
-var
-groupColumnMinimal = [
-  '_id',
-  'name'
-].join(' '),
-
-groupColumnsDetail = [
-  '_id',
-  'name',
-  'primaryDomain',
-  'description',
-  'active',
-  'servicePlan',
-  'billingSchedule',
-  'billingMethod',
-  'services'
-].join(' '),
-
-groupColumnsBasic = [
-  '_id',
-  'name',
-  'description',
-  'active'
-].join(' '),
-
-groupColumnsDetailSubscribed = [
-  '_id',
-  'name',
-  'primaryDomain',
-  'description',
-  'servicePlan',
-  'billingSchedule',
-  'billingMethod',
-  'services',
-  'members'
-].join(' '),
-
-groupColumnsBasicSubscribed = [
-  '_id',
-  'name',
-  'description',
-  'members'
-].join(' ');
-
-function injectSendDocumentSubscription(res, req, detailed) {
-  return function (err, doc) {
-    if(err) return requestUtils.error(res, err);
-    if(!doc) return requestUtils.missing(res);
-
-    requestUtils.data(res, doc.getSubscriptionDetail(req.user._id, detailed));
-  };
-}
-
-function injectSendCollectionSubscription(res, req, detailed) {
-  return function (err, collection) {
-    if(err) return requestUtils.error(res, err);
-    if(!collection.length) return requestUtils.data(res, []); // save resources
-
-    requestUtils.data(res, collection.map(function (doc) {
-      return doc.getSubscriptionDetail(req.user._id, detailed);
-    }));
+function userCheck(req) {
+  if(!req.user) {
+    throw new Error('Unable to determine user role, user is not logged in!!');
   }
 }
 
+function filterDocument(req, detail) {
+  userCheck(req);
+
+  return function (err, doc) {
+    if(err) throw err;
+    if(!doc) return false;
+
+    if(!!doc.members) { //
+      var role = doc.findUserRole(req.user._id);
+
+      // see if user has clearance for detail:
+      if(!doc.roleAllowsDetail(role, detail)) {
+        throw new Error('User attempted to access restricted group detail.');
+      }
+    }
+    else {
+      throw new Error('Unable to compare document with current user, members property not loaded in query!');
+    }
+
+    var filtered = doc.getDetail(detail);
+    filtered.role = role; // always include role (read-only)
+
+    return filtered;
+  };
+}
+
+function filterCollection(req, detail) {
+  var filterFn = filterDocument(req, detail);
+  return function (err, collection) {
+    if(err) throw err;
+    if(!collection.length) return false;
+
+    var
+    fcollection = collection.map(function (doc) {
+      return filterFn(null, doc);
+    });
+
+    return fcollection;
+  };
+}
+
+function filterSendDocument(res, req, detail) {
+  var filterFn = filterDocument(req, detail);
+  return function (err, doc) {
+    var fdoc = filterFn(err, doc);
+    if(!fdoc) return requestUtils.missing(res);
+    return requestUtils.data(res, fdoc);
+  };
+}
+
+function filterSendCollection(res, req, detail) {
+  var filterFn = filterCollection(req, detail);
+  return function (err, collection) {
+    var fcollection = filterFn(err, collection);
+    if(!fcollection) return requestUtils.data(res, []);
+    return requestUtils.data(res, fcollection);
+  };
+}
+
 function subscribedCriteria(obj, req) {
+  userCheck(req);
 
   obj.active = true;
   obj.members = {
@@ -89,60 +91,75 @@ function subscribedCriteria(obj, req) {
   return obj;
 }
 
-// ADMIN: list all groups in system
-exports.list = function(req, res, next) {
-  Group.find({}, groupColumnsBasic)
+// admin functionality
+exports.globalQuery = function(req, res, next) {
+  next();
+};
+exports.globalGet = function(req, res, next) {
+  next();
+};
+exports.globalUpdate = function(req, res, next) {
+  next();
+};
+exports.globalGetBilling = function(req, res, next) {
+  next();
+};
+exports.globalGetServices = function(req, res, next) {
+  next();
+};
+exports.globalGetMembers = function(req, res, next) {
+  next();
+};
+exports.globalUpdatePlan = function(req, res, next) {
+  next();
+};
+exports.globalUpdateBilling = function(req, res, next) {
+  next();
+};
+exports.globalUpdateServices = function(req, res, next) {
+  next();
+};
+exports.globalUpdateMembers = function(req, res, next) {
+  next();
+};
+
+// user functionality
+exports.subscribedQuery = function(req, res, next) {
+  Group.find(subscribedCriteria({}, req))
     .sort({ name: 1 })
-    .exec(requestUtils.nData(res));
+    .exec(filterSendCollection(res, req, 'basic'));
 };
-
-// ADMIN: get basic information for a single group
-exports.getBasic = function(req, res, next) {
-  Group.findById(req.param('id'), groupColumnsBasic)
-    .exec(requestUtils.oneRec(res));
+exports.subscribedGet = function(req, res, next) {
+  Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
+    .exec(filterSendDocument(res, req, 'basic'));
 };
-
-// ADMIN: get detailed information for a single group
-exports.getDetail= function(req, res, next) {
-  Group.findById(req.param('id'), groupColumnsDetail)
-    .exec(requestUtils.oneRec(res));
+exports.subscribedGetBilling = function(req, res, next) {
+  Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
+    .exec(filterSendDocument(res, req, 'billing'));
 };
-
-// USER: get basic information for a single group
-exports.getBasicSubscribed = function(req, res, next) {
-  Group.findOne(subscribedCriteria({
-    _id: req.param('id')
-  }, req), groupColumnsBasicSubscribed)
-    .exec(injectSendDocumentSubscription(res, req));
+exports.subscribedGetServices = function(req, res, next) {
+  Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
+    .exec(filterSendDocument(res, req, 'services'));
 };
-
-// USER: get detailed information for a single group
-exports.getDetailSubscribed= function(req, res, next) {
-  Group.findOne(subscribedCriteria({
-    _id: req.param('id')
-  }, req), groupColumnsDetailSubscribed)
-    .exec(injectSendDocumentSubscription(res, req, true));
+exports.subscribedGetMembers = function(req, res, next) {
+  Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
+    .exec(filterSendDocument(res, req, 'members'));
 };
-
-// list all groups that the current user has access to
-exports.listSubscribed = function(req, res, next) {
-  Group.find(subscribedCriteria({}, req), groupColumnsBasicSubscribed)
-    .sort({ name: 1 })
-    .exec(injectSendCollectionSubscription(res, req));
+exports.subscribedUpdate = function(req, res, next) {
+  next();
 };
-
-// list all services defined in the supplied group
-// exports.listServices = function(req, res, next) {
-//   Group.findById(req.param('id'), groupColumnMinimal)
-//     .populate('services', '_id name')
-//     .exec(function (err, group) {
-//       if(err) {
-//         return next(err);
-//       }
-//       if(!group) {
-//         return requestUtils.missing(res);
-//       }
-
-//       return requestUtils.data(res, group.services);
-//     });
-// };
+exports.subscribedUpdatePlan = function(req, res, next) {
+  next();
+};
+exports.subscribedUpdateBilling = function(req, res, next) {
+  next();
+};
+exports.subscribedUpdateServices = function(req, res, next) {
+  next();
+};
+exports.subscribedUpdateMembers = function(req, res, next) {
+  next();
+};
+exports.create = function(req, res, next) {
+  next();
+};

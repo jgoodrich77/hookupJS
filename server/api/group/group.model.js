@@ -11,6 +11,35 @@ RELATION_EDITOR = 'editor',
 RELATION_VIEWER = 'viewer';
 
 var
+COLS_BASIC_GLOBAL = [
+  '_id',
+  'active',
+  'name',
+  'description',
+  'primaryDomain'
+],
+COLS_BASIC = [
+  '_id',
+  'name',
+  'description',
+  'primaryDomain'
+],
+COLS_BILLING = [
+  '_id',
+  'servicePlan',
+  'billingSchedule',
+  'billingMethod'
+],
+COLS_SERVICES = [
+  '_id',
+  'services'
+],
+COLS_MEMBERS = [
+  '_id',
+  'members'
+];
+
+var
 GroupSchema = new Schema({
   active: {
     type: Boolean,
@@ -80,6 +109,11 @@ GroupSchema.statics = {
   RELATION_OWNER:        RELATION_OWNER,
   RELATION_EDITOR:       RELATION_EDITOR,
   RELATION_VIEWER:       RELATION_VIEWER,
+  COLS_BASIC_GLOBAL:     COLS_BASIC_GLOBAL,
+  COLS_BASIC:            COLS_BASIC,
+  COLS_BILLING:          COLS_BILLING,
+  COLS_SERVICES:         COLS_SERVICES,
+  COLS_MEMBERS:          COLS_MEMBERS,
 
   memberRelationships: [ // order is important here (for promotion / demotion algorithm)!
     RELATION_OWNER,
@@ -136,6 +170,18 @@ GroupSchema.methods = {
     }
 
     return found;
+  },
+
+  findUserRole: function(user) {
+
+    var
+    userIndex = this.findUserIndex(user);
+
+    if(userIndex === -1) {
+      return false;
+    }
+
+    return this.members[userIndex].relationship;
   },
 
   isServiceRegistered: function (service) {
@@ -221,30 +267,62 @@ GroupSchema.methods = {
     return this.modifyRegisteredUser(tUserRelPri, tRelationship);
   },
 
-  getSubscriptionDetail: function(user, detailed) {
-    var
-    userIndex = this.findUserIndex(user);
+  roleAllowsDetail: function(role, detailType) {
+    var roleMap = {};
 
-    if(userIndex === -1) {
+    roleMap[RELATION_OWNER]  = ['basic','plan','billing','services','members'];
+    roleMap[RELATION_EDITOR] = ['basic', 'services','members'];
+    roleMap[RELATION_VIEWER] = ['basic', 'services'];
+
+    if(roleMap[role] === undefined) {
+      throw new Error('Unsupported role/relationship was provided.');
+    }
+
+    if(roleMap[role].indexOf(detailType) === -1) {
       return false;
     }
 
-    return (!!detailed) ? {
-      '_id':             this._id,
-      'role':            this.members[userIndex].relationship,
-      'name':            this.name,
-      'description':     this.description,
-      'primaryDomain':   this.primaryDomain,
-      'servicePlan':     this.servicePlan,
-      'billingSchedule': this.billingSchedule,
-      'billingMethod':   this.billingMethod,
-      'services':        this.services
-    } : {
-      '_id':         this._id,
-      'role':        this.members[userIndex].relationship,
-      'name':        this.name,
-      'description': this.description
-    };
+    return true;
+  },
+
+  getDetail: function(type) {
+    var cols;
+
+    switch(type) {
+      case 'basicGlobal':
+      case 'basic-global':
+      cols = COLS_BASIC_GLOBAL;
+      break;
+      case 'basic':
+      cols = COLS_BASIC;
+      break;
+      case 'billing':
+      cols = COLS_BILLING;
+      break;
+      case 'service':
+      case 'services':
+      cols = COLS_SERVICES;
+      break;
+      case 'member':
+      case 'members':
+      cols = COLS_MEMBERS;
+      break;
+
+      default:
+      throw new Error('Unsupported group detail is being requested.');
+    }
+
+    var
+    model  = this,
+    detail = cols.reduce(function (p, c) {
+      if(model[c] !== undefined) {
+        p[c] = model[c];
+      }
+
+      return p;
+    }, {});
+
+    return detail;
   }
 };
 

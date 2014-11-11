@@ -39,8 +39,12 @@ angular.module('auditpagesApp')
           }
         },
         resolve: {
-          group: function($stateParams, Group) {
-            return Group.detailedInfoSubscribed($stateParams).$promise;
+          group: function($log, $stateParams, $group) {
+            return $group.subscribedGet('viewer', $stateParams)
+              .catch(function (err) {
+                $log.warn('Error while loading state:', err);
+                return err;
+              });
           }
         }
       })
