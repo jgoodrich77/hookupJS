@@ -4,9 +4,11 @@ angular
         .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location,$rootScope) {
             $scope.keywords = [];
   var getCurrentUser = Auth.getCurrentUser();
-if(!getCurrentUser){
-    $location.path('/login');
+  var redirect=0;
+if(getCurrentUser!=''){
+   var redirect=1;
 }
+console.log(redirect);
   
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
