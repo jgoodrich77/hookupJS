@@ -1,7 +1,7 @@
 'use strict';
 angular
         .module('auditpagesApp')
-        .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket) {
+        .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket,$location) {
             $scope.keywords = [];
   Auth.isLoggedIn = function (isloggedIn) {
       console.log(isloggedIn);
