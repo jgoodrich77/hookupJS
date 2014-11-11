@@ -19,10 +19,11 @@
   <form class="thing-form">
            
                 <p class="input-group">
-                   
+                   <input ng-model="editableTitle" ng-show="editorEnabled">
+      <a href="#" ng-click="save()">Save</a>
                     <input type="text" class="form-control" placeholder="{{keyword.keyword}}" ng-model="updatekey">
                    
-                    <span class="input-group-btn"><button type="submit" class="btn btn-primary" ng-click="editKeyword(keyword)">Edit</button></span>
+                    <span class="input-group-btn"><a href="#" ng-click="editKeyword(keyword)">Edit</a></span>
                     <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
 
                 </p>
