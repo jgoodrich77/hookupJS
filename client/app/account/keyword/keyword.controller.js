@@ -39,10 +39,33 @@ angular
             };
              $scope.editKeyword = function (keyword) {
               
-console.log($scope.newKeyword);
+console.log($scope.updatekey);
                 
-                  $http.put('/api/keywords/' + keyword._id, {keyword: $scope.newKeyword});
+                  $http.put('/api/keywords/' + keyword._id, {keyword: keyword});
                  //   $scope.updatekey= '';
             };
+            
+            
+            
+            
+            
+            $scope.title = "Welcome to this demo!";
+  $scope.editorEnabled = false;
+
+  $scope.enableEditor = function() {
+    $scope.editorEnabled = true;
+    $scope.editableTitle = $scope.title;
+  };
+
+  $scope.disableEditor = function() {
+    $scope.editorEnabled = false;
+  };
+
+  $scope.save = function() {
+    $scope.title = $scope.editableTitle;
+    console.log($scope.title);
+    $scope.disableEditor();
+  };
+
 
         });
