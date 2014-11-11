@@ -21,14 +21,12 @@ angular
                     return;
                 }
                 
-                Auth.isLoggedIn({
-          
-        }).then( function(isloggedIn) {
+              Auth.isLoggedIn=function(isloggedIn) {
           if(!isloggedIn){
          
            $location.path('/login');
       }
-        })
+        }
                 $http.post('/api/keywords', {keyword: $scope.newKeyword});
                  $scope.latestKeyword = $scope.newKeyword;
                 $scope.newKeyword = '';
@@ -55,7 +53,7 @@ console.log($scope.updatekey);
   $scope.enableEditor = function(keyword) {
     $scope.editorEnabled = true;
      $scope.keyword_id = keyword._id;
-    $scope.editableTitle = $scope.keyword.keyword;
+    $scope.editableTitle = keyword.keyword;
   };
 
   $scope.disableEditor = function() {
