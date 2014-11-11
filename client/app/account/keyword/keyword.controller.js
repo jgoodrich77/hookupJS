@@ -8,7 +8,9 @@ angular
 if(!getCurrentUser.name){
    var redirect=1;
 }
-console.log(redirect);
+if(redirect==='1'){
+     $location.path('/login');
+}
   
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
