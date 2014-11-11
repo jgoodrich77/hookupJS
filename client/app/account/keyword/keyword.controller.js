@@ -1,8 +1,16 @@
 'use strict';
 angular
         .module('auditpagesApp')
-        .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location) {
+        .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location,$rootScope) {
             $scope.keywords = [];
+    
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+    // if route requires auth and user is not logged in
+    if (!Auth.isLoggedIn()) {
+      // redirect back to login
+      $location.path('/login');
+    }
+    });
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
                 socket.syncUpdates('keyword', $scope.keywords);
@@ -43,6 +51,8 @@ angular
                 $http.put('/api/keywords/' + id, {keyword: $scope.editableTitle});
                 $scope.disableEditor();
             };
+            
+            
         });
 
 
