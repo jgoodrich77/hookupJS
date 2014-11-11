@@ -1,16 +1,17 @@
 <div class="container">
     <div  class="row">
         <div class="col-sm-12">
+            <br>
  <div ng-repeat="keyword in keywords"  >
-      <br>
+      
   <form class="thing-form">
            
                 <p class="input-group">
                    
                     <input type="text" class="form-control" placeholder="{{keyword.keyword}}" ng-model="updatekey">
-
+                   
                     <span class="input-group-btn"><button type="submit" class="btn btn-primary" ng-click="editKeyword(keyword)">Edit</button></span>
-                                       <span class="input-group-btn"><button type="button" class="btn btn-primary" ng-click="deleteKeyword(keyword)">Delete</button></span>
+                    <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
 
                 </p>
             
