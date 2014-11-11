@@ -12,9 +12,9 @@
       <input type="text" class="form-control" ng-model="editableTitle" ng-show="editorEnabled">
 
       <button type="button" class="btn btn-primary" ng-click="save(keyword_id)">Update</button>
-      <span>
+      <!--<span>
        <button type="button" class="btn btn-primary"  ng-click="disableEditor()">Cancel</button>
-      </span>
+      </span> -->
       </p>
     </div>
 <div ng-hide="editorEnabled">
@@ -24,7 +24,7 @@
            
                 <p class="input-group">
                    
-                    <input type="text" class="form-control" readonly placeholder="{{keyword.keyword}}" ng-model="updatekey">
+                    <input type="text"  class="form-control" style="background-color: white" readonly placeholder="{{keyword.keyword}}" ng-model="updatekey">
                    
                     <span class="input-group-btn"><button type="button" class="btn btn-primary" ng-click="enableEditor(keyword)">Edit</button></span>
                     <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
