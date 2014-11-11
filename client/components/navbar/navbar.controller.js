@@ -2,7 +2,7 @@
 
 angular.module('auditpagesApp')
   .controller('NavbarCtrl', function ($scope, $location, Auth) {
-      $scope.isLoggedIn = Auth.isLoggedIn;
+      $scope.isLoggedIn = Auth.isLoggedIn();
       if(!$scope.isLoggedIn){
     $scope.menu = [{
       'title': 'Home',
@@ -20,6 +20,7 @@ angular.module('auditpagesApp')
     }];
           
       }
+      console.log($scope.menu);
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.isAdmin = Auth.isAdmin;
