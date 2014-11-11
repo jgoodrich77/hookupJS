@@ -24,6 +24,7 @@ angular
                 $http.post('/api/keywords', {keyword: $scope.newKeyword});
                 $scope.latestKeyword = $scope.newKeyword;
                 $scope.newKeyword = '';
+                 $location.path('/keyword');
             };
 
             $scope.deleteKeyword = function (keyword) {
