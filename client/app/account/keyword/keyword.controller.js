@@ -5,7 +5,7 @@ angular
             $scope.keywords = [];
   var getCurrentUser = Auth.getCurrentUser();
   var redirect=0;
-if(getCurrentUser!=''){
+if(!getCurrentUser){
    var redirect=1;
 }
 console.log(redirect);
