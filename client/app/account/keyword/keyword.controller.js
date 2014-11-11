@@ -52,8 +52,9 @@ console.log($scope.updatekey);
             $scope.title = "Welcome to this demo!";
   $scope.editorEnabled = false;
 
-  $scope.enableEditor = function() {
+  $scope.enableEditor = function(keyword) {
     $scope.editorEnabled = true;
+     $scope.keyword_id = keyword._id;
     $scope.editableTitle = $scope.title;
   };
 
@@ -61,9 +62,10 @@ console.log($scope.updatekey);
     $scope.editorEnabled = false;
   };
 
-  $scope.save = function() {
+  $scope.save = function(id) {
     $scope.title = $scope.editableTitle;
     console.log($scope.title);
+     $http.put('/api/keywords/' +id, {keyword: $scope.editableTitle});
     $scope.disableEditor();
   };
 
