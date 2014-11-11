@@ -3,7 +3,7 @@ angular
         .module('auditpagesApp')
         .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location) {
             $scope.keywords = [];
-     $location.path('/login');
+    
 //            Auth.isLoggedIn(function(loggedIn) {
 //        if ( !loggedIn) {
 //          $location.path('/login');
