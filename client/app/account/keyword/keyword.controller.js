@@ -8,8 +8,9 @@ angular
 if(!getCurrentUser.name){
    var redirect=1;
 }
-if(redirect==='1'){
+if(redirect=='1'){
      $location.path('/login');
+     return;
 }
   
             $http.get('/api/keywords').success(function (keywords) {
