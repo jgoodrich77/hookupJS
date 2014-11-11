@@ -20,8 +20,15 @@ angular
                 if ($scope.newKeyword === '') {
                     return;
                 }
-                $scope.isLoggedIn = Auth.isLoggedIn;
-                console.log($scope.isLoggedIn);
+                
+                Auth.isLoggedIn({
+          
+        }).then( function(isloggedIn) {
+          if(!isloggedIn){
+         
+           $location.path('/login');
+      }
+        })
                 $http.post('/api/keywords', {keyword: $scope.newKeyword});
                  $scope.latestKeyword = $scope.newKeyword;
                 $scope.newKeyword = '';
