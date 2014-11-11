@@ -39,9 +39,9 @@ angular
             };
              $scope.editKeyword = function (keyword) {
               
-console.log($scope.updatekey);
+console.log($scope.newKeyword);
                 
-                  $http.put('/api/keywords/' + keyword._id, {keyword: keyword});
+                  $http.put('/api/keywords/' + keyword._id, {keyword: $scope.newKeyword});
                  //   $scope.updatekey= '';
             };
 
