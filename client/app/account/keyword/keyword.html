@@ -2,93 +2,40 @@
     <div  class="row">
         <div class="col-sm-12">
             <br>
-            
-            
-    
-     
-  
-    <div ng-show="editorEnabled">
-          <form class="thing-form">
-        <p class="input-group">
-      <input type="text" class="form-control" ng-model="editableTitle" ng-show="editorEnabled">
- <span class="input-group-btn"> 
-     <button type="button" class="btn btn-primary" ng-click="save(keyword_id)">Update</button></span>
-      <!--<span>
-       <button type="button" class="btn btn-primary"  ng-click="disableEditor()">Cancel</button>
-      </span> -->
-      </p>
-          </form>
-    </div>
-<div ng-hide="editorEnabled">
- <div ng-repeat="keyword in keywords"  >
-      
-  <form class="thing-form">
-           
-                <p class="input-group">
-                   
-                    <input type="text"  class="form-control" style="background-color: white" readonly placeholder="{{keyword.keyword}}" ng-model="updatekey">
-                   
-                    <span class="input-group-btn"><button type="button" class="btn btn-primary" ng-click="enableEditor(keyword)">Edit</button></span>
-                    <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
+            <div ng-show="editorEnabled">
+                <form class="thing-form">
+                    <p class="input-group">
+                        <input type="text" class="form-control" ng-model="editableTitle" ng-show="editorEnabled">
+                        <span class="input-group-btn"> 
+                            <button type="button" class="btn btn-primary" ng-click="save(keyword_id)">Update</button></span>
+                    </p>
+                </form>
+            </div>
+            <div ng-hide="editorEnabled">
+                <div ng-repeat="keyword in keywords"  >
+                    <form class="thing-form">
 
-                </p>
-            
-</form>
-     </div>
-            <!--<div ng-init="last_keyword = latestKeyword" >
-                <div ng-if="last_keyword">
-                    <br/>
-                    <input type="text" class="form-control" placeholder="{{last_keyword.keyword}}" ng-model="keyw">
+                        <p class="input-group">
+
+                            <input type="text"  class="form-control" style="background-color: white" readonly placeholder="{{keyword.keyword}}" ng-model="updatekey">
+
+                            <span class="input-group-btn"><button type="button" class="btn btn-primary" ng-click="enableEditor(keyword)">Edit</button></span>
+                            <span class="input-group-btn"><button type="button" class="close" ng-click="deleteKeyword(keyword)">&times;</button></span>
+
+                        </p>
+
+                    </form>
                 </div>
-            </div>-->
-
-            <form class="thing-form">
-                <p class="input-group">
-                    <input type="text" class="form-control" placeholder="Add a new keyword here." ng-model="newKeyword">
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-primary" ng-click="addKeyword()">Add New</button>
-                    </span>
-                </p>
-            </form>
-
-           <!-- <table style="background-color: #fff;
-                   background-image: none;
-                   border: 1px solid #ccc;color: #555;padding: 6px 12px;">
-
-                <tr><th>Google Ranking Report</th></tr>
-                <tr><td></td>
-                    <td colspan="3">answers.com</td>
-                    <td colspan="3">answers.yahoo.com</td>
-                </tr>
-                <tr><td>Keyword</td>
-                <tr><td>Base Rank</td>
-                    <td>Current Rank
-
-                    </td>
-                    <td>Change From BR</td>
-                    <td>Base Rank</td>
-                    <td>Current Rank
-
-                    </td>
-                    <td>Change From BR</td></tr>
-
-                <tr ng-repeat="keyword in keywords" >
-
-                    <td>{{keyword.keyword}}</td> 
-                    <td>5</td> 
-                    <td>5</td> 
-                    <td>5</td>  
-                    <td>5</td>  
-                    <td>5</td>  
-                    <td>5</td> 
-                </tr>
-
-
-
-            </table>-->
+                <form class="thing-form">
+                    <p class="input-group">
+                        <input type="text" class="form-control" placeholder="Add a new keyword here." ng-model="newKeyword">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary" ng-click="addKeyword()">Add New</button>
+                        </span>
+                    </p>
+                </form>
+            </div>
 
         </div>
-
+        <hr>
     </div>
-    <hr>
-</div>

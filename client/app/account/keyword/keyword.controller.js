@@ -3,12 +3,6 @@ angular
         .module('auditpagesApp')
         .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location) {
             $scope.keywords = [];
-    
-//            Auth.isLoggedIn(function(loggedIn) {
-//        if ( !loggedIn) {
-//          $location.path('/login');
-//        }
-//      });
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
                 socket.syncUpdates('keyword', $scope.keywords);
@@ -19,20 +13,18 @@ angular
                 if ($scope.newKeyword === '') {
                     return;
                 }
-
-
                 $http.post('/api/keywords', {keyword: $scope.newKeyword});
                 $scope.latestKeyword = $scope.newKeyword;
                 $scope.newKeyword = '';
-                 $location.path('/keyword');
+                $location.path('/keyword');
             };
 
             $scope.deleteKeyword = function (keyword) {
                 $http.delete('/api/keywords/' + keyword._id);
             };
-              $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('keyword');
-    });
+            $scope.$on('$destroy', function () {
+                socket.unsyncUpdates('keyword');
+            });
 
             $scope.editorEnabled = false;
 
@@ -48,10 +40,9 @@ angular
 
             $scope.save = function (id) {
                 $scope.title = $scope.editableTitle;
-                console.log($scope.title);
                 $http.put('/api/keywords/' + id, {keyword: $scope.editableTitle});
                 $scope.disableEditor();
             };
-
-
         });
+
+
