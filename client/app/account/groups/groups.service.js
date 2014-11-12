@@ -84,30 +84,30 @@ angular
 
   function applyDefaults(scope, modelProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
 
-      var
-      defaultPlan = findDefaultPlan(scope[servicePlansProp]),
-      defaultSched = findDefaultBillingSchedule(scope[billingSchedulesProp]),
-      defaultMethod = findDefaultBillingMethod(scope[billingMethodsProp]);
+    var
+    defaultPlan = findDefaultPlan(scope[servicePlansProp]),
+    defaultSched = findDefaultBillingSchedule(scope[billingSchedulesProp]),
+    defaultMethod = findDefaultBillingMethod(scope[billingMethodsProp]);
 
-      if(!!defaultPlan && !scope[modelProp].servicePlan) {
-        scope[modelProp].servicePlan = defaultPlan;
+    if(!!defaultPlan && !scope[modelProp].servicePlan) {
+      scope[modelProp].servicePlan = defaultPlan;
+    }
+
+    if(!!defaultSched && !scope[modelProp].billingSchedule) {
+      scope[modelProp].billingSchedule = defaultSched;
+    }
+
+    if(!!defaultMethod && (!scope[modelProp].billingMethod||!scope[modelProp].billingMethod.method)) {
+      if(!scope[modelProp].billingMethod) {
+        scope[modelProp].billingMethod = {};
       }
 
-      if(!!defaultSched && !scope[modelProp].billingSchedule) {
-        scope[modelProp].billingSchedule = defaultSched;
-      }
-
-      if(!!defaultMethod && (!scope[modelProp].billingMethod||!scope[modelProp].billingMethod.method)) {
-        if(!scope[modelProp].billingMethod) {
-          scope[modelProp].billingMethod = {};
-        }
-
-        scope[modelProp].billingMethod.method = defaultMethod;
-      }
+      scope[modelProp].billingMethod.method = defaultMethod;
+    }
   }
 
   function modelFormReset(scope, master, modelProp, loadingProp, loadErrorProp, saveErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
-    return function(reloadDeps) {
+    return function (reloadDeps) {
       scope[modelProp] = angular.copy(scope.master = master); // don't taint master
       scope[loadErrorProp] = false;
       scope[saveErrorProp] = false;
@@ -152,7 +152,7 @@ angular
       scope[saveErrorProp] = false;
       scope[savingProp] = true;
 
-      return $group.save(model)
+      return $group.save(model).$promise
         .then(function (doc) {
           console.log('Saved Doc:', doc, 'original:', model);
           return doc;

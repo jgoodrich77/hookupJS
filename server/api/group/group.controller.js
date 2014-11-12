@@ -63,18 +63,30 @@ function filterCollection(req, detail) {
 function filterSendDocument(res, req, detail) {
   var filterFn = filterDocument(req, detail);
   return function (err, doc) {
-    var fdoc = filterFn(err, doc);
-    if(!fdoc) return requestUtils.missing(res);
-    return requestUtils.data(res, fdoc);
+    try {
+      var fdoc = filterFn(err, doc);
+      if(!fdoc) return requestUtils.missing(res);
+      return requestUtils.data(res, fdoc);
+    }
+    catch(E) {
+      console.log('Error loading document:', E);
+      requestUtils.error(res, E);
+    }
   };
 }
 
 function filterSendCollection(res, req, detail) {
   var filterFn = filterCollection(req, detail);
   return function (err, collection) {
-    var fcollection = filterFn(err, collection);
-    if(!fcollection) return requestUtils.data(res, []);
-    return requestUtils.data(res, fcollection);
+    try {
+      var fcollection = filterFn(err, collection);
+      if(!fcollection) return requestUtils.data(res, []);
+      return requestUtils.data(res, fcollection);
+    }
+    catch(E) {
+      console.log('Error loading collection:', E);
+      requestUtils.error(res, E);
+    }
   };
 }
 

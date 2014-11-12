@@ -49,6 +49,9 @@ angular
   // allow to all roles:
   acl.allow(ROLE_ADMIN, '*');
   acl.allow('subscribed.*');
+  acl.deny(ROLE_EDITOR, [
+    '*.billing'
+  ]);
   acl.deny(ROLE_VIEWER, [
     'subscribed.update',
     'subscribed.update.*'
@@ -90,6 +93,9 @@ angular
         break;
         case 'members':
         requireResources = 'subscribed.update.members';
+        break;
+        default:
+        throw 'Invalid detail was provided';
         break;
       }
     }

@@ -42,7 +42,7 @@
       </dl>
     </div>
 
-    <div class="row">
+    <div class="row" ng-show="canEditBilling()">
       <div class="col-sm-12 form-group">
         <h3>Service Plan</h3>
         <p class="text-muted">Choose a plan that works just right for this group.</p>
@@ -58,7 +58,7 @@
       </div>
     </div>
 
-    <div class="row" ng-if="!loading && isBillable()">
+    <div class="row" ng-if="!loading && isBillable() && canEditBilling()">
       <div class="col-sm-12 form-group">
         <h3>Billing Schedule</h3>
         <p class="text-muted">Select how often you would like us to bill you:</p>
@@ -76,14 +76,14 @@
       </div>
     </div>
 
-    <div class="row" ng-if="!loading && isBillable()">
+    <div class="row" ng-if="!loading && isBillable() && canEditBilling()">
       <div class="col-sm-12">
         <h3>Billing Information</h3>
         <p class="text-muted">Select your preferred billing information below:</p>
       </div>
     </div>
 
-    <div class="row" ng-if="!loading && isBillable()">
+    <div class="row" ng-if="!loading && isBillable() && canEditBilling()">
       <dl class="form-group col-sm-6">
         <dt><label>Payment Method</label></dt>
         <dd><select class="form-control" ng-model="model.billingMethod.method" ng-options="o._id as o.name for o in billingMethods"></select></dd>
@@ -100,7 +100,7 @@
       </dl>
     </div>
 
-    <div class="row" ng-if="!loading && isBillable() && isBillableCC()">
+    <div class="row" ng-if="!loading && isBillable() && canEditBilling() && isBillableCC()">
       <dl class="col-sm-6 form-group">
         <dt><label>Card Number</label></dt>
         <dd><input type="TEXT" class="form-control" ng-model="model.billingMethod.detail.cardNumber" /></dd>
@@ -115,7 +115,7 @@
       </dl>
     </div>
 
-    <div class="row" ng-if="!loading && isBillable() && isBillableCC()">
+    <div class="row" ng-if="!loading && isBillable() && canEditBilling() && isBillableCC()">
       <dl class="col-sm-6 form-group">
         <dt><label>Card Holder</label></dt>
         <dd><input type="TEXT" class="form-control" ng-model="model.billingMethod.detail.cardHolder" /></dd>
@@ -126,7 +126,7 @@
       </dl>
     </div>
 
-    <div class="row" ng-if="!loading && isBillable() && isBillablePaypal() && isPaypalAgreement()">
+    <div class="row" ng-if="!loading && isBillable() && canEditBilling() && isBillablePaypal() && isPaypalAgreement()">
       <dl class="col-sm-6 form-group">
         <dt><label>Paypal Account Holder</label></dt>
         <dd><span ng-bind="model.billingMethod.detail.ppAccountHolder"></span></dd>

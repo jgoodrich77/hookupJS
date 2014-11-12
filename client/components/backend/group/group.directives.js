@@ -4,7 +4,7 @@ angular
   .module('auditpagesApp')
   .directive('adminGroupForm', function () {
   })
-  .directive('accountGroupForm', function ($accountGroups, $creditCard) {
+  .directive('accountGroupForm', function ($accountGroups, $creditCard, $group) {
     return {
       restrict: 'E',
       replace: true,
@@ -59,6 +59,21 @@ angular
         scope.isPaypalAgreement = function() {
           if(!mcheck(propBillingMethod)) return false;
           return $accountGroups.isPaypalAgreement(scope.model[propBillingMethod], scope.billingMethods);
+        };
+
+        // alias our can edit function in scope
+        scope.canEdit = function(detail) {
+          var role = (!!scope.model && !!scope.model.role) ? scope.model.role : 'owner';
+          return $group.canEdit(role, detail);
+        };
+        scope.canEditBilling = function() {
+          return scope.canEdit('billing');
+        };
+        scope.canEditServices = function() {
+          return scope.canEdit('services');
+        };
+        scope.canEditMembers = function() {
+          return scope.canEdit('members');
         };
       }
     };
