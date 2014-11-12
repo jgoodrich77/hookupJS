@@ -3,14 +3,20 @@ angular
         .module('auditpagesApp')
         .controller('AccountKeywordsCtrl', function ($scope, $http, Auth, socket, $location, $rootScope) {
             $scope.keywords = [];
-            var getCurrentUser = Auth.getCurrentUser();
-            var redirect = 0;
-            if (!getCurrentUser.name) {
-                var redirect = 1;
-            }
-            if (redirect == '1') {
-                $location.path('/login');
-            }
+//            var getCurrentUser = Auth.getCurrentUser();
+//            var redirect = 0;
+//            if (!getCurrentUser.name) {
+//                var redirect = 1;
+//            }
+//            if (redirect == '1') {
+//                $location.path('/login');
+//            }
+
+        if (!Auth.isLoggedIn()) {
+            console.log('DENY');
+          
+            $location.path('/login');
+        }
             $http.get('/api/keywords').success(function (keywords) {
                 $scope.keywords = keywords;
                 socket.syncUpdates('keyword', $scope.keywords);
