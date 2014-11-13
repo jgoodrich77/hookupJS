@@ -1,31 +1,15 @@
-<h2>Change Password</h2>
-<p class="text-muted">Change your access password using the form below.</p>
-
-<form class="form" name="form" ng-submit="changePassword(form)" novalidate>
-
-  <div class="form-group">
-    <label>Current Password</label>
-
-    <input type="password" name="password" class="form-control" ng-model="user.oldPassword"
-           mongoose-error/>
-    <p class="help-block" ng-show="form.password.$error.mongoose">
-        {{ errors.other }}
-    </p>
-  </div>
-
-  <div class="form-group">
-    <label>New Password</label>
-
-    <input type="password" name="newPassword" class="form-control" ng-model="user.newPassword"
-           ng-minlength="3"
-           required/>
-    <p class="help-block"
-       ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
-      Password must be at least 3 characters.
-    </p>
-  </div>
-
-  <p class="help-block"> {{ message }} </p>
-
-  <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
-</form>
+<user-password-form
+  form-model="user"
+  form-loading="loading"
+  form-saving="saving"
+  form-load-error="loadErr"
+  form-save-error="saveErr"
+  on-save-fn="save"
+  on-reset-fn="reset"
+  form-title="My Password"
+  form-save-button="Change Password"
+  form-description="Change your log-in password using the form below."
+  form-saving-message="Please wait, saving your password.."
+  form-load-message="Please wait, loading required password data.."
+  form-save-error-message="Something went wrong while saving your password info, sorry about that.."
+></user-password-form>
