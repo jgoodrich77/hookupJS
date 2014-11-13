@@ -2,20 +2,36 @@
 
 angular.module('auditpagesApp')
   .controller('AccountSettingsSecurityCtrl', function ($scope, User, Auth) {
-    $scope.errors = {};
+    $scope.submitErr = false;
+
+    $scope.reset = function() {
+      $scope.passwordChange = {};
+    };
 
     $scope.changePassword = function(form) {
-      $scope.submitted = true;
+      $scope.submitting = true;
       if(form.$valid) {
-        Auth.changePassword( $scope.user.oldPassword, $scope.user.newPassword )
+        Auth.changePassword (
+          $scope.passwordChange.oldPassword,
+          $scope.passwordChange.newPassword
+        )
         .then( function() {
           $scope.message = 'Password successfully changed.';
         })
         .catch( function() {
           form.password.$setValidity('mongoose', false);
-          $scope.errors.other = 'Incorrect password';
+
+          $scope.submitErr = {
+            other: 'Incorrect password'
+          };
           $scope.message = '';
+        })
+        .finally(function() {
+          $scope.submitting = false;
         });
+      }
+      else {
+        $scope.submitting = false;
       }
     };
   });
