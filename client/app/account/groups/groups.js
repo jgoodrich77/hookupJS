@@ -60,8 +60,12 @@ angular.module('auditpagesApp')
           }
         },
         resolve: {
-          group: function($stateParams, Group) {
-            return Group.basicInfoSubscribed($stateParams).$promise;
+          group: function($stateParams, $group) {
+            return $group.subscribedGet('viewer', $stateParams)
+              .catch(function (err) {
+                $log.warn('Error while loading state:', err);
+                return err;
+              });
           }
         }
       })
@@ -77,8 +81,8 @@ angular.module('auditpagesApp')
           }
         },
         resolve: {
-          group: function($stateParams, Group) {
-            return Group.basicInfoSubscribed($stateParams).$promise;
+          group: function($stateParams, $group) {
+            return $group.subscribedGet('viewer', $stateParams);
           }
         }
       })
@@ -94,8 +98,8 @@ angular.module('auditpagesApp')
           }
         },
         resolve: {
-          group: function($stateParams, Group) {
-            return Group.basicInfoSubscribed($stateParams).$promise;
+          group: function($stateParams, $group) {
+            return $group.subscribedGet('viewer', $stateParams);
           }
         }
       });
