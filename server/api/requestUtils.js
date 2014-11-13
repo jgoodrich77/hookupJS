@@ -3,6 +3,9 @@
 function respondError(res, err) {
   return res.json(500, err);
 }
+function respondValidation(res, err) {
+  return res.json(422, err);
+}
 function respondData(res, data) {
   return res.json(201, data);
 }
@@ -18,6 +21,12 @@ function qHandlerError(res) {
     return err;
   }
 }
+function qHandlerValidation(res) {
+  return function (err) {
+    respondValidation(res, err);
+    return data;
+  }
+}
 function qHandlerData(res) {
   return function (data) {
     respondData(res, data);
@@ -31,12 +40,21 @@ function qHandlerOk(res) {
   }
 }
 function nHandlerError(res) {
-  return function (err) {
+  return function (err, doc) {
     if(err) {
       return respondError(res, err);
     }
 
-    return err;
+    return doc;
+  }
+}
+function nHandlerValidation(res) {
+  return function (err, doc) {
+    if(err) {
+      return respondValidation(res, err);
+    }
+
+    return doc;
   }
 }
 function nHandlerData(res) {
@@ -71,15 +89,18 @@ function nHandlerOk(res) {
 }
 
 module.exports = {
-  error:   respondError,
-  data:    respondData,
-  ok:      respondOK,
-  missing: respondMissing,
-  qError:  qHandlerError,
-  qData:   qHandlerData,
-  qOk:     qHandlerOk,
-  nError:  nHandlerError,
-  nData:   nHandlerData,
-  oneRec:  nHandlerDataOneRec,
-  nOk:     nHandlerOk
+  error:      respondError,
+  validate:   respondValidation,
+  data:       respondData,
+  ok:         respondOK,
+  missing:    respondMissing,
+  qError:     qHandlerError,
+  qValidate:  qHandlerValidation,
+  qData:      qHandlerData,
+  qOk:        qHandlerOk,
+  nError:     nHandlerError,
+  nValidate:  nHandlerValidation,
+  nData:      nHandlerData,
+  oneRec:     nHandlerDataOneRec,
+  nOk:        nHandlerOk
 };

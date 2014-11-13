@@ -9,14 +9,15 @@ angular
     propServicePlans = 'servicePlans',
     propBillingSchedules = 'billingSchedules',
     propBillingMethods = 'billingMethods',
-    propSaveError = 'saveErr';
+    propSaveError = 'saveErr',
+    propServerError = 'serverErrors';
 
     $scope.formTitle = function(group) {
       return 'Update Group "'+ group.name +'"';
     };
 
     // generate a new form save function
-    $scope.save = $accountGroups.formSave( $scope, propModel, 'saving', propSaveError,
+    $scope.save = $accountGroups.formSave( $scope, propModel, propServerError, 'saving', propSaveError,
       propServicePlans, propBillingSchedules, propBillingMethods );
 
     // generate a new form reset function

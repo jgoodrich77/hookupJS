@@ -285,6 +285,39 @@ GroupSchema.methods = {
     return true;
   },
 
+  getUpdatableColumns: function(role) {
+    var cols;
+
+    switch(role) {
+      case 'owner':
+      cols = [].concat(
+        COLS_BASIC,
+        COLS_BILLING,
+        COLS_SERVICES,
+        COLS_MEMBERS
+      );
+      break;
+      case 'editor':
+      cols = [].concat(
+        COLS_BASIC,
+        COLS_SERVICES,
+        COLS_MEMBERS
+      );
+      break;
+      case 'viewer':
+      cols = [];
+      break;
+
+      default:
+      throw new Error('Unsupported group role is being used.');
+    }
+
+    return cols
+      .filter(function(col) {
+        return col !== '_id';
+      });
+  },
+
   getDetail: function(type) {
     var cols;
 
@@ -323,6 +356,16 @@ GroupSchema.methods = {
     }, {});
 
     return detail;
+  },
+
+  getAllRoleData: function(role) {
+    var model = this;
+    return this.getUpdatableColumns(role)
+      .concat('_id') // add _id column
+      .reduce(function (p, c) { // reduce into new data subset
+        p[c] = model[c];
+        return p;
+      }, { role: role });
   }
 };
 

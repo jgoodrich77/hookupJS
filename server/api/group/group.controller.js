@@ -19,23 +19,37 @@ function userCheck(req) {
   }
 }
 
-function filterDocument(req, detail) {
+function assertRelationship(req, doc) {
+  var role = false;
   userCheck(req);
 
+  if(!doc)
+    throw new Error('No document provided for ownership assertion.');
+
+  if(!!doc.members) { //
+    role = doc.findUserRole(req.user._id);
+
+    if(!role) {
+      throw new Error('Role for current user could not be found.');
+    }
+  }
+  else {
+    throw new Error('Unable to compare document with current user, members property not loaded in query!');
+  }
+
+  return role;
+}
+
+function filterDocument(req, detail) {
   return function (err, doc) {
     if(err) throw err;
     if(!doc) return false;
 
-    if(!!doc.members) { //
-      var role = doc.findUserRole(req.user._id);
+    var role = assertRelationship(req, doc);
 
-      // see if user has clearance for detail:
-      if(!doc.roleAllowsDetail(role, detail)) {
-        throw new Error('User attempted to access restricted group detail.');
-      }
-    }
-    else {
-      throw new Error('Unable to compare document with current user, members property not loaded in query!');
+    // see if user has clearance for detail:
+    if(!doc.roleAllowsDetail(role, detail)) {
+      throw new Error('User attempted to access restricted group detail.');
     }
 
     var filtered = doc.getDetail(detail);
@@ -158,7 +172,37 @@ exports.subscribedGetMembers = function(req, res, next) {
     .exec(filterSendDocument(res, req, 'members'));
 };
 exports.subscribedUpdate = function(req, res, next) {
-  next();
+  Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
+    .exec(function (err, doc) {
+      if(err) return next(err);
+      if(!doc) return requestUtils.missing(res);
+
+      try {
+        // make sure user has access to this data:
+        var
+        role = assertRelationship(req, doc),
+        cols = doc.getUpdatableColumns(role);
+
+        cols.forEach(function (v) {
+          if(req.body[v] !== undefined) {
+            doc[v] = req.body[v];
+          }
+        });
+
+        if(!!cols.length) {
+          doc.save(function (err, doc) {
+            if(err) return requestUtils.validate(res, err);
+            return requestUtils.data(res, doc.getAllRoleData(role));
+          });
+        }
+        else { // do nothing but respond successfully
+          return requestUtils.ok(res);
+        }
+      }
+      catch(err) {
+        return next(err);
+      }
+    });
 };
 exports.subscribedUpdatePlan = function(req, res, next) {
   next();
@@ -173,5 +217,18 @@ exports.subscribedUpdateMembers = function(req, res, next) {
   next();
 };
 exports.create = function(req, res, next) {
-  next();
+
+  var newGroup = new Group(req.body);
+
+  // add this user as owner of the group
+  newGroup.registerUser(req.user, Group.RELATION_OWNER);
+
+  // save the new group
+  newGroup.save(function (err, doc) {
+    if(err) return requestUtils.validate(res, err);
+    if(!doc) return requestUtils.missing(res);
+
+    // echo the data we saved.
+    return requestUtils.data(res, doc);
+  });
 };

@@ -429,7 +429,7 @@ angular
     };
   };
 })
-.factory('AclModule', function ($log, $resource, AclStatics, AclResourceCollection, AclResourceRules, AclRole) {
+.factory('AclModule', function ($log, $resource, $merge, AclStatics, AclResourceCollection, AclResourceRules, AclRole) {
 
   return function AclModule (roles, resources) {
     var
@@ -584,7 +584,7 @@ angular
         };
 
         if(!!methodMap[undot.undotted]) {
-          specEntry = angular.copy(methodMap[undot.undotted], specEntry);
+          specEntry = $merge(specEntry, methodMap[undot.undotted]);
         }
 
         spec[undot.undotted] = specEntry;

@@ -11,6 +11,7 @@ angular
       scope: {
         saveFn:           '=onSaveFn',
         resetFn:          '=onResetFn',
+        serverErrors:     '=serverErrors',
         model:            '=formModel',
         servicePlans:     '=formServicePlans',
         billingSchedules: '=formBillingSchedules',

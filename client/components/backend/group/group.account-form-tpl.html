@@ -23,22 +23,25 @@
     ng-if="!saving && saveError"
   ></error-display>
 
-  <form class="container-fluid form" name="newgroup" ng-submit="saveFn()" ng-hide="loading||saving||loadError">
+  <form class="container-fluid form" name="groupform" ng-submit="saveFn(groupform)" ng-hide="loading||saving||loadError">
     <div class="row">
       <dl class="col-sm-6 form-group">
         <dt><label>Group Name</label></dt>
-        <dd><input class="form-control" type="TEXT" ng-model="model.name" placeholder="Company name, or domain name.." /></dd>
+        <dd><input class="form-control" type="TEXT" name="name" ng-model="model.name" placeholder="Company name, or domain name.." mongoose-error />
+          <p class="help-block" ng-show="groupform.name.$error.mongoose"><span class="text-danger">{{ serverErrors.name }}</span></p></dd>
       </dl>
 
       <dl class="col-sm-6 form-group">
         <dt><label>Primary Domain</label></dt>
-        <dd><input class="form-control" type="TEXT" ng-model="model.primaryDomain" placeholder="http://yourdomain.com/" /></dd>
+        <dd><input class="form-control" type="TEXT" name="primaryDomain" ng-model="model.primaryDomain" placeholder="http://yourdomain.com/" mongoose-error />
+          <p class="help-block" ng-show="groupform.primaryDomain.$error.mongoose"><span class="text-danger">{{ serverErrors.primaryDomain }}</span></p></dd>
       </dl>
     </div>
     <div class="row">
       <dl class="col-sm-12 form-group">
         <dt><label>Description</label></dt>
-        <dd><textarea class="form-control" type="TEXT" ng-model="model.description" placeholder="A short description for this group (optional)"></textarea></dd>
+        <dd><textarea class="form-control" type="TEXT" name+'description' ng-model="model.description" placeholder="A short description for this group (optional)" mongoose-error></textarea>
+          <p class="help-block" ng-show="groupform.description.$error.mongoose"><span class="text-danger">{{ serverErrors.description }}</span></p></dd>
       </dl>
     </div>
 
@@ -143,7 +146,7 @@
         <hr />
 
         <button class="btn btn-lg btn-default" type="submit">{{saveGroupButton||'Save Group'}}</button>
-        <button class="btn btn-lg btn-danger" type="button" ng-click="resetFn()">{{resetGroupButton||'Reset'}}</button>
+        <button class="btn btn-lg btn-danger" type="button" ng-click="resetFn(true)">{{resetGroupButton||'Reset'}}</button>
       </div>
     </div>
   </form>

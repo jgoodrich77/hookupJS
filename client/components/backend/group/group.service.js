@@ -61,6 +61,9 @@ angular
   api = acl.buildService('/api/groups/:resource/:id', {
     id: '@_id'
   },{
+    subscribedUpdate: {
+      method: 'PUT'
+    },
     query: {
       method: 'GET',
       isArray: true,

@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.service('$accountGroups', function ($q, $group, $billingMethod, $billingSchedule, $plan) {
+.service('$accountGroups', function ($q, $state, $group, $billingMethod, $billingSchedule, $plan) {
 
   function fetchFormDependencies(master) {
     var
@@ -144,22 +144,41 @@ angular
     }
   }
 
-  function modelFormSave(scope, modelProp, savingProp, saveErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
-    return function() {
+  function seedMongooseErrors(scope, form, err, serverErrorProp) {
+    err = err || {};
+    form = form || {};
+
+    scope[serverErrorProp] = null; // reset errors
+
+    if(angular.isObject(err.errors)) { // mongoose / form validation error
+      scope[serverErrorProp] = {}; // reset errors
+      Object.keys(err.errors)
+        .forEach(function (v) {
+          var error = err.errors[v];
+          scope[serverErrorProp][error.path] = error.message;
+          form[error.path].$setValidity('mongoose', false);
+        });
+    }
+  }
+
+  function modelFormSave(scope, modelProp, serverErrorProp, savingProp, saveErrorProp, servicePlansProp, billingSchedulesProp, billingMethodsProp) {
+    return function (form) {
       var
       model = scope[modelProp];
 
       scope[saveErrorProp] = false;
       scope[savingProp] = true;
 
-      return $group.save(model).$promise
+      return (!!model._id
+        ? $group.subscribedUpdate(model.role, model)
+        : $group.create(model) )
         .then(function (doc) {
-          console.log('Saved Doc:', doc, 'original:', model);
+          $state.go('app.account.groups'); // redirect to the account.groups list
           return doc;
         })
         .catch(function (err) {
-          console.log('error:', err);
           scope[saveErrorProp] = err;
+          seedMongooseErrors(scope, form, err.data, serverErrorProp);
           return err;
         })
         .finally(function () {
