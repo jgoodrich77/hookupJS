@@ -40,11 +40,7 @@ angular.module('auditpagesApp')
         },
         resolve: {
           group: function($log, $stateParams, $group) {
-            return $group.subscribedGet('viewer', $stateParams)
-              .catch(function (err) {
-                $log.warn('Error while loading state:', err);
-                return err;
-              });
+            return $group.subscribedGet('viewer', $stateParams);
           }
         }
       })
@@ -61,11 +57,7 @@ angular.module('auditpagesApp')
         },
         resolve: {
           group: function($stateParams, $group) {
-            return $group.subscribedGet('viewer', $stateParams)
-              .catch(function (err) {
-                $log.warn('Error while loading state:', err);
-                return err;
-              });
+            return $group.subscribedGet('viewer', $stateParams);
           }
         }
       })
