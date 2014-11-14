@@ -160,8 +160,9 @@ GroupSchema.methods = {
 
     if(!!this.members && this.members.length) {
       this.members.every(function (member, index) {
+        var memberUserId = member.user._id || member.user;
 
-        if(member.user.equals(userId)) {
+        if(memberUserId.equals(userId)) {
           found = index;
         }
 

@@ -11,6 +11,7 @@
 
 var _ = require('lodash');
 var Group = require('./group.model');
+var User = require('../user/user.model');
 var requestUtils = require('../requestUtils');
 
 function userCheck(req) {
@@ -83,7 +84,7 @@ function filterSendDocument(res, req, detail) {
       return requestUtils.data(res, fdoc);
     }
     catch(E) {
-      console.log('Error loading document:', E);
+      console.log('Error loading document:', E.stack || E);
       requestUtils.error(res, E);
     }
   };
@@ -169,7 +170,21 @@ exports.subscribedGetServices = function(req, res, next) {
 };
 exports.subscribedGetMembers = function(req, res, next) {
   Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
-    .exec(filterSendDocument(res, req, 'members'));
+    .exec(function (err, doc) {
+      if(err) return next(err);
+      if(!doc) return requestUtils.missing(res);
+
+      var callback = filterSendDocument(res, req, 'members');
+
+      // populate group member data
+      User.populate(doc.members, {
+        path: 'user',
+        select: '_id name'
+      }, function (err, popmembers) {
+        callback(err, doc); // original document should
+                            // be populated now
+      });
+    });
 };
 exports.subscribedUpdate = function(req, res, next) {
   Group.findOne(subscribedCriteria({ _id: req.params.id }, req))

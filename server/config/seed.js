@@ -413,12 +413,37 @@ function seedGroups(plans, bSchedule, bMethod) {
         description: 'Bronze test group',
         primaryDomain: 'http://hookupjs.org/',
         servicePlan: svBronze
-      }, function (err, goldGroup, silverGroup, bronzeGroup) {
+      }, {
+        name: 'Test Group 1',
+        description: 'Bronze test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svBronze
+      }, {
+        name: 'Test Group 2',
+        description: 'Bronze test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svBronze
+      }, {
+        name: 'Test Group 3',
+        description: 'Bronze test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svBronze
+      }, {
+        name: 'Test Group 4',
+        description: 'Bronze test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svBronze
+      }, {
+        name: 'Test Group 5',
+        description: 'Bronze test group',
+        primaryDomain: 'http://hookupjs.org/',
+        servicePlan: svBronze
+      }, function (err, goldGroup, silverGroup, bronzeGroup, tg1, tg2, tg3, tg4, tg5) {
           if(err) {
             return defer.reject(err);
           }
 
-          var groups = [goldGroup, silverGroup, bronzeGroup];
+          var groups = [goldGroup, silverGroup, bronzeGroup, tg1, tg2, tg3, tg4, tg5];
 
           console.log('finished seeding %d test groups', groups.length);
 
@@ -437,6 +462,11 @@ function seedGroupsServices(groups, services) {
   groupGold   = groups[0],
   groupSilver = groups[1],
   groupBronze = groups[2],
+  groupTest1  = groups[3],
+  groupTest2  = groups[4],
+  groupTest3  = groups[5],
+  groupTest4  = groups[6],
+  groupTest5  = groups[7],
 
   // services order from promise
   svcFbUsers      = services[0],
@@ -518,14 +548,29 @@ function seedUsersGroups(users, groups) {
   // groups order from promise
   groupGold   = groups[0],
   groupSilver = groups[1],
-  groupBronze = groups[2];
+  groupBronze = groups[2],
+  groupTest1  = groups[3],
+  groupTest2  = groups[4],
+  groupTest3  = groups[5],
+  groupTest4  = groups[6],
+  groupTest5  = groups[7];
 
   [ // our test data fixtures
     [userTest,  groupBronze, Group.RELATION_OWNER],
     [userTest,  groupSilver, Group.RELATION_EDITOR],
     [userTest,  groupGold,   Group.RELATION_VIEWER],
+    [userTest,  groupTest1,  Group.RELATION_OWNER],
+    [userTest,  groupTest2,  Group.RELATION_EDITOR],
+    [userTest,  groupTest3,  Group.RELATION_VIEWER],
+    [userTest,  groupTest4,  Group.RELATION_OWNER],
+    [userTest,  groupTest5,  Group.RELATION_EDITOR],
     [userAdmin, groupSilver, Group.RELATION_EDITOR],
-    [userAdmin, groupGold,   Group.RELATION_OWNER]
+    [userAdmin, groupGold,   Group.RELATION_OWNER],
+    [userAdmin, groupTest1,  Group.RELATION_OWNER],
+    [userAdmin, groupTest2,  Group.RELATION_OWNER],
+    [userAdmin, groupTest3,  Group.RELATION_OWNER],
+    [userAdmin, groupTest4,  Group.RELATION_OWNER],
+    [userAdmin, groupTest5,  Group.RELATION_OWNER]
   ].forEach(function (a) {
     var
     user     = a[0],
@@ -542,7 +587,12 @@ function seedUsersGroups(users, groups) {
   return Q.allSettled([ // save all 3 groups
     Q.nbind(groupGold.save, groupGold)(),
     Q.nbind(groupSilver.save, groupSilver)(),
-    Q.nbind(groupBronze.save, groupBronze)()
+    Q.nbind(groupBronze.save, groupBronze)(),
+    Q.nbind(groupTest1.save, groupTest1)(),
+    Q.nbind(groupTest2.save, groupTest2)(),
+    Q.nbind(groupTest3.save, groupTest3)(),
+    Q.nbind(groupTest4.save, groupTest4)(),
+    Q.nbind(groupTest5.save, groupTest5)()
   ]);
 }
 
