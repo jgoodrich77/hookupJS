@@ -75,6 +75,8 @@ angular
     };
 
     $scope.reload = function() {
+      $scope.inviting = false;
+      $scope.inviteError = false;
       return loadMembers();
     };
 

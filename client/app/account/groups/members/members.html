@@ -20,21 +20,23 @@
 
   <div ng-if="!loading">
       <div class="row">
-        <label class="col-sm-7">Member Name</label>
-        <label class="col-sm-5">Role</label>
+        <label class="col-sm-8">Member Name</label>
+        <label class="col-sm-4">Role</label>
       </div>
     <div ng-repeat="member in members">
       <div class="row dl-margin-bottom-sm">
-        <div class="col-sm-7">
+        <div class="col-sm-8">
           <span ng-bind="member.user.name"></span>
         </div>
-        <div class="col-sm-3" ng-bind="member.relationship"></div>
+        <div class="col-sm-2" ng-bind="member.relationship"></div>
         <div class="col-sm-2 text-right">
           <a href class="btn btn-danger btn-sm" ng-click="removeMember(member)"><span class="sr-only">Remove Member</span> <span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
     </div>
   </div>
+
+  <hr />
 
   <h3>Invite New Team Members</h3>
 
@@ -54,21 +56,22 @@
     <div ng-repeat="item in invites">
       <div class="row" ng-if="$first">
         <label class="col-sm-4">Member Name</label>
-        <label class="col-sm-5">E-mail</label>
-        <label class="col-sm-3">Role</label>
+        <label class="col-sm-4">E-mail</label>
+        <label class="col-sm-4">Role</label>
       </div>
 
       <div class="row dl-margin-bottom-sm" ng-if="!$last">
         <div class="col-sm-4">
-          <span class="text-success" ng-bind="item.name"></span>
+          <span class="glyphicon" ng-class="{'glyphicon-check': item.sent, 'glyphicon-send': !item.sent}"></span>
+          <span ng-bind="item.name"></span>
         </div>
-        <div class="col-sm-5">
-          <span class="text-success" ng-bind="item.email"></span>
+        <div class="col-sm-4">
+          <span ng-bind="item.email"></span>
         </div>
         <div class="col-sm-2">
-          <span class="text-success" ng-bind="item.relationship"></span>
+          <span ng-bind="item.relationship"></span>
         </div>
-        <div class="col-sm-1 text-right">
+        <div class="col-sm-2 text-right">
           <a href class="btn btn-danger btn-sm" ng-click="cancelInvitation(item)"><span class="sr-only">Remove Member</span> <span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
@@ -77,10 +80,10 @@
         <dl class="col-sm-4">
           <input type="TEXT" required class="form-control" placeholder="Name of team member" ng-model="item.name" />
         </dl>
-        <dl class="col-sm-5">
+        <dl class="col-sm-4">
           <input type="EMAIL" required class="form-control" placeholder="E-mail address of team member" ng-model="item.email" />
         </dl>
-        <dl class="col-sm-3">
+        <dl class="col-sm-4">
           <select class="form-control" required ng-options="role[0] as role[1] for role in allRoles" ng-model="item.relationship"></select>
         </dl>
       </div>
@@ -96,17 +99,9 @@
       <div class="col-sm-12 text-right">
         <hr />
 
-        <button class="btn btn-default btn-lg" type="submit" ng-disabled="invitemember.$invalid && invites.length===1">Send Invites</button>
+        <button class="btn btn-default btn-lg" type="submit" ng-disabled="invitemember.$invalid && invites.length===1"><span class="glyphicon glyphicon-send"></span> Send Invites</button>
         <button class="btn btn-danger btn-lg" type="button" ng-click="reload()" ng-disabled="invitemember.$invalid && invites.length===1">Reset</button>
       </div>
     </div>
   </form>
-
-  <h3>Temporary Invites</h3>
-  <p class="text-muted">Invitations that we will send out.</p>
-  <pre ng-bind="invites|json"></pre>
-
-  <h3>Current Group</h3>
-  <p class="text-muted">Below is basic information about the current group.</p>
-  <pre ng-bind="group|json"></pre>
 </div>
