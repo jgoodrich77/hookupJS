@@ -2,10 +2,11 @@
 
 angular
   .module('auditpagesApp')
-  .controller('AccountGroupsMembersCtrl', function ($scope, $group, group) {
+  .controller('AccountGroupsMembersCtrl', function ($scope, $group, group, Auth) {
 
     $scope.group = angular.copy(group);
     $scope.members = [];
+    $scope.currentUser = Auth.getCurrentUser();
 
     $scope.allRoles = [
       ['owner', 'Co-Owner'],
