@@ -10,6 +10,7 @@
 'use strict';
 
 var _ = require('lodash');
+var Q = require('q');
 var Group = require('./group.model');
 var User = require('../user/user.model');
 var requestUtils = require('../requestUtils');
@@ -228,8 +229,102 @@ exports.subscribedUpdateBilling = function(req, res, next) {
 exports.subscribedUpdateServices = function(req, res, next) {
   next();
 };
-exports.subscribedUpdateMembers = function(req, res, next) {
-  next();
+exports.subscribedInviteMember = function(req, res, next) {
+  var invites = req.body.invites;
+
+  if(!invites.length) {
+    return next(new Error('No invites were specified.'));
+  }
+
+  Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
+    .exec(function (err, doc) {
+      if(err) return next(err);
+      if(!doc) return requestUtils.missing(res);
+
+      try {
+        var // make sure user has access to this data:
+        role = assertRelationship(req, doc);
+
+        if(!doc.roleCanInvite(role)) {
+          throw new Error('User can not invite other members.');
+        }
+
+        var
+        added = 0,
+        ignored = 0;
+
+        invites.forEach(function (invite) {
+
+          var
+          iname  = invite.name,
+          iemail = invite.email,
+          irole  = invite.relationship || role;
+
+          if(!iname || !iemail || !irole) {
+            ignored++;
+            return;
+          }
+          else if(doc.isRoleEscalating(role, irole)) {
+            throw new Error('User is attempting to invite a member with higher access than their own.');
+            return;
+          }
+
+          doc.addInvite(iname, iemail, irole) ? added++ : ignored++;
+        });
+
+        if(added === 0) {
+          if(ignored > 0) {
+            return requestUtils.validate(res, 'No invites were sent, but some were ignored.');
+          }
+
+          return requestUtils.validate(res, 'No invites were able to be sent.');
+        }
+
+        doc.save(function (err, doc) {
+          if(err) return requestUtils.validate(res, err);
+
+          // send an all ok
+          return requestUtils.ok(res);
+        });
+      }
+      catch(err) {
+        return next(err);
+      }
+    });
+};
+exports.subscribedInviteCancel = function(req, res, next) {
+
+  var invite = req.body.invite;
+
+  if(!invite || !invite.email) {
+    return next(new Error('Invite was missing or invalid.'));
+  }
+
+  Group.findOne(subscribedCriteria({ _id: req.params.id }, req))
+    .exec(function (err, doc) {
+      if(err) return next(err);
+      if(!doc) return requestUtils.missing(res);
+
+      try {
+        var // make sure user has access to this data:
+        role = assertRelationship(req, doc);
+
+        if(!doc.roleCanInvite(role)) {
+          throw new Error('User can not invite other members.');
+        }
+
+        doc.removeInvite(invite.email);
+        doc.save(function (err, doc) {
+          if(err) return requestUtils.validate(res, err);
+
+          // send an all ok
+          return requestUtils.ok(res);
+        });
+      }
+      catch(err) {
+        return next(err);
+      }
+    });
 };
 exports.create = function(req, res, next) {
 

@@ -40,10 +40,12 @@ angular
     'subscribed.get.billing',
     'subscribed.get.services',
     'subscribed.get.members',
+    'subscribed.get.invites',
     'subscribed.update',
     'subscribed.update.billing',
     'subscribed.update.services',
-    'subscribed.update.members'
+    'subscribed.invite.member',
+    'subscribed.invite.cancel'
     ]);
 
   // allow to all roles:
@@ -54,7 +56,8 @@ angular
   ]);
   acl.deny(ROLE_VIEWER, [
     'subscribed.update',
-    'subscribed.update.*'
+    'subscribed.update.*',
+    'subscribed.invite.*'
   ]);
 
   var
@@ -62,6 +65,12 @@ angular
     id: '@_id'
   },{
     subscribedUpdate: {
+      method: 'PUT'
+    },
+    subscribedInviteMember: {
+      method: 'PUT'
+    },
+    subscribedInviteCancel: {
       method: 'PUT'
     },
     query: {
@@ -95,7 +104,7 @@ angular
         requireResources = 'subscribed.update.services';
         break;
         case 'members':
-        requireResources = 'subscribed.update.members';
+        requireResources = 'subscribed.invite.member';
         break;
         default:
         throw 'Invalid detail was provided';
@@ -109,7 +118,7 @@ angular
         'subscribed.update.members',
         'subscribed.update.billing',
         'subscribed.update.services',
-        'subscribed.update.members'
+        'subscribed.invite.member'
       ];
     }
 

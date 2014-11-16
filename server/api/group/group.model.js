@@ -36,7 +36,8 @@ COLS_SERVICES = [
 ],
 COLS_MEMBERS = [
   '_id',
-  'members'
+  'members',
+  'invites'
 ];
 
 var
@@ -85,10 +86,36 @@ GroupSchema = new Schema({
   members: [{
     user: {
       type: Schema.Types.ObjectId,
-      ref: 'User'
+      ref: 'User',
+      required: true
     },
     relationship: {
       type: String,
+      required: true,
+      enum: [
+        RELATION_OWNER,
+        RELATION_EDITOR,
+        RELATION_VIEWER
+      ]
+    }
+  }],
+  invites: [{
+    code: {
+      type: String,
+      required: true
+    },
+    sent: Boolean,
+    name: {
+      type: String,
+      required: true
+    },
+    email: {
+      type: String,
+      required: true
+    },
+    relationship: {
+      type: String,
+      required: true,
       enum: [
         RELATION_OWNER,
         RELATION_EDITOR,
@@ -122,13 +149,24 @@ GroupSchema.statics = {
   ],
 
   relationshipPriority: function(rel) {
-    return this.memberRelationships.indexOf(rel);
+    return GroupSchema.statics.memberRelationships.indexOf(rel);
   },
 
   // should be enfored on model level via enum,
   // but this is here incase we need to validate programmatically.
   validRelationship: function(r) {
-    return this.memberRelationships.indexOf(r) > -1;
+    return GroupSchema.statics.memberRelationships.indexOf(r) > -1;
+  },
+
+  generateInviteCode: function(len, charSet) {
+    len = len || 50;
+    charSet = charSet || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var randomString = '';
+    for (var i = 0; i < len; i++) {
+      var randomPoz = Math.floor(Math.random() * charSet.length);
+      randomString += charSet.substring(randomPoz,randomPoz+1);
+    }
+    return randomString;
   }
 };
 
@@ -253,15 +291,13 @@ GroupSchema.methods = {
     }
 
     var
-    relPrio     = GroupSchema.statics.relationshipPriority,
-    sUserRelPri = relPrio(this.members[sUserIndex].relationship),
-    tUserRelPri = relPrio(this.members[tUserIndex].relationship),
-    tRelPri     = relPrio(tRelationship);
+    sUserRole  = this.members[sUserIndex].relationship,
+    tUserRole  = this.members[tUserIndex].relationship;
 
-    if(tRelPri < sUserRelPri) {
+    if(this.isRoleEscalating(sUserRole, tRelationship)) {
       throw new Error('Source user can not promote target user higher than their own relationship in this group.');
     }
-    else if(tUserRelPri < sUserRelPri) {
+    else if(this.isRoleEscalating(tUserRole, sUserRole)) {
       throw new Error('Source user does not have permissions to modify the target user\'s group relationship.');
     }
 
@@ -284,6 +320,57 @@ GroupSchema.methods = {
     }
 
     return true;
+  },
+
+  isRoleEscalating: function(r1, r2) {
+    var
+    relPrio = GroupSchema.statics.relationshipPriority;
+
+    return (relPrio(r2) < relPrio(r1));
+  },
+
+  roleCanInvite: function(role) {
+    return [RELATION_OWNER, RELATION_EDITOR].indexOf(role) > -1;
+
+  },
+
+  hasInviteEmail: function(email) {
+    email = email || '';
+    return !this.invites.every(function (invite) {
+      var found = email.toUpperCase() === invite.email.toUpperCase();
+      return !found;
+    });
+  },
+
+  addInvite: function(name, email, role) {
+    if(!this.hasInviteEmail(email)) { // new invite
+      this.invites.push({
+        code: GroupSchema.statics.generateInviteCode(),
+        sent: false,
+        name: name,
+        email: email,
+        relationship: role
+      });
+
+      return true;
+    }
+    else { // already has this user
+      return false;
+    }
+  },
+
+  removeInvite: function(email) {
+    email = email || '';
+    if(this.hasInviteEmail(email)) { // new invite
+      this.invites = this.invites.filter(function (v) {
+        return v.email.toUpperCase() !== email.toUpperCase();
+      });
+
+      return true;
+    }
+    else { // no invite for this email
+      return false;
+    }
   },
 
   getUpdatableColumns: function(role) {

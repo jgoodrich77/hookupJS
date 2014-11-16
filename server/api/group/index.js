@@ -29,6 +29,7 @@ router.put ('/subscribed.update/:id',          auth.isAuthenticated(), controlle
 router.put ('/subscribed.update.plan/:id',     auth.isAuthenticated(), controller.subscribedUpdatePlan);
 router.put ('/subscribed.update.billing/:id',  auth.isAuthenticated(), controller.subscribedUpdateBilling);
 router.put ('/subscribed.update.services/:id', auth.isAuthenticated(), controller.subscribedUpdateServices);
-router.put ('/subscribed.update.members/:id',  auth.isAuthenticated(), controller.subscribedUpdateMembers);
+router.put ('/subscribed.invite.member/:id',   auth.isAuthenticated(), controller.subscribedInviteMember);
+router.put ('/subscribed.invite.cancel/:id',   auth.isAuthenticated(), controller.subscribedInviteCancel);
 
 module.exports = router;

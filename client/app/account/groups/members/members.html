@@ -4,10 +4,54 @@
   <h2>Group Members <small><i class="fa fa-users"></i> {{group.name}}</small></h2>
   <p class="text-muted">Member management for this group.</p>
 
-  <h3>Invite Team Members</h3>
-  <form class="form" name="invitemember" ng-submit="inviteMembers()" novalidate>
+  <h3>Existing Members</h3>
+  <p class="text-muted">Below is a list of users that are affiliated with this group.</p>
 
-    <div ng-repeat="item in tempInvites">
+  <div class="well well-info" ng-if="loading">
+    <em><span class="glyphicon glyphicon-time"></span> Please wait, loading group memberships..</em>
+  </div>
+
+  <error-display
+    error-title="'Load Error'"
+    error-message="'Problem while loading group memberships..'"
+    error-detail="loadError"
+    ng-if="!loading && loadError"
+  ></error-display>
+
+  <div ng-if="!loading">
+      <div class="row">
+        <label class="col-sm-7">Member Name</label>
+        <label class="col-sm-5">Role</label>
+      </div>
+    <div ng-repeat="member in members">
+      <div class="row dl-margin-bottom-sm">
+        <div class="col-sm-7">
+          <span ng-bind="member.user.name"></span>
+        </div>
+        <div class="col-sm-3" ng-bind="member.relationship"></div>
+        <div class="col-sm-2 text-right">
+          <a href class="btn btn-danger btn-sm" ng-click="removeMember(member)"><span class="sr-only">Remove Member</span> <span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Invite New Team Members</h3>
+
+  <div class="well well-info" ng-if="inviting">
+    <em><span class="glyphicon glyphicon-time"></span> Please wait, sending your invitations..</em>
+  </div>
+
+  <error-display
+    error-title="'Invitations Error'"
+    error-message="'Problem while sending invites..'"
+    error-detail="inviteError"
+    ng-if="!inviting && inviteError"
+  ></error-display>
+
+  <form class="form" name="invitemember" ng-submit="inviteMembers(invitemember)" novalidate ng-if="!inviting">
+
+    <div ng-repeat="item in invites">
       <div class="row" ng-if="$first">
         <label class="col-sm-4">Member Name</label>
         <label class="col-sm-5">E-mail</label>
@@ -22,10 +66,10 @@
           <span class="text-success" ng-bind="item.email"></span>
         </div>
         <div class="col-sm-2">
-          <span class="text-success" ng-bind="item.role"></span>
+          <span class="text-success" ng-bind="item.relationship"></span>
         </div>
         <div class="col-sm-1 text-right">
-          <a href class="btn btn-danger btn-sm" ng-click="tempInvites.splice($index, 1)"><span class="sr-only">Remove Member</span> <span class="glyphicon glyphicon-remove"></span></a>
+          <a href class="btn btn-danger btn-sm" ng-click="cancelInvitation(item)"><span class="sr-only">Remove Member</span> <span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 
@@ -34,16 +78,16 @@
           <input type="TEXT" required class="form-control" placeholder="Name of team member" ng-model="item.name" />
         </dl>
         <dl class="col-sm-5">
-          <input type="TEXT" required class="form-control" placeholder="E-mail address of team member" ng-model="item.email" />
+          <input type="EMAIL" required class="form-control" placeholder="E-mail address of team member" ng-model="item.email" />
         </dl>
         <dl class="col-sm-3">
-          <select class="form-control" required ng-options="role[0] as role[1] for role in allRoles" ng-model="item.role"></select>
+          <select class="form-control" required ng-options="role[0] as role[1] for role in allRoles" ng-model="item.relationship"></select>
         </dl>
       </div>
 
       <div class="row" ng-if="$last">
         <div class="col-sm-12 text-right">
-            <button class="btn btn-primary" ng-click="tempInvites.push({})" ng-disabled="invitemember.$invalid"><span>Add Another Member</span> <span class="glyphicon glyphicon-plus"></span></button>
+            <button class="btn btn-primary" ng-click="invites.push({})" ng-disabled="invitemember.$invalid"><span>Add Another Member</span> <span class="glyphicon glyphicon-plus"></span></button>
         </div>
       </div>
     </div>
@@ -52,21 +96,17 @@
       <div class="col-sm-12 text-right">
         <hr />
 
-        <button class="btn btn-default btn-lg" type="submit" ng-disabled="invitemember.$invalid && tempInvites.length===1">Send Invites</button>
-        <button class="btn btn-danger btn-lg" ng-click="resetInvitations()" ng-disabled="invitemember.$invalid && tempInvites.length===1">Reset</button>
+        <button class="btn btn-default btn-lg" type="submit" ng-disabled="invitemember.$invalid && invites.length===1">Send Invites</button>
+        <button class="btn btn-danger btn-lg" type="button" ng-click="reload()" ng-disabled="invitemember.$invalid && invites.length===1">Reset</button>
       </div>
     </div>
   </form>
 
   <h3>Temporary Invites</h3>
   <p class="text-muted">Invitations that we will send out.</p>
-  <pre ng-bind="tempInvites|json"></pre>
+  <pre ng-bind="invites|json"></pre>
 
   <h3>Current Group</h3>
   <p class="text-muted">Below is basic information about the current group.</p>
   <pre ng-bind="group|json"></pre>
-
-  <h3>Existing Members</h3>
-  <p class="text-muted">Below is a list of users that are affiliated with this group.</p>
-  <pre ng-bind="members|json"></pre>
 </div>

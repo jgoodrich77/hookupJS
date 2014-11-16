@@ -1,7 +1,13 @@
 'use strict';
 
+var isError = require('util').isError;
+
 function respondError(res, err) {
-  return res.json(500, err);
+  var errorObject = {
+    message: isError(err) ? err.message : err
+  };
+
+  return res.json(500, errorObject);
 }
 function respondValidation(res, err) {
   return res.json(422, err);
