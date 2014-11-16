@@ -390,6 +390,13 @@ function seedGroups(plans, bSchedule, bMethod) {
           date: dateLastMonth,
           amount: 1000
         }],
+        invites: [{
+          code: 'temporary-dev-code-0001',
+          sent: false,
+          name: 'Hans Doller',
+          email: 'kryo2k@gmail.com',
+          relationship: 'owner'
+        }]
       }, {
         name: 'Silver Group',
         description: 'Silver test group',

@@ -27,6 +27,10 @@ I found this makes life a little easier, you'll need to tweak this file accordin
 __For development mode:__ `hookupjs-start-development.sh`
 
     #!/bin/sh
+    export HOOKUP_URL="http://full-domain-name-here"
+    export HOOKUP_AWS_SENDER="verified-sender@amznses.com"
+    export HOOKUP_AWS_ACCESSKEYID="VALIDAWSACCESSKEY"
+    export HOOKUP_AWS_KEYSECRET="VALID/AWS/Secret/key"
     export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs-dev"
     export PORT=9991
     cd /path/to/hookupjs
@@ -35,6 +39,10 @@ __For development mode:__ `hookupjs-start-development.sh`
 __For production mode:__ `hookupjs-start-production.sh`
 
     #!/bin/sh
+    export HOOKUP_URL="http://full-domain-name-here"
+    export HOOKUP_AWS_SENDER="verified-sender@amznses.com"
+    export HOOKUP_AWS_ACCESSKEYID="VALIDAWSACCESSKEY"
+    export HOOKUP_AWS_KEYSECRET="VALID/AWS/Secret/key"
     export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs"
     export PORT=9990
     cd /path/to/hookupjs

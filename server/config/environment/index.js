@@ -30,6 +30,14 @@ var all = {
     session: 'auditpages-secret'
   },
 
+  publicUrl: process.env.HOOKUP_URL || 'http://localhost',
+
+  inviteService: {
+    fromEmail: process.env.HOOKUP_AWS_SENDER || 'HookupJS <no-reply-invited@hookupjs.com>',
+    subject: 'You were invited!',
+    checkInterval: 10000
+  },
+
   // List of user roles
   userRoles: ['guest', 'user', 'admin'],
 
@@ -61,6 +69,10 @@ var all = {
   },
 
   mailer: {
+    region: process.env.HOOKUP_AWS_REGION || 'us-east-1',
+    accessKeyId: process.env.HOOKUP_AWS_ACCESSKEYID || 'INVALIDAWSACCESSKEY',
+    secretAccessKey: process.env.HOOKUP_AWS_KEYSECRET || 'INVALID/AWS/Secret/key',
+    rateLimit: 1 // do not send more than 1 message in a second
   },
 
   expressWinston: {

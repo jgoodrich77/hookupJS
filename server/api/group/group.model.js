@@ -167,6 +167,16 @@ GroupSchema.statics = {
       randomString += charSet.substring(randomPoz,randomPoz+1);
     }
     return randomString;
+  },
+
+  findWithPendingInvites: function(cb) {
+    return this.find({
+      'invites': {
+        $elemMatch: {
+          sent: false
+        }
+      }
+    }, cb);
   }
 };
 
@@ -371,6 +381,13 @@ GroupSchema.methods = {
     else { // no invite for this email
       return false;
     }
+  },
+
+  getPendingInvites: function() {
+    return this.invites
+      .filter(function (v) {
+        return !v.sent;
+      });
   },
 
   getUpdatableColumns: function(role) {
