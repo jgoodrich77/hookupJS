@@ -52,7 +52,8 @@ angular
   acl.allow(ROLE_ADMIN, '*');
   acl.allow('subscribed.*');
   acl.deny(ROLE_EDITOR, [
-    '*.billing'
+    '*.billing',
+    'subscribed.invite.*'
   ]);
   acl.deny(ROLE_VIEWER, [
     'subscribed.update',
@@ -104,7 +105,10 @@ angular
         requireResources = 'subscribed.update.services';
         break;
         case 'members':
-        requireResources = 'subscribed.invite.member';
+        requireResources = [
+          'subscribed.invite.member',
+          'subscribed.invite.cancel'
+        ];
         break;
         default:
         throw 'Invalid detail was provided';
@@ -125,6 +129,16 @@ angular
     return (requireAll)
       ? acl.testAll(r, requireResources)
       : acl.testAny(r, requireResources);
+  };
+
+  api.canEditBilling = function(r) {
+    return api.canEdit(r, 'billing');
+  };
+  api.canEditServices = function(r) {
+    return api.canEdit(r, 'services');
+  };
+  api.canEditMembers = function(r) {
+    return api.canEdit(r, 'members');
   };
 
   return api;

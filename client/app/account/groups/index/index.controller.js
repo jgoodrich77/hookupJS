@@ -8,7 +8,10 @@ angular
     $scope.loadErr   = false;
     $scope.perPage   = $paginationOpts.perPage;
     $scope.pageSizes = $paginationOpts.pageSizes;
-    $scope.canEdit   = $group.canEdit;
+    $scope.canEdit         = $group.canEdit;
+    $scope.canEditBilling  = $group.canEditBilling;
+    $scope.canEditMembers  = $group.canEditMembers;
+    $scope.canEditServices = $group.canEditServices;
 
     $scope.reload = function() {
       $scope.loading = true;
