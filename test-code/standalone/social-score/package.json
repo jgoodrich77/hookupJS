@@ -1,0 +1,15 @@
+{
+  "name": "social-score",
+  "version": "0.0.1a",
+  "main": "index.js",
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "private": true
+}
