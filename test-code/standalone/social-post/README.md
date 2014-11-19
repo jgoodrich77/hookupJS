@@ -1,4 +1,3 @@
-
 ## Installation
 - Extract archive and install node dependencies using `npm install`.
 

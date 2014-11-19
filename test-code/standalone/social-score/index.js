@@ -107,24 +107,41 @@ function ScoreFacebookLast3Posts(totalLikes, posts) {
   }
 
   var
-  sumPostScore = posts.reduce(function (p, c) {
+  sumPostScore = posts.reduce(function (p, c, index) {
+
     var
-    scoreLikes     = parseInt(c.likes || 0) / totalLikes,
-    uniqueComments = parseInt(c.commentsUnique || 0),
-    totalComments  = parseInt(c.comments || 0),
-    commentPerUser = totalComments / uniqueComments,
-    scoreComments  = (uniqueComments / totalLikes),
-    postScore      = (scoreLikes + scoreComments) / 2;
+    weightLike     = 1,
+    weightShare    = 1.5,
+    weightComment  = 0.5,
+    weightCmtUniq  = 0.75,
+
+    postLikes      = parseInt(c.likes || 0),
+    postShares     = parseInt(c.shares || 0),
+    postComments   = parseInt(c.comments || 0),
+    postCmtUniq    = parseInt(c.commentsUnique || postComments || 0),
+
+    ratioUniq      = (postComments / postCmtUniq),
+    scoreLikes     = (postLikes    / totalLikes) * weightLike,
+    scoreShares    = (postShares   / totalLikes) * weightShare,
+    scoreComments  = (postComments / totalLikes) * weightComment,
+    scoreCmtUniq   = (postCmtUniq  / totalLikes) * weightCmtUniq,
+    scorePost      = (
+        scoreLikes
+      + scoreShares
+      + scoreComments
+      + scoreCmtUniq
+    ) / 4;
 
     // possibly factor score on commentPerUser ratio?
-    // console.log(
-    //   'scoreLikes:',     scoreLikes.toFixed(5),
-    //   'commentPerUser:', commentPerUser.toFixed(5),
-    //   'scoreComments:',  scoreComments.toFixed(5),
-    //   'postScore:',      postScore.toFixed(5)
-    // );
+    // console.log('\n-- POST %d\n------------------------------------------', index + 1);
+    // console.log('ratioUniq:       %s', ratioUniq.toFixed(5));
+    // console.log('scoreLikes:      %s', scoreLikes.toFixed(5));
+    // console.log('scoreShares:     %s', scoreShares.toFixed(5));
+    // console.log('scoreComments:   %s', scoreComments.toFixed(5));
+    // console.log('scoreCmtUniq:    %s', scoreCmtUniq.toFixed(5));
+    // console.log('scorePost ====== %s', scorePost.toFixed(5));
 
-    return p + postScore;
+    return p + scorePost;
   }, 0),
   avgPostScore = (sumPostScore / posts.length);
 
@@ -153,17 +170,20 @@ scoreWords = [
 ].reverse(),
 
 // play around with these percentages!
-TEST_UNIQ_RATIO  = 0.99,
-TEST_FB_LIKES    = Math.floor(TOTAL_FB_USERS   * 0.05),
-TEST_P1_LIKES    = Math.floor(TEST_FB_LIKES    * 0.5),
+TEST_UNIQ_RATIO  = 0.9,
+TEST_FB_LIKES    = Math.floor(TOTAL_FB_USERS   * 0.00000125),
+TEST_P1_LIKES    = Math.floor(TEST_FB_LIKES    * 0.85),
+TEST_P1_SHARES   = Math.floor(TEST_FB_LIKES    * 0.75),
 TEST_P1_COMMENTS = Math.floor(TEST_FB_LIKES    * 0.95),
-TEST_P1_COMMUNIQ = Math.floor(TEST_P1_COMMENTS * TEST_UNIQ_RATIO),
+TEST_P1_COMMUNIQ = Math.floor(TEST_P1_COMMENTS * 0.95),
 TEST_P2_LIKES    = Math.floor(TEST_FB_LIKES    * 0.85),
+TEST_P2_SHARES   = Math.floor(TEST_FB_LIKES    * 0.95),
 TEST_P2_COMMENTS = Math.floor(TEST_FB_LIKES    * 0.85),
-TEST_P2_COMMUNIQ = Math.floor(TEST_P2_COMMENTS * TEST_UNIQ_RATIO),
+TEST_P2_COMMUNIQ = Math.floor(TEST_P2_COMMENTS * 0.90),
 TEST_P3_LIKES    = Math.floor(TEST_FB_LIKES    * 0.75),
-TEST_P3_COMMENTS = Math.floor(TEST_FB_LIKES    * 0.82),
-TEST_P3_COMMUNIQ = Math.floor(TEST_P3_COMMENTS * TEST_UNIQ_RATIO),
+TEST_P3_SHARES   = Math.floor(TEST_FB_LIKES    * 0.80),
+TEST_P3_COMMENTS = Math.floor(TEST_FB_LIKES    * 0.85),
+TEST_P3_COMMUNIQ = Math.floor(TEST_P3_COMMENTS * 0.92),
 
 /**
 *** Idea for scoring a facebook page.
@@ -172,14 +192,17 @@ score = new Score([
   new ScoreFacebookLikes(TEST_FB_LIKES),
   new ScoreFacebookLast3Posts(TEST_FB_LIKES, [{
     likes: TEST_P1_LIKES,
+    shares: TEST_P1_SHARES,
     comments: TEST_P1_COMMENTS,
     commentsUnique: TEST_P1_COMMUNIQ
   },{
     likes: TEST_P2_LIKES,
+    shares: TEST_P2_SHARES,
     comments: TEST_P2_COMMENTS,
     commentsUnique: TEST_P2_COMMUNIQ
   },{
     likes: TEST_P3_LIKES,
+    shares: TEST_P3_SHARES,
     comments: TEST_P3_COMMENTS,
     commentsUnique: TEST_P3_COMMUNIQ
   }])
