@@ -1,10 +1,5 @@
 'use strict';
 
-/**
-** Wasn't happy with the other NodeJS implementations out there.
-** So I quickly wrote this up.
-**/
-
 var
 _ = require('lodash'),
 Q = require('q'),

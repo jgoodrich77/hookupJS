@@ -1,110 +1,15 @@
 'use strict';
 
 var
-_ = require('lodash'),
 Q = require('q'),
-path = require('path'),
 prompt = require('prompt'),
-util = require('util'),
-FB = require('./lib/facebook-adapter.js');
+FbSocialAdapter = require('./lib/facebook-social-adapter');
 
 //
 prompt.message = 'Choice for';
 
-function SocialAdapterAbstract(adapterInterface) {
-  var noopFalse = function() {
-    return false;
-  };
-
-  _.extend(this, { // default interface constructors
-    appInfo: noopFalse,
-    userInfo: noopFalse
-  });
-
-  // overwrite with adapter inferface
-  _.extend(this, adapterInterface);
-}
-
-function FacebookAdapter(cliConfig) {
-  var
-  cli = new FB(cliConfig),
-  errorHandler = function() {
-    return function (error) {
-    };
-  };
-
-  SocialAdapterAbstract.call(this, {
-    appInfo: function() {
-      /* Example Data: {
-        "id": "1508937439378506",
-        "daily_active_users": "0",
-        "daily_active_users_rank": 0,
-        "icon_url": "https://fbstatic-a.akamaihd.net/rsrc.php/v2/yE/r/7Sq7wKJHi_5.png",
-        "link": "http://www.hookupjs.com/",
-        "logo_url": "https://fbcdn-photos-c-a.akamaihd.net/hphotos-ak-xpa1/t39.2081-0/p75x75/851578_455087414601994_1601110696_n.png",
-        "mobile_web_url": "http://www.hookupjs.com/",
-        "monthly_active_users": "0",
-        "monthly_active_users_rank": 0,
-        "name": "hookupjs",
-        "namespace": "hookupjs_one_alpha",
-        "weekly_active_users": "0"
-      } */
-      return cli.get('/app', {
-        fields: ['id','name','namespace','link'].join(',')
-      });
-    },
-    userInfo: function() {
-      /* Example Data: {
-        "id": "10153031522099245",
-        "about": "Practice makes champions.",
-        "first_name": "Hans",
-        "gender": "male",
-        "last_name": "Doller",
-        "link": "https://www.facebook.com/app_scoped_user_id/10153031522099245/",
-        "locale": "en_US",
-        "name": "Hans Doller",
-        "timezone": -6,
-        "updated_time": "2014-06-13T21:05:53+0000",
-        "verified": true
-      } */
-      return cli.get('/me', {
-        fields: ['id','first_name','last_name'].join(',')
-      });
-    },
-    userObjects: function() {
-      /* Example Data: [{
-        "id": "162373397120761",
-        "category": "Artist",
-        "name": "Dreamscapes",
-        "access_token": "--- access token here ---",
-        "perms": [
-          "ADMINISTER",
-          "EDIT_PROFILE",
-          "CREATE_CONTENT",
-          "MODERATE_CONTENT",
-          "CREATE_ADS",
-          "BASIC_ADMIN"
-        ]
-      }, ... ] */
-      return cli.getRecursive('/me/accounts', {
-        limit: 10,
-        fields: ['id','access_token','category','name'].join(',')
-      });
-    },
-    post: function(objectId, objectAccessToken, message) {
-      return cli.post(path.join('/',objectId,'feed'), {
-        access_token: objectAccessToken
-      }, {
-        message: message
-      });
-    }
-  });
-}
-
-util.inherits(FacebookAdapter, SocialAdapterAbstract);
-
 var
-test = new FacebookAdapter({
+test = new FbSocialAdapter({
   appId:       process.env.FB_APP_ID       || '-- invalid app id --',
   appSecret:   process.env.FB_APP_SECRET   || '-- invalid app secret --',
   accessToken: process.env.FB_ACCESS_TOKEN || '-- invalid token --'
