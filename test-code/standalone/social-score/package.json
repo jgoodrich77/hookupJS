@@ -3,6 +3,7 @@
   "version": "0.0.1a",
   "main": "index.js",
   "dependencies": {
+    "lodash": "^2.4.1"
   },
   "devDependencies": {},
   "engines": {
