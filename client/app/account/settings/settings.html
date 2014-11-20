@@ -1,37 +1,14 @@
-<div class="container">
+<div class="container-fluid">
   <div class="row">
-    <div class="col-sm-12">
-      <h1>Change Password</h1>
+    <div class="col-sm-3">
+      <ul class="nav nav-tabs nav-tabs-left">
+        <li ui-sref-active-eq="active"><a ui-sref="app.account.settings"><span class="fa fa-heart"></span> Profile</a></li>
+        <li ui-sref-active="active"><a ui-sref="app.account.settings.security"><span class="fa fa-key"></span> Security</a></li>
+      </ul>
     </div>
-    <div class="col-sm-12">
-      <form class="form" name="form" ng-submit="changePassword(form)" novalidate>
-
-        <div class="form-group">
-          <label>Current Password</label>
-
-          <input type="password" name="password" class="form-control" ng-model="user.oldPassword"
-                 mongoose-error/>
-          <p class="help-block" ng-show="form.password.$error.mongoose">
-              {{ errors.other }}
-          </p>
-        </div>
-
-        <div class="form-group">
-          <label>New Password</label>
-
-          <input type="password" name="newPassword" class="form-control" ng-model="user.newPassword"
-                 ng-minlength="3"
-                 required/>
-          <p class="help-block"
-             ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
-            Password must be at least 3 characters.
-          </p>
-        </div>
-
-        <p class="help-block"> {{ message }} </p>
-
-        <button class="btn btn-lg btn-primary" type="submit">Save changes</button>
-      </form>
+    <div class="col-sm-9" ng-hide="currentState === 'app.account.settings'" ui-view="account-settings-content"></div>
+    <div class="col-sm-9" ng-if="currentState === 'app.account.settings'">
+      <div ng-include="'app/account/settings/profile/profile.html'" ng-controller="AccountSettingsProfileCtrl" ></div>
     </div>
   </div>
 </div>

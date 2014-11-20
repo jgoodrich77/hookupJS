@@ -1,0 +1,17 @@
+<div class="container">
+  <ul class="nav nav-tabs">
+    <li ui-sref-active-eq="active"><a ui-sref="app.account">Home</a></li>
+    <li ui-sref-active="active"><a ui-sref="app.account.settings"><span class="fa fa-cogs"></span> My Settings</a></li>
+    <li ui-sref-active="active"><a ui-sref="app.account.groups"><span class="fa fa-users"></span> My Groups</a></li>
+  </ul>
+</div>
+
+<div class="container tab-body" ng-show="currentState === 'app.account'">
+  <div class="container-fluid text-center">
+    <h3>Howdy,</h3>
+    <p class="lead">This is the default account page</p>
+    <p>Click a tab to do other interesting stuff.</p>
+  </div>
+</div>
+
+<div class="container tab-body" ui-view="account-content"></div>

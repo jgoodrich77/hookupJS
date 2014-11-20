@@ -24,6 +24,10 @@ var socketio = require('socket.io')(server, {
   serveClient: (config.env === 'production') ? false : true,
   path: '/socket.io-client'
 });
+
+app.use(require('./config/winston.logger'));
+
+require('./config/mailer')(app);
 require('./config/socketio')(socketio);
 require('./config/express')(app);
 require('./routes')(app);
@@ -32,6 +36,10 @@ require('./routes')(app);
 server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
+
+var
+// background services
+bgSvcMailerInvitation = require('./components/backgroundService/invitationMailer');
 
 // Expose app
 exports = module.exports = app;

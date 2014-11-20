@@ -1,10 +1,17 @@
 <div class="container">
-  <p>The delete user and user index api routes are restricted to users with the 'admin' role.</p>
-  <ul class="list-group">
-    <li class="list-group-item" ng-repeat="user in users">
-        <strong>{{user.name}}</strong><br>
-        <span class="text-muted">{{user.email}}</span>
-        <a ng-click="delete(user)" class="trash"><span class="glyphicon glyphicon-trash pull-right"></span></a>
-    </li>
+  <ul class="nav nav-tabs">
+    <li ui-sref-active-eq="active"><a ui-sref="app.admin">Home</a></li>
+    <li ui-sref-active-eq="active"><a ui-sref="app.admin.users">Users</a></li>
+    <li ui-sref-active-eq="active"><a ui-sref="app.admin.groups">Groups</a></li>
   </ul>
 </div>
+
+<div class="container tab-body" ng-show="currentState === 'app.admin'">
+  <div class="container-fluid text-center">
+    <h3>Hey there,</h3>
+    <p class="lead">This is the default admin page</p>
+    <p>Click a tab to do more <em class="text-danger">damage</em>.</p>
+  </div>
+</div>
+
+<div class="container tab-body" ui-view="admin-content"></div>

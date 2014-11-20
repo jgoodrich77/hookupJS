@@ -18,7 +18,11 @@ var UserSchema = new Schema({
   facebook: {},
   twitter: {},
   google: {},
-  github: {}
+  github: {},
+  active: {
+    type: Boolean,
+    default: true
+  }
 });
 
 /**

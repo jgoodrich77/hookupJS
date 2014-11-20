@@ -1,0 +1,48 @@
+<div ng-init="reload()">
+  <div class="well well-info" ng-show="loading">
+    <em><span class="glyphicon glyphicon-time"></span> Please wait, loading available groups.</em>
+  </div>
+
+  <div class="well well-warning" ng-show="!loading && !groups.length && !loadErr">
+    <a ui-sref="app.account.groups.create" class="btn btn-success pull-right"><span class="glyphicon glyphicon-plus"></span> Add a new group</a>
+    <em><span class="glyphicon glyphicon-info-sign"></span> You are currently not subscribed to any groups.</em>
+    <div class="clearfix"></div>
+  </div>
+
+  <error-display
+    error-title="loadErr.statusText || 'Load Error'"
+    error-message="loadErr.data.message || 'Something went wrong while your subscribed groups, sorry about that..'"
+    error-detail="loadErr"
+    ng-show="!loading && loadErr"
+  ></error-display>
+
+  <div ng-show="!loading && groups.length">
+
+    <ul class="nav nav-pills pull-right">
+      <li><a tooltip="Reload the current screen" ng-click="reload()" href><span class="glyphicon glyphicon-refresh"></span> <span class="visible-sm-inline visible-md-inline visible-lg-inline">Reload</span></a></li>
+    </ul>
+
+    <h2>My Groups</h2>
+
+    <div class="list-group">
+      <div class="list-group-item" dir-paginate="group in groups | itemsPerPage: perPage">
+        <ul class="nav nav-pills pull-right">
+          <li ng-if="canEditMembers(group.role)"><a tooltip="{{group.name}} Members" ui-sref="app.account.groups.members({id: group._id})"><span class="glyphicon glyphicon-user"></span> <span class="visible-md-inline visible-lg-inline">Members</span></a></li>
+          <li ng-if="canEdit(group.role)"><a tooltip="Edit {{group.name}} settings" ui-sref="app.account.groups.update({id: group._id})"><span class="glyphicon glyphicon-pencil"></span> <span class="visible-md-inline visible-lg-inline">Edit</span></a></li>
+          <li ng-if="canEditServices(group.role)"><a tooltip="{{group.name}} Service configuration" ui-sref="app.account.groups.servicecfg({id: group._id})"><span class="glyphicon glyphicon-cog"></span> <span class="visible-md-inline visible-lg-inline">Services</span></a></li>
+          <li><a tooltip="{{group.name}} Stats" ui-sref="app.account.groups.stats({id: group._id})"><span class="glyphicon glyphicon-stats"></span> <span class="visible-md-inline visible-lg-inline">Stats</span></a></li>
+        </ul>
+
+        <h4 class="list-group-item-heading"><a ui-sref="app.account.groups.stats({id: group._id})" tooltip="View current stats for {{group.name}}" ng-bind="group.name"></a></h4>
+        <p class="list-group-item-text" ng-bind="group.description"></p>
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+
+    <site-paginator
+      total-items="groups.length"
+      items-per-page="perPage"
+      page-sizes="pageSizes"></site-paginator>
+  </div>
+</div>

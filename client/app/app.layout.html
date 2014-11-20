@@ -1,16 +1,18 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<header class="hero-unit" id="banner">
-  <div class="container">
-    <h1>Managing keywords</h1>
-    <p class="lead">Starting to slowly learn this thing, keyword management below.</p>
-  </div>
-</header>
+<div ng-if="currentState !== 'app.main'">
+  <ui-breadcrumbs
+    displayname-property="data.breadcrumbTitle"
+    abstract-proxy-property="data.breadcrumbProxy"
+    template-url="app/breadcrumbs.html"></ui-breadcrumbs>
+</div>
+
+<div ui-view="content-header"></div>
 
 <div class="template-content" ui-view="content"></div>
 
-<footer class="footer">
-  <div class="container">
-      <p>HookupJS based on Angular Fullstack | A veritable work in progress
-  </div>
-</footer>
+<div class="container">
+  <footer class="footer">
+    <p class="text-muted">HookupJS based on Angular Fullstack | A veritable work in progress
+  </footer>
+</div>

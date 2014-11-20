@@ -1,0 +1,13 @@
+<div class="well well-danger">
+  <a href class="pull-right btn btn-default" ng-class="{active: showDetail}" ng-click="showDetail = !showDetail;" ng-show="!!detail">
+    <em ng-show="showDetail"><span class="glyphicon glyphicon-minus"></span> Hide Details</em>
+    <em ng-hide="showDetail"><span class="glyphicon glyphicon-plus"></span> Show Details</em>
+  </a>
+
+  <h2 ng-bind="title||'Oh $#!7..'"></h2>
+  <p>{{message||'Something went wrong, sorry about that..'}}</p>
+
+  <pre ng-show="!!detail && showDetail">{{ detail | json }}</pre>
+
+  <div class="clearfix"></div>
+</div>

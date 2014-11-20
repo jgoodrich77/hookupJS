@@ -5,7 +5,38 @@ angular.module('auditpagesApp')
     $stateProvider
       .state('app.admin', {
         url: '/admin',
-        templateUrl: 'app/admin/admin.html',
-        controller: 'AdminCtrl'
+        data: {
+          roles: ['admin'],
+          breadcrumbTitle: 'Administration Panel'
+        },
+        views: {
+          'content': {
+            templateUrl: 'app/admin/admin.html'
+          }
+        }
+      })
+      .state('app.admin.users', {
+        url: '/users',
+        data: {
+          breadcrumbTitle: 'User Administration'
+        },
+        views: {
+          'admin-content': {
+            templateUrl: 'app/admin/users/users.html',
+            controller: 'AdminUsersCtrl'
+          }
+        }
+      })
+      .state('app.admin.groups', {
+        url: '/groups',
+        data: {
+          breadcrumbTitle: 'Group Administration'
+        },
+        views: {
+          'admin-content': {
+            templateUrl: 'app/admin/groups/groups.html',
+            controller: 'AdminGroupsCtrl'
+          }
+        }
       });
   });

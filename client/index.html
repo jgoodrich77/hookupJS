@@ -13,16 +13,13 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
-      <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
       <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
     <link rel="stylesheet" href="app/app.css">
       <!-- injector:css -->
-      <link rel="stylesheet" href="app/account/login/login.css">
-      <link rel="stylesheet" href="app/admin/admin.css">
-      <link rel="stylesheet" href="app/app.css">
+      <link rel="stylesheet" href="app/login/login.css">
       <link rel="stylesheet" href="app/main/main.css">
       <link rel="stylesheet" href="components/modal/modal.css">
       <!-- endinjector -->
@@ -62,6 +59,8 @@
       <script src="bower_components/lodash/dist/lodash.compat.js"></script>
       <script src="bower_components/angular-socket-io/socket.js"></script>
       <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+      <script src="bower_components/angular-utils-ui-breadcrumbs/uiBreadcrumbs.js"></script>
+      <script src="bower_components/angular-utils-pagination/dirPagination.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
@@ -70,21 +69,66 @@
         <script src="app/app.js"></script>
           <!-- injector:js -->
           <script src="app/account/account.js"></script>
-          <script src="app/account/keyword/keyword.controller.js"></script>
-          <script src="app/account/login/login.controller.js"></script>
+          <script src="app/account/groups/create/create.controller.js"></script>
+          <script src="app/account/groups/groups.controller.js"></script>
+          <script src="app/account/groups/groups.js"></script>
+          <script src="app/account/groups/groups.service.js"></script>
+          <script src="app/account/groups/index/index.controller.js"></script>
+          <script src="app/account/groups/members/members.controller.js"></script>
+          <script src="app/account/groups/servicecfg/servicecfg.controller.js"></script>
+          <script src="app/account/groups/stats/stats.controller.js"></script>
+          <script src="app/account/groups/update/update.controller.js"></script>
+          <script src="app/account/settings/profile/profile.controller.js"></script>
+          <script src="app/account/settings/security/security.controller.js"></script>
           <script src="app/account/settings/settings.controller.js"></script>
-          <script src="app/account/signup/signup.controller.js"></script>
-          <script src="app/admin/admin.controller.js"></script>
+          <script src="app/account/settings/settings.js"></script>
           <script src="app/admin/admin.js"></script>
+          <script src="app/admin/groups/groups.controller.js"></script>
+          <script src="app/admin/users/users.controller.js"></script>
+          <script src="app/errors/accessdenied/accessdenied.controller.js"></script>
+          <script src="app/errors/errors.js"></script>
+          <script src="app/errors/pagenotfound/pagenotfound.controller.js"></script>
+          <script src="app/group/group.controller.js"></script>
+          <script src="app/group/group.js"></script>
+          <script src="app/group/service/service.controller.js"></script>
+          <script src="app/login/login.controller.js"></script>
+          <script src="app/login/login.js"></script>
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
+          <script src="app/redeem/redeem.controller.js"></script>
+          <script src="app/redeem/redeem.js"></script>
+          <script src="app/signup/signup.controller.js"></script>
+          <script src="app/signup/signup.js"></script>
           <script src="components/auth/auth.service.js"></script>
-          <script src="components/auth/keyword.service.js"></script>
-          <script src="components/auth/user.service.js"></script>
+          <script src="components/backend/billing/method/method.directives.js"></script>
+          <script src="components/backend/billing/method/method.factory.js"></script>
+          <script src="components/backend/billing/method/method.service.js"></script>
+          <script src="components/backend/billing/schedule/schedule.directives.js"></script>
+          <script src="components/backend/billing/schedule/schedule.factory.js"></script>
+          <script src="components/backend/billing/schedule/schedule.service.js"></script>
+          <script src="components/backend/group/group.directives.js"></script>
+          <script src="components/backend/group/group.service.js"></script>
+          <script src="components/backend/plan/plan.directives.js"></script>
+          <script src="components/backend/plan/plan.factory.js"></script>
+          <script src="components/backend/plan/plan.service.js"></script>
+          <script src="components/backend/service/service.directives.js"></script>
+          <script src="components/backend/service/service.factory.js"></script>
+          <script src="components/backend/service/service.service.js"></script>
+          <script src="components/backend/user/user.directives.js"></script>
+          <script src="components/backend/user/user.factory.js"></script>
+          <script src="components/backend/user/user.service.js"></script>
+          <script src="components/error/error.directives.js"></script>
           <script src="components/modal/modal.service.js"></script>
           <script src="components/mongoose-error/mongoose-error.directive.js"></script>
           <script src="components/navbar/navbar.controller.js"></script>
+          <script src="components/navbar/navbar.directives.js"></script>
+          <script src="components/paginator/paginator.directive.js"></script>
+          <script src="components/paginator/paginator.service.js"></script>
           <script src="components/socket/socket.service.js"></script>
+          <script src="components/utils/acl.service.js"></script>
+          <script src="components/utils/creditcard.service.js"></script>
+          <script src="components/utils/filters.js"></script>
+          <script src="components/utils/merge.service.js"></script>
           <!-- endinjector -->
         <!-- endbuild -->
 </body>

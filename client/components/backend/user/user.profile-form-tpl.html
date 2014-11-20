@@ -1,0 +1,48 @@
+<div ng-init="resetFn(true)">
+  <h2 ng-bind="title||'Profile Form'" ng-hide="saving"></h2>
+  <p class="text-muted" ng-hide="saving" ng-bind="description||'Profile form description'"></p>
+
+  <div class="well well-info" ng-if="saving">
+    <em><span class="glyphicon glyphicon-time"></span> {{saveMessage||'Please wait, saving profile..'}}</em>
+  </div>
+  <div class="well well-info" ng-show="loading">
+    <em><span class="glyphicon glyphicon-time"></span> {{loadMessage||'Please wait, loading..'}}.</em>
+  </div>
+
+  <error-display
+    error-title="loadError.statusText||loadErrorTitle||'Load Error'"
+    error-message="loadError.data.message||loadErrorMessage||'Problem while loading..'"
+    error-detail="loadError"
+    ng-if="!loading && loadError"
+  ></error-display>
+
+  <error-display
+    error-title="saveErrorTitle||'Save Error'"
+    error-message="saveErrorMessage||'Problem while saving..'"
+    error-detail="saveError"
+    ng-if="!saving && saveError"
+  ></error-display>
+
+  <form class="container-fluid form" name="newgroup" ng-submit="saveFn()" ng-hide="loading||saving||loadError">
+    <div class="row">
+      <dl class="col-sm-6 form-group">
+        <dt><label>Your Name</label></dt>
+        <dd><input class="form-control" type="TEXT" ng-model="model.name" placeholder="Your full name" /></dd>
+      </dl>
+
+      <dl class="col-sm-6 form-group">
+        <dt><label>Your E-mail</label></dt>
+        <dd><input class="form-control" type="TEXT" ng-model="model.email" placeholder="joe@somesite.com" /></dd>
+      </dl>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 text-right">
+        <hr />
+
+        <button class="btn btn-lg btn-default" type="submit">{{saveButton||'Save Profile'}}</button>
+        <button class="btn btn-lg btn-danger" type="button" ng-click="resetFn()">{{resetButton||'Reset'}}</button>
+      </div>
+    </div>
+  </form>
+</div>
