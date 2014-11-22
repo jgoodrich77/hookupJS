@@ -94,9 +94,6 @@ function KeywordQuery (cfg) {
     },
     search: function (keyword) {
 
-      // temporary, do not commit the line below!
-      // return Q(this.addResults(require('./static.json')));
-
       var
       result = Q(this),
       fetchData = function (startIndex) {
