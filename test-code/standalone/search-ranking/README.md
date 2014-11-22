@@ -95,6 +95,9 @@
 - CSE CX & API Key
   You can generate one from here (https://www.google.com/cse/create/new).
 
+- CSE Whitelist IP (for dev and production machines).
+  Google requires each machine accessing the API key will need to be authorized from the Google backend.
+
 ## Credits
 - Hans Doller <hans.doller@hookupjs.com>
 - Jeremy Goodrich <jeremy.goodrich@hookupjs.com>
