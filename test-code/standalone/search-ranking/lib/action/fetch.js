@@ -18,7 +18,9 @@ function ActionFetch(opts, log) {
 
   var
   kwConfig = config.keywordQuery || {},
-  importing = !!opts.i;
+  importing = !!opts.i,
+  tagging   = !!opts.tag,
+  tag       = opts.tag;
 
   if(opts.C) {
     kwConfig.cx = opts.C;
@@ -48,7 +50,18 @@ function ActionFetch(opts, log) {
         if(!doc) {
           return defer.resolve(false);
         }
-        return defer.resolve(doc._id);
+
+        if(importing && tagging && doc.addTag(tag)) { // save kw after we tagged it
+          return doc.save(function (err, doc) {
+            if(err) {
+              return defer.reject(err);
+            }
+
+            defer.resolve(doc._id);
+          })
+        }
+
+        defer.resolve(doc._id);
       }
     );
 
@@ -60,12 +73,11 @@ function ActionFetch(opts, log) {
           return kwDocId;
         }
 
-        log.debug('fetching keyword data (%s : %j)', keyword, kwDocId);
+        log.info('fetching keyword data (%s : %j)', keyword, kwDocId);
 
         return KeywordQuery
           .search(keyword)
           .then(function (kwQuery) {
-            log.debug('keyword data (%s) fetched, storing..', keyword);
 
             try {
 
@@ -86,7 +98,6 @@ function ActionFetch(opts, log) {
                 return defer2.reject(err);
               }
 
-              log.debug('keyword data (%s) stored..', keyword);
               return defer2.resolve(kwQuery);
             });
 
@@ -146,6 +157,20 @@ function ActionFetch(opts, log) {
     return defer.promise;
   }
 
+  function findKeywordsByTag(tag) {
+    var
+    defer = Q.defer();
+
+    modelKeyword.findByTag(tag, function (err, docs) {
+      if(err) {
+        return defer.reject(err);
+      }
+      return defer.resolve(docs);
+    });
+
+    return defer.promise;
+  }
+
   function loadFileLines (file) {
     var
     defer = Q.defer(),
@@ -177,6 +202,37 @@ function ActionFetch(opts, log) {
     return defer.promise;
   }
 
+  function normalizeInputDate(v) {
+    var
+    inputdate = opts.date,
+    date      = moment(),
+    matcher   = /(last|next)\s?(\d+)\s?(minutes?|hours?|days?|weeks?|months?|years?)/i;
+
+    if(matcher.test(v)) { // using a smart date
+      var
+      matched = opts.date.match(matcher),
+      mDir    = matched[1].toLowerCase(),
+      mAmount = parseInt(matched[2]),
+      mStep   = matched[3].toLowerCase();
+
+      if(mDir === 'last') {
+        date.subtract(mAmount, mStep);
+      }
+      else {
+        date.add(mAmount, mStep);
+      }
+    }
+    else { // using a date string
+      date = moment(Date.parse(v));
+    }
+
+    if(!date.isValid()) {
+      return false;
+    }
+
+    return date.utc().toDate();
+  }
+
   this.run = function() { // run this action
 
     // configure kw query lib
@@ -185,40 +241,25 @@ function ActionFetch(opts, log) {
     var result;
 
     if(opts.date) { // kws with no checks since before this date
-      var
-      inputdate = opts.date,
-      date      = moment(),
-      matcher   = /(last|next)\s?(\d+)\s?(minutes?|hours?|days?|weeks?|months?|years?)/i;
+      var date = normalizeInputDate(opts.date);
 
-      if(matcher.test(opts.date)) { // using a smart date
-        var
-        matched = opts.date.match(matcher),
-        mDir    = matched[1].toLowerCase(),
-        mAmount = parseInt(matched[2]),
-        mStep   = matched[3].toLowerCase();
-
-        if(mDir === 'last') {
-          date.subtract(mAmount, mStep);
-        }
-        else {
-          date.add(mAmount, mStep);
-        }
-      }
-      else {
-        date = moment(Date.parse(opts.date));
-      }
-
-      if(!date.isValid()) {
+      if(!date) {
         throw new Error('Invalid data was provided.');
       }
 
-      log.info('Fetching results for keywords that have not been run since: %s', date.utc().format());
+      log.debug('Fetching results for keywords that have not been run since: %s', date);
 
-      result = findKeywordsByCheckTime(date.utc().toDate())
+      result = findKeywordsByCheckTime(date)
         .then(function (kwCheckAggr) {
           var chain = Q({});
 
-          log.info('Found %d keywords', kwCheckAggr.length);
+          if(tagging) {
+            kwCheckAggr = kwCheckAggr.filter(function (v) {
+              return v._id.keyword.hasTag(tag);
+            });
+          }
+
+          log.debug('Found %d keywords%s', kwCheckAggr.length, (tagging ? util.format('filtered by tag (%j)', tag) : ''));
 
           kwCheckAggr.forEach(function (aggr) {
             chain = chain.then(function (buffer) {
@@ -227,6 +268,27 @@ function ActionFetch(opts, log) {
               return fetchKeywordRankings(kwQuery)
                 .then(function (kwRankings) {
                   buffer[kwQuery] = kwRankings;
+                  return buffer;
+                });
+            });
+          });
+
+          return chain;
+        });
+    }
+    else if(!importing && tagging) {
+
+      log.debug('Fetching results for keywords that match tag: %j', tag);
+
+      result = findKeywordsByTag(tag)
+        .then(function (kws) {
+          var chain = Q({});
+
+          kws.forEach(function (kw) {
+            chain = chain.then(function (buffer) {
+              return fetchKeywordRankings(kw.query)
+                .then(function (kwRankings) {
+                  buffer[kw.query] = kwRankings;
                   return buffer;
                 });
             });
@@ -252,13 +314,14 @@ function ActionFetch(opts, log) {
 }
 
 ActionFetch.minimistOpts = {
-  string: ['C','K', 'n','p','k','f','d'],
+  string: ['C','K', 'n','p','k','f','d','t'],
   boolean: ['i','import'],
   alias: {
     d: 'date',
     i: 'import',
     k: 'keyword',
-    f: 'file'
+    f: 'file',
+    t: 'tag'
   }
 };
 

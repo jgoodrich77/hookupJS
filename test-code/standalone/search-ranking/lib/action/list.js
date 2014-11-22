@@ -99,8 +99,12 @@ function ActionList(opts, log) {
         query: new RegExp(opts.query, 'i')
       });
     }
+    else if(opts.tag) {
+      var findByTag = Q.nfbind(modelKeyword.findByTag.bind(modelKeyword));
+      kwPromise = findByTag(opts.tag);
+    }
     else {
-      throw new Error('Invalid keyword list spec. All (-a|--all) or search (-q|--query) was not supplied.');
+      throw new Error('Invalid keyword list spec. All (-a|--all) or search (-q|--query) or tag (-t|--tag) was not supplied.');
     }
 
     return kwPromise
@@ -160,12 +164,13 @@ function ActionList(opts, log) {
 }
 
 ActionList.minimistOpts = {
-  boolean: ['a','r','t','s'],
-  string: ['q'],
+  boolean: ['a','r','T','s'],
+  string: ['q','t'],
   alias: {
-    t: 'title',
+    T: 'title',
     s: 'snippet',
     r: 'results',
+    t: 'tag',
     a: 'all',
     q: 'query'
   }
