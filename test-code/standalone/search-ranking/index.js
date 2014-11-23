@@ -63,6 +63,7 @@ fmt('    -p <int>            number of results per page (default: %d)', cfgKwQue
     '    -a|--all            show all the keywords in the system',
     '    -q|--query=<str>    show all keywords that meet the match criteria',
     '    -t|--tag=<str>      show all keywords that are tagged with tag.',
+    '    -c|--csv            display list in CSV format',
     '    -r|--results        show latest stored results for listed keywords',
     '    -T|--title          show title of the result (depends on -r|--results)',
     '    -s|--snippet        show snippet of the result (depends on -r|--results)',

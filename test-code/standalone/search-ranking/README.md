@@ -55,9 +55,9 @@
   node index.js fetch --keyword 'your keyword here' --import
   ```
 
-#### Fetch ranking for a file with keywords:
+#### Fetch ranking for a file with keywords, and tag keywords as "something":
   ```bash
-  node index.js fetch --file 'keywords.txt' --import
+  node index.js fetch --file '/path/to/keywords.txt' --tag="something" --import --verbose
   ```
 
 #### Fetch ranking for keywords which haven't been run in 2 weeks:
@@ -70,14 +70,19 @@
 
   `(last|next) ## (minutes|hours|days|weeks|months|years)`
 
-#### List all keywords in the database
+#### List all keywords in the database in CSV format
   ```bash
-  node index.js list --all
+  node index.js list --all --csv
   ```
 
 #### List keywords in the database that match a regular expression and show the latest stored results (including title -t and snippet -s)
   ```bash
   node index.js list --query="^something" -rst
+  ```
+
+#### List keywords in database that are tagged with "something"
+  ```bash
+  node index.js list --tag="something"
   ```
 
 #### Flush all data in the db (keywords, and check data)
@@ -88,6 +93,16 @@
 #### Flush all data check data only in the db
   ```bash
   node index.js flush --checks
+  ```
+
+#### Flush keywords for a specific tag
+  ```bash
+  node index.js flush --tag="something" --keywords --verbose
+  ```
+
+#### Flush keywords that ONLY have this tag
+  ```bash
+  node index.js flush --tag="something" -o --keywords --verbose
   ```
 
 ## Google Requirements

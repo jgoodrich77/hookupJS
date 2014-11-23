@@ -15,7 +15,8 @@ function ActionList(opts, log) {
   var
   showResults = !!opts.results,
   showResultTitle = !!opts.title,
-  showResultSnippet = !!opts.snippet;
+  showResultSnippet = !!opts.snippet,
+  csvFormat = !!opts.csv;
 
   function findKeywords(criteria) {
     criteria = criteria || {};
@@ -61,7 +62,7 @@ function ActionList(opts, log) {
       }
     };
 
-    if(showResults) {
+    if(showResults || csvFormat) {
       project.results = 1;
       grouping.latestResults = {
         '$last': '$results'
@@ -130,15 +131,40 @@ function ActionList(opts, log) {
             process.stdout.write('\n');
           }
 
-          process.stdout.write(util.format('keyword: %j, totalChecks: %d, lastCheck: %s, firstCheck: %s\n',
-            kwCheck.keyword,
-            kwCheck.totalChecks,
-            kwCheck.lastCheck,
-            kwCheck.firstCheck
-          ));
+          if(!csvFormat) {
+            process.stdout.write(util.format('keyword: %j, totalChecks: %d, lastCheck: %s, firstCheck: %s\n',
+              kwCheck.keyword,
+              kwCheck.totalChecks,
+              kwCheck.lastCheck,
+              kwCheck.firstCheck
+            ));
+          }
 
-          if(showResults) {
+          if(showResults || csvFormat) {
             kwCheck.latestResults.forEach(function (result) {
+
+              if(csvFormat) {
+                var
+                fmt = ['%j','%j','%d','%j'],
+                args = [kwCheck.keyword, kwCheck.lastCheck, result.rank, result.link];
+
+                if(showResultTitle) {
+                  fmt.push('%j');
+                  args.push(result.title);
+                }
+
+                if(showResultSnippet) {
+                  fmt.push('%j');
+                  args.push(result.snippet);
+                }
+
+                // prepend format to args
+                args.unshift(fmt.join(','));
+
+                // write out CSV string to the stdout
+                return process.stdout
+                  .write(util.format.apply(util, args) + '\n');
+              }
 
               var
               resultLine = util.format(' %d) link: %j\n',
@@ -153,7 +179,7 @@ function ActionList(opts, log) {
                 resultLine += util.format('-- snippet: %j\n', result.snippet);
               }
 
-              process.stdout.write(resultLine);
+              return process.stdout.write(resultLine);
             });
           }
         });
@@ -164,9 +190,10 @@ function ActionList(opts, log) {
 }
 
 ActionList.minimistOpts = {
-  boolean: ['a','r','T','s'],
+  boolean: ['a','r','T','s','c'],
   string: ['q','t'],
   alias: {
+    c: 'csv',
     T: 'title',
     s: 'snippet',
     r: 'results',
