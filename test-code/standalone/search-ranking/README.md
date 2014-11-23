@@ -18,8 +18,8 @@
 
 -- Global Options --
 
-  -h|--help                show this screen
-  -v|--verbose             enable verbose output
+  -h|--help             show this screen
+  -v|--verbose          enable verbose output
 
 -- Available Actions --
 
@@ -28,10 +28,14 @@
     -K <str>            Google API key to use (default: "-- invalid key --")
     -n <int>            number of pages to fetch (default: 1)
     -p <int>            number of results per page (default: 10)
-    -d|--date=<str>     fetch data for keywords that have not been fetched
-                        since before this date.
+    -d|--date=<str>     fetch data for keywords that have not been fetched since
+                        before this date.
     -i|--import         import keywords that are not in the database already
                         (otherwise they will be skipped)
+    -t|--tag=<str>      when combined with import, applies tag to all keywords
+                        matched. If import is not provided, ignores --keyword and --file,
+                        and only fetches for keywords tagged with tag. This can work
+                        combined with --date option as well.
     -k|--keyword=<str>  fetch ranking results for a single keyword
     -f|--file=<file>    fetch ranking results for a list of keywords in a file
 
@@ -39,12 +43,19 @@
     --all               flush all data
     --keywords          flush keywords only
     --checks            flush keyword check results only
+    -t|--tag=<str>      filters flushing (--keywords|--checks) to keywords
+                        tagged with tag only.
+    -o|--only-tag       works combined with -t|--tag, will flush the keyword if it
+                        only has the one tag searched for. If multiple tags exists,
+                        it will remove only the tag for the keyword.
 
   list
     -a|--all            show all the keywords in the system
     -q|--query=<str>    show all keywords that meet the match criteria
+    -t|--tag=<str>      show all keywords that are tagged with tag.
+    -c|--csv            display list in CSV format
     -r|--results        show latest stored results for listed keywords
-    -t|--title          show title of the result (depends on -r|--results)
+    -T|--title          show title of the result (depends on -r|--results)
     -s|--snippet        show snippet of the result (depends on -r|--results)
 ```
 
