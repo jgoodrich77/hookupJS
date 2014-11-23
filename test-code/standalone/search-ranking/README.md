@@ -86,9 +86,9 @@
   node index.js list --all --csv
   ```
 
-#### List keywords in the database that match a regular expression and show the latest stored results (including title -t and snippet -s)
+#### List keywords in the database that match a regular expression and show the latest stored results (including title -T and snippet -s)
   ```bash
-  node index.js list --query="^something" -rst
+  node index.js list --query="^something" -rsT
   ```
 
 #### List keywords in database that are tagged with "something"
