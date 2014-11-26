@@ -14,9 +14,10 @@ angular.module('auditpagesApp', [
   'ui.router',
   'ui.bootstrap',
   'angularUtils.directives.uiBreadcrumbs',
-  'angularUtils.directives.dirPagination'
+  'angularUtils.directives.dirPagination',
+  'facebook'
 ])
-.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {
   $urlRouterProvider
     .otherwise('/');
 
@@ -43,6 +44,10 @@ angular.module('auditpagesApp', [
   $locationProvider.html5Mode(true);
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   $httpProvider.interceptors.push('authInterceptor');
+
+   // Set your appId through the setAppId method or
+   // use the shortcut in the initialize method directly.
+   FacebookProvider.init('1508937439378506');
 })
 
 .factory('stateRedirector', function ($state) {

@@ -1,6 +1,39 @@
 <div class="container">
-  <div class="row text-center">
-    <h1>Awesome features</h1>
-    <p>Here we can list all the awesome features of our software!</p>
+  <div class="row">
+
+<!-- <pre>
+fbIsReady: {{fbIsReady() | json}}
+fbCurrentStatus: {{fbCurrentStatus() | json}}
+fbIsActive: {{fbIsActive() | json}}
+fbIsNoAuth: {{fbIsNoAuth() | json}}
+fbHasRequiredPerms: {{fbHasRequiredPerms() | json}}
+fbHasAllPerms: {{fbHasAllPerms() | json}}
+</pre> -->
+
+    <div ng-switch="fbIsReady()">
+
+      <div ng-switch-when="true" class="text-center">
+        <div ng-if="fbIsActive() && fbHasRequiredPerms()">
+          <h2>Yay!</h2>
+          <p class="lead">Click the button below to access your amazing dashboard.</p>
+
+          <p ng-if="!fbHasAllPerms()">You're currently restricting some of the optional permissions we use. This could impact functionality. <a href ng-click="fbReAuthorize()">Click here to fix this message.</a></p>
+          <button class="btn btn-lg btn-primary" ng-click="dashboard()">Access Amazing Dashboard!</button>
+          <button ng-if="fbHasAllPerms()" class="btn btn-lg btn-danger" ng-click="fbDeAuthorize()">Uninstall</button>
+        </div>
+
+        <div ng-if="fbIsNoAuth() || !fbHasRequiredPerms()">
+          <h2>Get Started!</h2>
+          <p class="lead">Click the button below to login to your fb.</p>
+
+          <button class="btn btn-lg btn-danger" ng-click="fbLogin()">Click Here</button>
+        </div>
+      </div>
+
+      <div ng-switch-when="false">
+        <h2>Please wait..</h2>
+        <p class="lead">Checking your connection with Facebook.</p>
+      </div>
+    </div>
   </div>
 </div>

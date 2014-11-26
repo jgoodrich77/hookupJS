@@ -12,9 +12,6 @@ angular.module('auditpagesApp')
           'content': {
             templateUrl: 'app/main/main.html',
             controller: 'MainCtrl'
-          },
-          'content-header': {
-            templateUrl: 'app/main/main.header.html'
           }
         }
       });
