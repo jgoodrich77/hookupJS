@@ -12,12 +12,10 @@ UserSchema = new Schema({
       type: Schema.Types.ObjectId,
       ref: 'Achievement'
     },
-    percentComplete: Number,
-    dateIssued: {
+    dateCompleted: {
       type: Date,
       default: Date.now
-    },
-    dateCompleted: Date
+    }
   }],
   notifications: [{
     title: String,
@@ -39,6 +37,41 @@ UserSchema.methods = {
       description: desc,
       glyph: String
     });
+  },
+  getAchievementDate: function(achievement) {
+    var
+    id = achievement._id || achievement,
+    result = false;
+
+    this.achievements.every(function (achievement) {
+      var tId = achievement.achievement._id || achievement.achievement;
+
+      if(tId.equals(id)) {
+        result = achievement.dateCompleted;
+        return false;
+      }
+
+      return true;
+    });
+
+    return result;
+  },
+  hasAchievement: function(achievement) {
+    var id = achievement._id || achievement;
+
+    return !this.achievements.every(function (achievement) {
+      var tId = achievement.achievement._id || achievement.achievement;
+      return !tId.equals(id);
+    });
+  },
+  addAchievement: function(achievement) {
+    if(this.hasAchievement(achievement)) return false;
+
+    this.achievements.push({
+      achievement: achievement
+    });
+
+    return true;
   }
 };
 

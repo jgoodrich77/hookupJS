@@ -20,8 +20,8 @@ function seedAchievements() {
   def = Q.defer(),
   seed = [
     [
-      'Invite 3 Members Achievement',
-      'Should be awarded for inviting 3 members.',
+      'Recruit 3 new site members Achievement',
+      'Should be awarded for recruiting 3 members to the site.',
       {glyph: 'achievement-locked'},
       {glyph: 'achievement-unlocked'},
       [{
@@ -34,10 +34,20 @@ function seedAchievements() {
           }
         },
         multiplier: 3
+      },{
+        trigger: Achievement.TARGET_MATCHEQMOREMUL,
+        target: {
+          category: UserLog.Category.group,
+          action: UserLog.Action.Group.recruit,
+          detail: {
+            user: '$different'
+          }
+        },
+        multiplier: 3
       }]
     ],
     [
-      'Invite 3 Members (Same Group) Achievement',
+      'Invite 3 Members to the same group Achievement',
       'Should be awarded for inviting 3 members to the same group.',
       {glyph: 'achievement-locked'},
       {glyph: 'achievement-unlocked'},
@@ -186,15 +196,35 @@ function gradeUserAchievements(user) {
     })
   ])
   .spread(function (achievements, userLog) {
+    var userChanged = false;
 
     achievements.forEach(function (achievement) {
       if(achievement.matchesConditions(userLog)) {
         console.log('achievement (%s) matches conditions', achievement.name);
+
+        if(user.addAchievement(achievement)) {
+          userChanged = true;
+          console.log('user (%s) was awarded achievement (%s)', user.name, achievement.name);
+        }
+        else {
+          console.log('user (%s) was already awarded achievement (%s) on (%s)',
+            user.name,
+            achievement.name,
+            user.getAchievementDate(achievement)
+          );
+        }
       }
       else {
-        console.log('achievement (%s) does not match conditions', achievement.name);
+        console.log('achievement (%s) did not match conditions', achievement.name);
       }
     });
+
+    if(userChanged) {
+      return Q.nfcall(user.save.bind(user))
+        .then(function (savedUser) {
+          return [achievements, userLog];
+        });
+    }
 
     return [achievements, userLog];
   });
@@ -207,6 +237,10 @@ seedAchievements()
   .then(function (user) {
     return seedUserLog(user)
       .then(function (logs) {
+        return gradeUserAchievements(user);
+      })
+      .then(function (grades) { // attempt to re-grade :D
+        console.log('---- Re-grading attempt, you should see that the achievement was already rewarded! ----');
         return gradeUserAchievements(user);
       });
   })
@@ -221,314 +255,3 @@ seedAchievements()
     console.log('finished');
     mongoose.disconnect();
   });
-
-
-/*
-
-'use strict';
-
-var
-mongoose = require('mongoose'),
-Schema = mongoose.Schema;
-
-var
-GroupSchema = new Schema({
-  name: String,
-  members: [{
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
-    role: String
-  }]
-}),
-Group = mongoose.model('Group', GroupSchema);
-
-var
-AchievementSchema = new Schema({
-  title:        String,
-  description:  String,
-  glyph:        String,
-  bragWorthy:   Boolean,
-  notify:       Boolean,
-  required:     Boolean,
-  requireOrder: Number
-}),
-Achievement = mongoose.model('Achievement', AchievementSchema);
-
-AchievementSchema.statics = {
-  normalizePercentage: function (percent) {
-    percent = parseFloat(percent);
-    if(isNaN(percent)) return 0;
-    return Math.max(0, Math.min(1, percent));
-  },
-  seedUserRequired: function (user) {
-    return this.find({required: true})
-      .sort({requireOrder: 1})
-      .exec(function (err, docs) { // load all possible achievements
-        if(err) throw err;
-        if(!docs.length) return docs;
-        if(!user.achievements) throw new Error('User is missing achievements');
-
-        var // reindex user data for easy lookup
-        userAchievements = user.getAchievementIds(),
-        missingAchievements = docs.filter(function (achievement) {
-          return userAchievements.indexOf(String(achievement._id)) === -1;
-        });
-
-        missingAchievements.forEach(function (achievement) {
-          user.addAchievement(achievement);
-        });
-
-        return missingAchievements;
-      });
-  }
-};
-
-AchievementSchema.methods = {
-};
-
-var
-UserSchema = new Schema({
-  name: String,
-  email: String,
-  achievements: [{
-    achievement: {
-      type: Schema.Types.ObjectId,
-      ref: 'Achievement'
-    },
-    percentComplete: Number,
-    dateIssued: {
-      type: Date,
-      default: Date.now
-    },
-    dateCompleted: Date
-  }],
-  notifications: [{
-    cat: String,
-    title: String,
-    description: String,
-    acknowledged: Boolean
-  }],
-  log: [{
-    cat: String,
-    action: String,
-    data: Object,
-    time: {
-      type: Date,
-      default: Date.now
-    }
-  }]
-}),
-User = mongoose.model('User', UserSchema);
-
-UserSchema.statics = {
-  LOG_ACCOUNT:      'account',
-  ACCOUNT_CREATE:   'create',
-  ACCOUNT_UPDATE:   'update',
-  ACCOUNT_LOGIN:    'login',
-  ACCOUNT_LOGOUT:   'logout',
-  ACCOUNT_AGREETOS: 'tos',
-  ACCOUNT_CHANGEPW: 'change-password',
-
-  LOG_GROUP:        'group',
-  GROUP_CREATE:     'create',
-  GROUP_UPDATE:     'update',
-  GROUP_REMOVE:     'remove',
-  GROUP_JOIN:       'join',
-  GROUP_LEAVE:      'leave',
-  GROUP_INVITE:     'invite',
-  GROUP_INVITED:    'invited',
-  GROUP_RECRUIT:    'recruit',
-
-  LOG_BILLING:      'billing',
-  BILLING_ADD:      'add',
-  BILLING_UPDATE:   'update',
-  BILLING_REMOVE:   'remove',
-  BILLING_CHARGE:   'charge',
-  BILLING_ERROR:    'error'
-};
-
-UserSchema.methods = {
-
-  notify: function(category, title, description) {
-    this.notifications.push({
-      cat: category,
-      title: title,
-      description: description
-    })
-  },
-
-  unreadNotifications: function () {
-    return this.notifications
-      .filter(function (n) {
-        return !n.acknowledged;
-      });
-  },
-
-  markReadNotifications: function () {
-    this.unreadNotifications()
-      .forEach(function (n) {
-        n.acknowledged = true;
-      });
-  },
-
-  logEntry: function(category, action, data) {
-    this.log.push({
-      cat: category,
-      action: action,
-      data: data
-    })
-  },
-
-  checkAchievementComplete: function(achievement) {
-    if(achievement.percentComplete === 1 && !achievement.dateCompleted) {
-      achievement.dateCompleted = Date.now;
-    }
-
-    return achievement;
-  },
-
-  hasAchievement: function(achievementId) {
-    return !this.achievements.every(function (achiev) {
-      return !(achiev._id||achiev).equals(achievementId);
-    });
-  },
-
-  getAchievementIds: function() {
-    return user.achievements
-      .map(function (achievement) {
-        return String(achievement._id || achievement); // reduce to object id
-      });
-  },
-
-  addAchievement: function(achievement, percentComplete) {
-    var
-    normalPct = this.model('Achievement').normalizePercentage;
-
-    this.achievements.push(this.checkAchievementComplete({
-      achievement: achievement,
-      percentComplete: normalPct(percentComplete)
-    }));
-  },
-
-  setAchievementProgress: function(achievementId, percent, add) {
-    var
-    normalPct = this.model('Achievement').normalizePercentage;
-
-    return !this.achievements.each(function (achievement) {
-      var
-      objectId = achievement._id || achievement;
-
-      if(objectId.equals(achievementId)) {
-
-        achievement.percentComplete = normalPct(add
-          ? (achievement.percentComplete + percent)
-          : percent);
-
-        this.checkAchievementComplete(achievement);
-        return false;
-      }
-
-      return true;
-    });
-  }
-};
-
-//
-// test code
-//
-
-var
-testGroup = new Group({
-  name: 'Test Group'
-}),
-testUser1 = new User({
-  name: 'Test User 1',
-  email: 'test1@test.com'
-}),
-testUser2 = new User({
-  name: 'Test User 2',
-  email: 'test2@test.com'
-}),
-testAchievements = [
-  new Achievement({
-    title: 'Create a HookupJS account',
-    description: 'Successfully create an account with Hookup JS.',
-    notify: true
-  }),
-  new Achievement({
-    title: 'Login to account',
-    description: 'Successfully log in to your account.'
-  }),
-  new Achievement({
-    title: 'Link a Facebook account',
-    description: 'Successfully linked your Facebook account to your Hookup JS.',
-    notify: true
-  }),
-  new Achievement({
-    title: 'Create a group',
-    description: 'Successfully create a new group in your account.'
-  }),
-  new Achievement({
-    title: 'Invite a team member',
-    description: 'Successfully invite a user to your group.'
-  }),
-  new Achievement({
-    title: 'Invite 5 team members',
-    description: 'Successfully invite 5 team members to your group.'
-  }),
-  new Achievement({
-    title: 'Invite 25 team members',
-    description: 'Successfully invite 25 team members to your group.'
-  })
-];
-
-// user 1 signs up
-testUser1.logEntry(User.LOG_ACCOUNT, User.ACCOUNT_CREATE);
-
-// user 1 logs in
-testUser1.logEntry(User.LOG_ACCOUNT, User.ACCOUNT_LOGIN, {
-  ip:     '0.0.0.0',
-  device: 'browser'
-});
-
-// user 1 creates group
-testUser1.logEntry(User.LOG_GROUP, User.GROUP_CREATE, {
-  group:  testGroup._id
-});
-
-// user 1 invites user 2 (via email)
-testUser1.logEntry(User.LOG_GROUP, User.GROUP_INVITE, {
-  email:  'test2@test.com',
-  group:  testGroup._id
-});
-
-// user 2 signs up
-testUser2.logEntry(User.LOG_ACCOUNT, User.ACCOUNT_CREATE);
-
-//
-// In between these processes something magical has to happen.
-//
-
-// user 2 gets automatically invited to group (via email)
-testUser2.logEntry(User.LOG_GROUP, User.GROUP_INVITED, {
-  by_user: testUser1._id
-  group: testGroup._id
-});
-
-testUser2.logEntry(User.LOG_GROUP, User.GROUP_JOIN, {
-  group: testGroup._id
-});
-
-// user 1 gets recruitment notification?
-testUser1.logEntry(User.LOG_GROUP, User.GROUP_RECRUIT, {
-  user:   testUser2._id,
-  group:  testGroup._id
-});
-
-//
-testUser1.logEntry(User.LOG_ACCOUNT, User.ACCOUNT_LOGOUT);
-testUser2.logEntry(User.LOG_ACCOUNT, User.ACCOUNT_LOGOUT);
-
-*/
