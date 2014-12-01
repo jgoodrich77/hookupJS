@@ -3,26 +3,48 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
-var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
-  name: String,
-  email: { type: String, lowercase: true },
   role: {
     type: String,
     default: 'user'
   },
+  name: String,
+  email: {
+    type: String,
+    lowercase: true
+  },
+  birthday: Date,
+  gender: String,
   hashedPassword: String,
-  provider: String,
   salt: String,
-  facebook: {},
-  twitter: {},
-  google: {},
-  github: {},
+  facebook: {
+    id: String,
+    token: String
+  },
   active: {
     type: Boolean,
-    default: true
-  }
+    default: false
+  },
+  achievements: [{
+    achievement: {
+      type: Schema.Types.ObjectId,
+      ref: 'Achievement'
+    },
+    dateCompleted: {
+      type: Date,
+      default: Date.now
+    }
+  }],
+  notifications: [{
+    title: String,
+    description: String,
+    glyph: String,
+    acknowledged: {
+      type: Boolean,
+      default: false
+    }
+  }]
 });
 
 /**
@@ -40,76 +62,87 @@ UserSchema
   });
 
 // Public profile information
-UserSchema
-  .virtual('profile')
-  .get(function() {
-    return {
-      'name': this.name,
-      'role': this.role
-    };
-  });
+// UserSchema
+//   .virtual('profile')
+//   .get(function() {
+//     return {
+//       'name': this.name,
+//       'role': this.role
+//     };
+//   });
 
 // Non-sensitive info we'll be putting in the token
-UserSchema
-  .virtual('token')
-  .get(function() {
-    return {
-      '_id': this._id,
-      'role': this.role
-    };
-  });
+// UserSchema
+//   .virtual('token')
+//   .get(function() {
+//     return {
+//       '_id': this._id,
+//       'role': this.role
+//     };
+//   });
 
 /**
  * Validations
  */
 
 // Validate empty email
-UserSchema
-  .path('email')
-  .validate(function(email) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return email.length;
-  }, 'Email cannot be blank');
+// UserSchema
+//   .path('email')
+//   .validate(function(email) {
+//     if (authTypes.indexOf(this.provider) !== -1) return true;
+//     return email.length;
+//   }, 'Email cannot be blank');
 
-// Validate empty password
-UserSchema
-  .path('hashedPassword')
-  .validate(function(hashedPassword) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return hashedPassword.length;
-  }, 'Password cannot be blank');
+// // Validate empty password
+// UserSchema
+//   .path('hashedPassword')
+//   .validate(function(hashedPassword) {
+//     if (authTypes.indexOf(this.provider) !== -1) return true;
+//     return hashedPassword.length;
+//   }, 'Password cannot be blank');
 
-// Validate email is not taken
-UserSchema
-  .path('email')
-  .validate(function(value, respond) {
-    var self = this;
-    this.constructor.findOne({email: value}, function(err, user) {
-      if(err) throw err;
-      if(user) {
-        if(self.id === user.id) return respond(true);
-        return respond(false);
-      }
-      respond(true);
-    });
-}, 'The specified email address is already in use.');
+// // Validate email is not taken
+// UserSchema
+//   .path('email')
+//   .validate(function(value, respond) {
+//     var self = this;
+//     this.constructor.findOne({email: value}, function(err, user) {
+//       if(err) throw err;
+//       if(user) {
+//         if(self.id === user.id) return respond(true);
+//         return respond(false);
+//       }
+//       respond(true);
+//     });
+// }, 'The specified email address is already in use.');
 
-var validatePresenceOf = function(value) {
-  return value && value.length;
-};
+// var validatePresenceOf = function(value) {
+//   return value && value.length;
+// };
+
+// /**
+//  * Pre-save hook
+//  */
+// UserSchema
+//   .pre('save', function(next) {
+//     if (!this.isNew) return next();
+
+//     if (!validatePresenceOf(this.hashedPassword))
+//       next(new Error('Invalid password'));
+//     else
+//       next();
+//   });
 
 /**
- * Pre-save hook
+ * Statics
  */
-UserSchema
-  .pre('save', function(next) {
-    if (!this.isNew) return next();
-
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1)
-      next(new Error('Invalid password'));
-    else
-      next();
-  });
+UserSchema.statics = {
+  findByFacebookId: function (id, cols, callback) {
+    return this.findOne({
+      'facebook.id': id
+    }, cols, callback)
+  }
+};
 
 /**
  * Methods

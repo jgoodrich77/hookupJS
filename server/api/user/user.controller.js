@@ -1,9 +1,11 @@
 'use strict';
 
 var User = require('./user.model');
-var passport = require('passport');
 var config = require('../../config/environment');
 var jwt = require('jsonwebtoken');
+var requestUtils = require('../requestUtils');
+
+var facebook = require('../../components/facebook');
 
 var validationError = function(res, err) {
   return res.json(422, err);
@@ -98,4 +100,50 @@ exports.me = function(req, res, next) {
  */
 exports.authCallback = function(req, res, next) {
   res.redirect('/');
+};
+
+exports.facebookLogin = function(req, res, next) {
+  var
+  userId    = req.params.id,
+  userToken = req.body.token;
+
+  facebook.userInfo(userToken)
+    .then(function (fbResult) {
+
+      if(fbResult.id !== userId) {
+        return requestUtils.error(res, new Error('User ID does not match facebook access token.'));
+      }
+
+      User.findByFacebookId(userId, '-salt', function (err, user) {
+        if (err) return next(err);
+        if (!user) {
+
+          user = new User({ // create a new user with facebook user details
+            facebook: {
+              id: userId,
+              token: userToken
+            },
+            name: fbResult.name,
+            email: fbResult.email,
+            gender: fbResult.gender,
+            birthday: !!fbResult.birthday
+              ? new Date(fbResult.birthday)
+              : null
+          });
+        }
+
+        if(user.facebook.token !== userToken) { // update the token
+          user.facebook.token = userToken;
+        }
+
+        return user.save(function (err) {
+          if(err) return next(err);
+
+          requestUtils.data(res, { completed: !!user.hashedPassword });
+        });
+      });
+    })
+    .catch(function (err) {
+      requestUtils.error(res, err);
+    })
 };

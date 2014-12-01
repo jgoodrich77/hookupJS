@@ -9,6 +9,8 @@ var
 Q = require('q'),
 moment = require('moment'),
 User = require('../api/user/user.model'),
+UserLog = require('../api/user/user-log.model'),
+Achievement = require('../api/achievement/achievement.model'),
 Group = require('../api/group/group.model'),
 Service = require('../api/service/service.model'),
 Plan = require('../api/plan/plan.model'),
@@ -18,6 +20,106 @@ BillingMethod = require('../api/billing/method/method.model');
 //
 // Un-associated entries
 //
+
+function seedAchievements() {
+  var def = Q.defer(),
+  seed = [
+    [
+      'Recruit 3 new site members Achievement',
+      'Should be awarded for recruiting 3 members to the site.',
+      {glyph: 'achievement-locked'},
+      {glyph: 'achievement-unlocked'},
+      [{
+        trigger: Achievement.TARGET_MATCHEQMOREMUL,
+        target: {
+          category: UserLog.Category.group,
+          action: UserLog.Action.Group.invite,
+          detail: {
+            email: '$different'
+          }
+        },
+        multiplier: 3
+      },{
+        trigger: Achievement.TARGET_MATCHEQMOREMUL,
+        target: {
+          category: UserLog.Category.group,
+          action: UserLog.Action.Group.recruit,
+          detail: {
+            user: '$different'
+          }
+        },
+        multiplier: 3
+      }]
+    ],
+    [
+      'Invite 3 Members to the same group Achievement',
+      'Should be awarded for inviting 3 members to the same group.',
+      {glyph: 'achievement-locked'},
+      {glyph: 'achievement-unlocked'},
+      [{
+        trigger: Achievement.TARGET_MATCHEQMOREMUL,
+        target: {
+          category: UserLog.Category.group,
+          action: UserLog.Action.Group.invite,
+          detail: {
+            group: '$same',
+            email: '$different'
+          }
+        },
+        multiplier: 3
+      }]
+    ],
+    [
+      'Invite 10 Members Achievement',
+      'Should be awarded for inviting 10 members.',
+      {glyph: 'achievement-locked'},
+      {glyph: 'achievement-unlocked'},
+      [{
+        trigger: Achievement.TARGET_MATCHEQMOREMUL,
+        target: {
+          category: UserLog.Category.group,
+          action: UserLog.Action.Group.invite,
+          detail: {
+            email: '$different'
+          }
+        },
+        multiplier: 10
+      }]
+    ]
+  ];
+
+  Achievement
+    .find({})
+    .remove(function (err) {
+      if(err) {
+        return def.reject(err);
+      }
+
+      var dresult = Q([]);
+
+      seed.forEach(function (rec) {
+        dresult = dresult
+          .then(function (output) {
+            return Q.nfcall(Achievement.create.bind(Achievement), {
+                name: rec[0],
+                description: rec[1],
+                visual: {
+                  locked: rec[2],
+                  unlocked: rec[3]
+                },
+                conditions: rec[4]
+              }).then(function (rec) {
+                output.push(rec);
+                return output;
+              });
+          });
+      });
+
+      def.resolve(dresult);
+    });
+
+  return def.promise;
+}
 
 function seedUsers() {
   var defer = Q.defer();
@@ -34,12 +136,12 @@ function seedUsers() {
       console.log('seeding test users..');
 
       User.create({
-        provider: 'local',
-        name: 'Test User',
-        email: 'test@test.com',
-        password: 'test'
+        name: 'Hans Doller',
+        email: 'kryo2k@gmail.com',
+        facebook: {
+          id: '10153031522099245'
+        }
       }, {
-        provider: 'local',
         role: 'admin',
         name: 'Admin',
         email: 'admin@admin.com',
@@ -390,13 +492,13 @@ function seedGroups(plans, bSchedule, bMethod) {
           date: dateLastMonth,
           amount: 1000
         }],
-        invites: [{
+        invites: [/*{
           code: 'temporary-dev-code-0001',
           sent: false,
           name: 'Hans Doller',
           email: 'kryo2k@gmail.com',
           relationship: 'owner'
-        }]
+        }*/]
       }, {
         name: 'Silver Group',
         description: 'Silver test group',
@@ -607,9 +709,10 @@ Q.allSettled([ // create fixtures
   seedPlans(),
   seedBillingSchedules(),
   seedBillingMethods(),
+  seedAchievements(),
   seedUsers(),
   seedServices()
-]).spread(function (seededPlans, seededBillingSchedules, seededBillingMethods, seededUsers, seededServices) {
+]).spread(function (seededPlans, seededBillingSchedules, seededBillingMethods, seededAchievements, seededUsers, seededServices) {
 
   // seed groups with other seeded fixtures.
   return seedGroups(seededPlans.value, seededBillingSchedules.value, seededBillingMethods.value)

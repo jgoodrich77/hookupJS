@@ -32,16 +32,6 @@ angular.module('auditpagesApp')
     }*/];
 
     $scope.menuRight = [{
-      'caption': 'Sign up',
-      'title': 'Create a new account',
-      'state': 'app.signup',
-      'showIf': loggedOut
-    },{
-      'caption': 'Login',
-      'title': 'Login to your existing account',
-      'state': 'app.login',
-      'showIf': loggedOut
-    },,{
       'caption': 'Administration',
       'title': 'Administration page',
       'state': 'app.admin',

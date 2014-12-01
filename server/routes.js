@@ -8,15 +8,13 @@ var errors = require('./components/errors');
 
 module.exports = function(app) {
 
-  // authentication middleware
-  app.use('/auth', require('./auth'));
-
   // api middleware
   app.use('/api/plans',             require('./api/plan'));
   app.use('/api/billing-methods',   require('./api/billing/method'));
   app.use('/api/billing-schedules', require('./api/billing/schedule'));
   app.use('/api/groups',            require('./api/group'));
   app.use('/api/service',           require('./api/service'));
+  app.use('/api/achievements',      require('./api/achievement'));
   app.use('/api/users',             require('./api/user'));
 
   // All undefined asset or api routes should return a 404

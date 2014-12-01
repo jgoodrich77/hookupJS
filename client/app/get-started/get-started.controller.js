@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('GetStartedCtrl', function ($log, $rootScope, $fb, $scope) {
+.controller('GetStartedCtrl', function ($log, $rootScope, $fb, $user, $scope) {
 
   //
   // $rootScope.hideNavbar = true;
@@ -36,16 +36,31 @@ angular
   //   });
   // });
 
-  // $rootScope.$on('$fb:status_connected', function (evt) {
-  //   var
-  //   auth          = $fb.currentAuth(),
-  //   permissions   = $fb.currentPermissions(),
-  //   accessToken   = auth.accessToken,
-  //   signedRequest = auth.signedRequest,
-  //   userId        = auth.userID;
+  $rootScope.$on('$fb:status_connected', function (evt) {
+    var
+    auth          = $fb.currentAuth(),
+    permissions   = $fb.currentPermissions(),
+    accessToken   = auth.accessToken,
+    signedRequest = auth.signedRequest,
+    userId        = auth.userID;
 
-  //   $log.debug('User ID: (%s)', userId);
-  // });
+    $log.debug('User ID: (%s)', userId);
+
+    // check if a user has already been setup for this facebook account:
+    $user.facebookLogin({id: userId, token: auth.accessToken})
+      .then(function (resp) {
+
+        if(resp.signedUp) {
+          $log.debug('User (%s) has already signed up to HookupJS', auth.userID);
+        }
+        else {
+          $log.debug('User (%s) has not signed up to HookupJS', auth.userID);
+        }
+      })
+      .catch(function (err) {
+        $log.error('got back error:', err);
+      });
+  });
 
   $scope.fbCurrentStatus    = $fb.currentStatus;
   $scope.fbIsReady          = $fb.isReady;

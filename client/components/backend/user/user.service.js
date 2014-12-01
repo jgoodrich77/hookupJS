@@ -43,6 +43,13 @@ angular
       params: {
         resource: 'create'
       }
+    },
+    facebookLogin: {
+      method: 'PUT',
+      params: {
+        resource: 'facebook',
+        id: '@id'
+      }
     }
   });
 
