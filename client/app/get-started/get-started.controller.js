@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('MainCtrl', function ($log, $rootScope, $fb, $scope) {
+.controller('GetStartedCtrl', function ($log, $rootScope, $fb, $scope) {
 
   //
   // $rootScope.hideNavbar = true;
