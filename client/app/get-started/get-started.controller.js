@@ -7,35 +7,6 @@ angular
   //
   // $rootScope.hideNavbar = true;
 
-  // [
-  //   'auth.login',
-  //   'auth.logout',
-  //   'auth.prompt',
-  //   'auth.sessionChange',
-  //   'auth.statusChange',
-  //   'auth.authResponseChange',
-  //   'xfbml.render',
-  //   'edge.create',
-  //   'edge.remove',
-  //   'comment.create',
-  //   'comment.remove'
-  // ].forEach(function (v) {
-  //   $rootScope.$on('Facebook:'+v, function () {
-  //     $log.debug('Facebook', v, arguments);
-  //   });
-  // });
-
-  // [
-  //   'ready',
-  //   'status_connected',
-  //   'status_not_authorized',
-  //   'status_unknown'
-  // ].forEach(function (v) {
-  //   $rootScope.$on('$fb:'+v, function () {
-  //     $log.debug('$fb', v, arguments);
-  //   });
-  // });
-
   $rootScope.$on('$fb:status_connected', function (evt) {
     var
     auth          = $fb.currentAuth(),
@@ -44,17 +15,16 @@ angular
     signedRequest = auth.signedRequest,
     userId        = auth.userID;
 
-    $log.debug('User ID: (%s)', userId);
-
     // check if a user has already been setup for this facebook account:
     $user.facebookLogin({id: userId, token: auth.accessToken})
       .then(function (resp) {
+        $scope.user = {
+          id: resp.id,
+          name: resp.name
+        };
 
-        if(resp.signedUp) {
-          $log.debug('User (%s) has already signed up to HookupJS', auth.userID);
-        }
-        else {
-          $log.debug('User (%s) has not signed up to HookupJS', auth.userID);
+        if(resp.step > -1) {
+          $scope.initSetupStep(resp.step);
         }
       })
       .catch(function (err) {
@@ -74,6 +44,9 @@ angular
   }
 
   $scope.fbDeAuthorize = function() {
+    $scope.user = null;
+    $scope.setup = null;
+
     return $fb.deAuthorize()
       .catch(fbErrorHandler);
   };
@@ -87,11 +60,81 @@ angular
   $scope.fbLogin = function() {
     return $fb.authenticate()
       .then(function (result) {
-
-        console.log('result:', result);
-
         return $fb.reloadState();
       })
       .catch(fbErrorHandler);
+  };
+
+  $scope.form = {
+  };
+
+  $scope.initSetupStep = function(step) {
+
+    if($scope.setup === undefined) {
+      $scope.setup = {};
+    }
+
+    $scope.setup.step = step;
+
+    switch(step) {
+      case 1:
+      break;
+      case 2:
+
+      $scope.form.loading = true;
+
+      $fb.getObjects()
+        .then(function (result) {
+          $scope.form.facebookObjects = result;
+          $scope.form.hasObjects = !!result.data && (result.data.length > 0);
+          return result;
+        })
+        .catch(fbErrorHandler)
+        .finally(function(){
+          $scope.form.loading = false;
+        });
+
+      break;
+      case 3:
+      break;
+    }
+  };
+
+  $scope.chooseFacebookObject = function(item) {
+
+    $scope.formError = false;
+
+    $user.setupFacebookObject({
+      id: $scope.user.id,
+      objectId: item.id,
+      accessToken: item.access_token
+    })
+      .then(function (result) {
+        if(result.step > -1 && $scope.setup.step === 2) {
+          $scope.initSetupStep(result.step);
+        }
+      })
+      .catch(function (err) {
+        $scope.formError = err;
+      });
+
+  };
+
+  $scope.submitPassword = function(form) {
+
+    $scope.formError = false;
+
+    $user.setupPassword({
+      id: $scope.user.id,
+      password: $scope.form.password
+    })
+      .then(function (result) {
+        if(result.step > -1 && $scope.setup.step === 1) {
+          $scope.initSetupStep(result.step);
+        }
+      })
+      .catch(function (err) {
+        $scope.formError = err;
+      });
   };
 });

@@ -136,16 +136,12 @@ function seedUsers() {
       console.log('seeding test users..');
 
       User.create({
-        name: 'Hans Doller',
-        email: 'kryo2k@gmail.com',
-        facebook: {
-          id: '10153031522099245'
-        }
+        name: 'Test User',
+        email: 'test@hookupjs.com'
       }, {
         role: 'admin',
-        name: 'Admin',
-        email: 'admin@admin.com',
-        password: 'admin'
+        name: 'Admin User',
+        email: 'admin@hookupjs.com'
       }, function(err, user1, user2) {
           if(err) {
             return defer.reject(err);
@@ -705,30 +701,30 @@ function seedUsersGroups(users, groups) {
   ]);
 }
 
-Q.allSettled([ // create fixtures
-  seedPlans(),
-  seedBillingSchedules(),
-  seedBillingMethods(),
-  seedAchievements(),
-  seedUsers(),
-  seedServices()
-]).spread(function (seededPlans, seededBillingSchedules, seededBillingMethods, seededAchievements, seededUsers, seededServices) {
+// Q.allSettled([ // create fixtures
+//   seedPlans(),
+//   seedBillingSchedules(),
+//   seedBillingMethods(),
+//   seedAchievements(),
+//   seedUsers(),
+//   seedServices()
+// ]).spread(function (seededPlans, seededBillingSchedules, seededBillingMethods, seededAchievements, seededUsers, seededServices) {
 
-  // seed groups with other seeded fixtures.
-  return seedGroups(seededPlans.value, seededBillingSchedules.value, seededBillingMethods.value)
-    .then(function (seededGroups) {
-      return seedGroupsServices(seededGroups, seededServices.value)
-        .then(function (modifiedGroups) {
-          return seedUsersGroups(seededUsers.value, seededGroups)
-        })
-        .then(function (modifiedUsers) {
-          return [seededPlans.value, seededBillingSchedules.value, seededBillingMethods.value, seededUsers.value, seededServices.value, seededGroups];
-        });
-    });
-})
-.then(function (results) {
-  console.log('All data seeded successfully');
-})
-.catch(function (err){
-  console.error(err.stack || err);
-}).done();
+//   // seed groups with other seeded fixtures.
+//   return seedGroups(seededPlans.value, seededBillingSchedules.value, seededBillingMethods.value)
+//     .then(function (seededGroups) {
+//       return seedGroupsServices(seededGroups, seededServices.value)
+//         .then(function (modifiedGroups) {
+//           return seedUsersGroups(seededUsers.value, seededGroups)
+//         })
+//         .then(function (modifiedUsers) {
+//           return [seededPlans.value, seededBillingSchedules.value, seededBillingMethods.value, seededUsers.value, seededServices.value, seededGroups];
+//         });
+//     });
+// })
+// .then(function (results) {
+//   console.log('All data seeded successfully');
+// })
+// .catch(function (err){
+//   console.error(err.stack || err);
+// }).done();

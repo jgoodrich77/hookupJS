@@ -171,6 +171,18 @@ angular
       });
   }
 
+  function getObjects() {
+    var
+    defer = $q.defer();
+
+    Facebook.api('/me/accounts', function (response) {
+      if(checkResponseError(response)) return defer.reject(new Error(getErrorMsg(response, MSG_INVAL)));
+      defer.resolve(response);
+    });
+
+    return defer.promise;
+  }
+
   applyFacebookResult(); // reset
 
   var
@@ -190,6 +202,7 @@ angular
 
   return {
     getStatus: getStatus,
+    getObjects: getObjects,
     authenticate: authenticate,
     deAuthorize: deAuthorize,
     reloadState: reloadState,

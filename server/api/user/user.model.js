@@ -18,14 +18,23 @@ var UserSchema = new Schema({
   gender: String,
   hashedPassword: String,
   salt: String,
+  facebookObj: {
+    id: String,
+    token: String
+  },
   facebook: {
     id: String,
     token: String
+  },
+  setupStep: {
+    type: Number,
+    default: 1
   },
   active: {
     type: Boolean,
     default: false
   },
+  activationCode: String,
   achievements: [{
     achievement: {
       type: Schema.Types.ObjectId,
@@ -71,15 +80,30 @@ UserSchema
 //     };
 //   });
 
-// Non-sensitive info we'll be putting in the token
-// UserSchema
-//   .virtual('token')
-//   .get(function() {
-//     return {
-//       '_id': this._id,
-//       'role': this.role
-//     };
-//   });
+// Get the current setup progress for this user
+UserSchema
+  .virtual('setupStatus')
+  .get(function() {
+
+    // 1) Does user have a password setup on HookupJS?
+    // if(!user.hashedPassword) {
+    //   result.setupStep = 1;
+    // }
+    // 2) Has user chosen which facebook page to delagate yet?
+    // else if () {
+    // }
+    // 3) Has the user said thank you on this page yet?
+    // else if () {
+    // }
+
+    // ...
+
+    return {
+      'id': this._id,
+      'name': this.name,
+      'step': this.setupStep
+    };
+  });
 
 /**
  * Validations
@@ -141,13 +165,54 @@ UserSchema.statics = {
     return this.findOne({
       'facebook.id': id
     }, cols, callback)
+  },
+
+  createFromFacebook: function(userId, userToken, fbMetaData) {
+    return new this({ // create a new user with facebook user details
+      active: true, // facebook accounts are immediately activated (but missing password)
+      facebook: {
+        id: userId,
+        token: userToken
+      },
+      name: fbMetaData.name,
+      email: fbMetaData.email,
+      gender: fbMetaData.gender,
+      birthday: !!fbMetaData.birthday
+        ? new Date(fbMetaData.birthday)
+        : null
+    });
   }
+};
+
+var compareDates = function(v1, v2) {
+  return Date.parse(v1) === Date.parse(v2);
 };
 
 /**
  * Methods
  */
 UserSchema.methods = {
+
+  updateFromFacebook: function(userToken, fbMetaData) {
+    if(!userToken || !fbMetaData) return;
+
+    if(this.facebook.token !== userToken) { // update the token?
+      this.facebook.token = userToken;
+    }
+
+    if(!!fbMetaData.name && this.facebook.name !== fbMetaData.name) { // any other changed user info
+      this.name = fbMetaData.name;
+    }
+    if(!!fbMetaData.email && this.facebook.email !== fbMetaData.email) {
+      this.email = fbMetaData.email;
+    }
+    if(!!fbMetaData.gender && this.facebook.gender !== fbMetaData.gender) {
+      this.gender = fbMetaData.gender;
+    }
+    if(!!fbMetaData.birthday && !compareDates(this.facebook.birthday, fbMetaData.birthday)) {
+      this.birthday = new Date(fbMetaData.birthday);
+    }
+  },
   /**
    * Authenticate - check if the passwords are the same
    *
@@ -167,6 +232,18 @@ UserSchema.methods = {
    */
   makeSalt: function() {
     return crypto.randomBytes(16).toString('base64');
+  },
+
+  /**
+   * Make user activation code
+   *
+   * @return {String}
+   * @api public
+   */
+  makeActivationCode: function() {
+    var sum = crypto.createHash('sha1');
+    sum.update(crypto.randomBytes(8));
+    return sum.digest('hex');
   },
 
   /**

@@ -50,6 +50,20 @@ angular
         resource: 'facebook',
         id: '@id'
       }
+    },
+    setupPassword: {
+      method: 'PUT',
+      params: {
+        resource: 'setup-password',
+        id: '@id'
+      }
+    },
+    setupFacebookObject: {
+      method: 'PUT',
+      params: {
+        resource: 'setup-fb-object',
+        id: '@id'
+      }
     }
   });
 

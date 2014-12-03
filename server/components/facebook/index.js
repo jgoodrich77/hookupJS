@@ -28,6 +28,11 @@ module.exports = {
       fields: ['id','access_token','category','name'].join(',')
     });
   },
+  pageInfo: function(pageId, accessToken) {
+    return cli.get(pageId, {
+      access_token: accessToken
+    });
+  },
   post: function(objectId, objectAccessToken, message) {
     return cli.post(path.join('/',objectId,'feed'), {
       access_token: objectAccessToken

@@ -10,29 +10,98 @@ fbHasRequiredPerms: {{fbHasRequiredPerms() | json}}
 fbHasAllPerms: {{fbHasAllPerms() | json}}
 </pre> -->
 
-    <div ng-switch="fbIsReady()">
+    <div ng-if="!fbIsReady() || (fbIsActive() && fbHasRequiredPerms() && !user)">
+      <h2>Please wait..</h2>
+      <p class="lead" ng-if="!fbIsReady()">Checking your connection with Facebook..</p>
+      <p class="lead" ng-if="fbIsReady() && !user">Loading your HookupJS account..</p>
+    </div>
 
-      <div ng-switch-when="true" class="text-center">
-        <div ng-if="fbIsActive() && fbHasRequiredPerms()">
-          <h2>Yay!</h2>
-          <p class="lead">Click the button below to access your amazing dashboard.</p>
+    <div ng-if="fbIsReady()">
 
-          <p ng-if="!fbHasAllPerms()">You're currently restricting some of the optional permissions we use. This could impact functionality. <a href ng-click="fbReAuthorize()">Click here to fix this message.</a></p>
-          <button class="btn btn-lg btn-primary" ng-click="dashboard()">Access Amazing Dashboard!</button>
-          <button ng-if="fbHasAllPerms()" class="btn btn-lg btn-danger" ng-click="fbDeAuthorize()">Uninstall</button>
+      <div ng-if="fbIsActive() && fbHasRequiredPerms() && !!user">
+
+        <!-- <pre ng-bind="user | json"></pre>
+        <pre ng-bind="setup | json"></pre>
+        <button class="btn btn-lg btn-danger" type="button" ng-click="fbDeAuthorize()">Cancel</button> -->
+
+        <p ng-if="!fbHasAllPerms()">You're currently restricting some of the optional permissions we use. This could impact functionality. <a href ng-click="fbReAuthorize()">Click here to fix this message.</a></p>
+
+        <div ng-if="!!setup" ng-switch="setup.step">
+          <h2>Hello {{user.name}}!</h2>
+          <p>You're almost there, we just need a little more information to finish setting up your account.</p>
+
+          <div ng-switch-when="1">
+            <h3>Choose a password for HookupJS</h3>
+            <p>This is the password you will use to access HookupJS. This is to protect your account from misuse.</p>
+
+            <form class="form" name="passwordForm" novalidate ng-submit="submitPassword(passwordForm)">
+
+              <error-display
+                error-title="formError.statusText||'Load Error'"
+                error-message="formError.data.message||'Problem while loading..'"
+                error-detail="formError"
+                ng-if="formError"
+              ></error-display>
+
+              <dl class="form-group">
+                <dt>Password</dt>
+                <dd><input type="PASSWORD" class="form-control" name="password" required ng-minlength="6" ng-model="form.password" /><p class="text-danger" ng-if="passwordForm.password.$error.minlength">Password must be longer than 5 characters.</p></dd>
+              </dl>
+
+              <dl class="form-group">
+                <dt>Confirm Password</dt>
+                <dd><input type="PASSWORD" class="form-control" name="confirmPassword" required ng-model="form.confirmPassword" must-match="form.password" /><p class="text-danger" ng-if="passwordForm.confirmPassword.$error.matches">The passwords you supplied do not match</p></dd>
+              </dl>
+
+              <div class="form-group text-right">
+                <button class="btn btn-lg btn-primary" type="SUBMIT" ng-disabled="passwordForm.$invalid">Set Password</button>
+              </div>
+            </form>
+          </div>
+
+          <div ng-switch-when="2">
+
+            <div ng-if="form.loading">
+              <h3>Loading Facebook Pages</h3>
+              <p class="text-muted">Please wait, loading your available Facebook pages.</p>
+            </div>
+
+            <div ng-if="!form.loading">
+              <div class="text-danger" ng-if="!form.hasObjects">
+                <h3>No Facebook objects found</h3>
+                <p>It seems like there are no pages associated with this Facebook account! In order to get the most out of HookupJS you need at least one Facebook Page. Go ahead and create one, and then come back!</p>
+              </div>
+
+              <div ng-if="form.hasObjects">
+                <h3>Click the page you wish to delagate</h3>
+
+                <div class="list-group">
+                  <a class="list-group-item" href ng-repeat="item in form.facebookObjects.data" ng-click="chooseFacebookObject(item)">
+                    <h4 class="list-group-item-heading" ng-bind="item.name"></h4>
+                    <p class="list-group-item-text text-muted" ng-bind="item.category"></p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div ng-switch-when="3">
+            <h3>Setup Step 3 / 3</h3>
+            <p>Bla bla bla bla bla ...</p>
+          </div>
         </div>
 
-        <div ng-if="fbIsNoAuth() || !fbHasRequiredPerms()">
-          <h2>Get Started!</h2>
-          <p class="lead">Click the button below to login to your fb.</p>
-
-          <button class="btn btn-lg btn-danger" ng-click="fbLogin()">Click Here</button>
+        <div ng-if="!setup">
+          <h2>Yay!</h2>
+          <p class="lead">Click the button below to access your amazing dashboard.</p>
         </div>
       </div>
 
-      <div ng-switch-when="false">
-        <h2>Please wait..</h2>
-        <p class="lead">Checking your connection with Facebook.</p>
+      <div ng-if="fbIsNoAuth() || !fbHasRequiredPerms()">
+        <h2>Get Started!</h2>
+        <p class="lead">Click the button below to login to your fb.</p>
+
+        <button class="btn btn-lg btn-primary" ng-click="fbLogin()">Click Here</button>
       </div>
     </div>
   </div>

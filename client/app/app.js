@@ -43,10 +43,6 @@ angular.module('auditpagesApp', [
 
   $locationProvider.html5Mode(true);
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-  $httpProvider.interceptors.push('authInterceptor');
-
-   // Set your appId through the setAppId method or
-   // use the shortcut in the initialize method directly.
    FacebookProvider.init('1508937439378506');
 })
 
@@ -59,31 +55,6 @@ angular.module('auditpagesApp', [
       }
 
       return redirectTo;
-    }
-  };
-})
-
-.factory('authInterceptor', function ($rootScope, $q, $cookieStore, $location) {
-  return {
-    // Add authorization token to headers
-    request: function (config) {
-      config.headers = config.headers || {};
-      if ($cookieStore.get('token')) {
-        config.headers.Authorization = 'Bearer ' + $cookieStore.get('token');
-      }
-      return config;
-    },
-
-    // Intercept 401s and redirect you to login
-    responseError: function(response) {
-      if(response.status === 401) {
-        $location.path('/login');
-        $cookieStore.remove('token');
-        return $q.reject(response);
-      }
-      else {
-        return $q.reject(response);
-      }
     }
   };
 })
