@@ -51,6 +51,20 @@ angular
         id: '@id'
       }
     },
+    setupFinalize: {
+      method: 'PUT',
+      params: {
+        resource: 'setup-finalize',
+        id: '@id'
+      }
+    },
+    setupToSAgreement: {
+      method: 'PUT',
+      params: {
+        resource: 'setup-tos',
+        id: '@id'
+      }
+    },
     setupPassword: {
       method: 'PUT',
       params: {

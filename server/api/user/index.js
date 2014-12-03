@@ -16,5 +16,7 @@ var router = express.Router();
 router.put('/facebook/:id', controller.facebookLogin);
 router.put('/setup-password/:id', controller.setupPassword);
 router.put('/setup-fb-object/:id', controller.setupFacebookObject);
+router.put('/setup-tos/:id', controller.setupToS);
+router.put('/setup-finalize/:id', controller.setupFinalize);
 
 module.exports = router;

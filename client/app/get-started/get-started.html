@@ -1,15 +1,6 @@
 <div class="container">
   <div class="row">
 
-<!-- <pre>
-fbIsReady: {{fbIsReady() | json}}
-fbCurrentStatus: {{fbCurrentStatus() | json}}
-fbIsActive: {{fbIsActive() | json}}
-fbIsNoAuth: {{fbIsNoAuth() | json}}
-fbHasRequiredPerms: {{fbHasRequiredPerms() | json}}
-fbHasAllPerms: {{fbHasAllPerms() | json}}
-</pre> -->
-
     <div ng-if="!fbIsReady() || (fbIsActive() && fbHasRequiredPerms() && !user)">
       <h2>Please wait..</h2>
       <p class="lead" ng-if="!fbIsReady()">Checking your connection with Facebook..</p>
@@ -20,28 +11,27 @@ fbHasAllPerms: {{fbHasAllPerms() | json}}
 
       <div ng-if="fbIsActive() && fbHasRequiredPerms() && !!user">
 
-        <!-- <pre ng-bind="user | json"></pre>
-        <pre ng-bind="setup | json"></pre>
-        <button class="btn btn-lg btn-danger" type="button" ng-click="fbDeAuthorize()">Cancel</button> -->
-
         <p ng-if="!fbHasAllPerms()">You're currently restricting some of the optional permissions we use. This could impact functionality. <a href ng-click="fbReAuthorize()">Click here to fix this message.</a></p>
 
         <div ng-if="!!setup" ng-switch="setup.step">
-          <h2>Hello {{user.name}}!</h2>
-          <p>You're almost there, we just need a little more information to finish setting up your account.</p>
+
+          <div ng-if="setup.step < 3">
+            <h2>Hello {{user.name}}!</h2>
+            <p>You're almost there, we just need a little more information to finish setting up your account.</p>
+          </div>
+
+          <error-display
+            error-title="formError.statusText||'Load Error'"
+            error-message="formError.data.message||'Problem while loading..'"
+            error-detail="formError"
+            ng-if="formError"
+          ></error-display>
 
           <div ng-switch-when="1">
             <h3>Choose a password for HookupJS</h3>
             <p>This is the password you will use to access HookupJS. This is to protect your account from misuse.</p>
 
             <form class="form" name="passwordForm" novalidate ng-submit="submitPassword(passwordForm)">
-
-              <error-display
-                error-title="formError.statusText||'Load Error'"
-                error-message="formError.data.message||'Problem while loading..'"
-                error-detail="formError"
-                ng-if="formError"
-              ></error-display>
 
               <dl class="form-group">
                 <dt>Password</dt>
@@ -86,14 +76,43 @@ fbHasAllPerms: {{fbHasAllPerms() | json}}
           </div>
 
           <div ng-switch-when="3">
-            <h3>Setup Step 3 / 3</h3>
-            <p>Bla bla bla bla bla ...</p>
+            <h3>Terms of Service</h3>
+
+            <div class="well terms-and-conditions">
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec risus nunc, lobortis pharetra pellentesque molestie, blandit eget velit. Nullam posuere nulla vel enim bibendum ornare. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at ipsum risus. Sed ultricies euismod ligula a convallis. Quisque ut mi a magna volutpat aliquam sit amet venenatis est. Donec sit amet ante a ante tempus tempor eget ac odio. Praesent ullamcorper pretium neque vel maximus. In non eros non elit malesuada pharetra sed ac justo. Ut a eleifend quam, at viverra justo. Nam quis dui vitae metus pharetra facilisis. Aenean velit ipsum, commodo a lectus ac, lobortis molestie felis.</p>
+
+              <p>Aliquam sed sollicitudin orci. Praesent eget rutrum quam. Morbi vitae aliquam augue. Proin et hendrerit est, rhoncus fermentum ante. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque fringilla ex commodo, cursus elit quis, faucibus turpis. Etiam sit amet augue enim. Vivamus et porta enim, a sollicitudin nibh. Nunc eu leo justo. Morbi at lorem ullamcorper, tempus quam et, elementum ante. Praesent congue consectetur dignissim. Donec imperdiet ex ut mattis sollicitudin. Mauris eu lacinia diam.</p>
+
+              <p>Phasellus ultricies urna nisi, ultricies interdum turpis tristique a. Mauris turpis justo, viverra in metus vitae, interdum lobortis purus. Donec ut velit commodo, efficitur ligula consectetur, vestibulum mi. Donec ac enim efficitur orci vulputate molestie. Nam quis augue sollicitudin, rhoncus enim eget, sollicitudin augue. Aliquam sed eros augue. Fusce quis lectus quis velit sodales dignissim. Cras eget egestas lorem. Ut vitae orci consectetur, pharetra mi eu, malesuada nibh. Nunc tincidunt ex eu quam luctus porta. Aliquam tempor fermentum nisi ac pulvinar. Morbi id mollis justo, vitae aliquet sapien. Phasellus id mollis arcu. Nam vulputate quis massa a mattis.</p>
+
+              <p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur posuere arcu non felis condimentum, vitae dapibus ligula ullamcorper. Aenean lobortis ex eu quam elementum, non interdum ex ultricies. Ut non eros tristique, egestas arcu blandit, sodales sapien. Duis nec velit a risus sollicitudin facilisis. Cras a dui consequat, ullamcorper tortor a, lobortis justo. Morbi vestibulum justo id sem ultricies vestibulum. Nullam vitae commodo augue, ut feugiat dui.</p>
+
+              <p>Aenean et libero egestas, molestie nibh vitae, accumsan erat. Aliquam eget egestas dolor. In ullamcorper arcu libero, eleifend bibendum urna dignissim at. Maecenas faucibus massa id arcu aliquam, sit amet egestas enim porta. Mauris posuere mattis tortor, vel porttitor metus commodo quis. Vestibulum a ultricies magna. Donec sodales efficitur neque sed scelerisque. Nullam massa tellus, blandit quis tristique vel, dignissim eget massa. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus non lectus malesuada, interdum nisi ac, euismod nunc. Pellentesque nec commodo nisl, at eleifend justo. In malesuada sodales sapien ut scelerisque. Phasellus tempus elementum augue vel volutpat. Vestibulum viverra auctor nisi et imperdiet.</p>
+
+              <p>Morbi suscipit lacinia rutrum. Donec tortor lacus, posuere vel nisi a, ullamcorper iaculis odio. Pellentesque dictum sed nisi eget gravida. Morbi facilisis, tortor vitae commodo suscipit, neque ligula mattis ipsum, mattis molestie erat metus eu est. Integer iaculis vitae sem sit amet tristique. Mauris mollis lorem nec nisl posuere, ut aliquet massa fermentum. Curabitur semper pellentesque pretium. Mauris eu nisi tortor. In arcu quam, rhoncus eget posuere vel, viverra eu dolor. Aliquam erat volutpat. Mauris posuere nisl non leo ullamcorper, accumsan placerat massa interdum. Aenean ut lacinia urna.</p>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-lg pull-right" ng-click="setupTermsAgreement(form.agreesWithTerms)" ng-disabled="!form.agreesWithTerms">Proceed</button>
+
+            <label><input type="checkbox" ng-model="form.agreesWithTerms" /> <span>I agree with the above terms and conditions.</span></label>
+
+            <div class="clearfix"></div>
+
+          </div>
+
+          <div ng-switch-when="4" class="text-center">
+            <h2>Congratulations {{user.name}}!</h2>
+            <p>You now have your account setup on HookupJS, click finish and let's get started!</p>
+
+            <button type="button" class="btn btn-primary btn-lg" ng-click="setupFinalize()">Finish</button>
           </div>
         </div>
 
-        <div ng-if="!setup">
-          <h2>Yay!</h2>
-          <p class="lead">Click the button below to access your amazing dashboard.</p>
+        <div ng-if="!setup" class="text-center">
+          <h2>You're all set up!</h2>
+          <p class="lead">Your account is all ready to get started. To access your amazing dashboard, click the button below!</p>
+
+          <a class="btn btn-primary btn-lg" ui-sref="app.account.dashboard">Amazing Dashboard</a>
         </div>
       </div>
 

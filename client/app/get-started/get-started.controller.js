@@ -7,7 +7,7 @@ angular
   //
   // $rootScope.hideNavbar = true;
 
-  $rootScope.$on('$fb:status_connected', function (evt) {
+  function loadFacebookUser() {
     var
     auth          = $fb.currentAuth(),
     permissions   = $fb.currentPermissions(),
@@ -30,7 +30,13 @@ angular
       .catch(function (err) {
         $log.error('got back error:', err);
       });
-  });
+  }
+
+  $rootScope.$on('$fb:status_connected', loadFacebookUser);
+
+  if($fb.isReady()) {
+    loadFacebookUser();
+  }
 
   $scope.fbCurrentStatus    = $fb.currentStatus;
   $scope.fbIsReady          = $fb.isReady;
@@ -77,8 +83,6 @@ angular
     $scope.setup.step = step;
 
     switch(step) {
-      case 1:
-      break;
       case 2:
 
       $scope.form.loading = true;
@@ -95,9 +99,40 @@ angular
         });
 
       break;
-      case 3:
-      break;
     }
+  };
+
+  $scope.setupFinalize = function() {
+    $scope.formError = false;
+
+    $user.setupFinalize({
+      id: $scope.user.id
+    })
+      .then(function (result) {
+        $scope.setup = null;
+        return result;
+      })
+      .catch(function (err) {
+        $scope.formError = err;
+      });
+  };
+
+  $scope.setupTermsAgreement = function(agree) {
+    if(!agree) return;
+
+    $scope.formError = false;
+
+    $user.setupToSAgreement({
+      id: $scope.user.id
+    })
+      .then(function (result) {
+        if(result.step > -1 && $scope.setup.step === 3) {
+          $scope.initSetupStep(result.step);
+        }
+      })
+      .catch(function (err) {
+        $scope.formError = err;
+      });
   };
 
   $scope.chooseFacebookObject = function(item) {
@@ -117,7 +152,6 @@ angular
       .catch(function (err) {
         $scope.formError = err;
       });
-
   };
 
   $scope.submitPassword = function(form) {

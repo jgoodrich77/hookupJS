@@ -34,6 +34,7 @@ var UserSchema = new Schema({
     type: Boolean,
     default: false
   },
+  agreeToS: Date,
   activationCode: String,
   achievements: [{
     achievement: {
