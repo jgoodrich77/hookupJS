@@ -139,7 +139,7 @@ exports.setupFinalize = function(req, res, next) {
 
       return user.save(function (err) {
         if(err) return next(err);
-        requestUtils.ok(res);
+        requestUtils.data(res, user.setupStatus);
       });
     })
     .catch(next);
