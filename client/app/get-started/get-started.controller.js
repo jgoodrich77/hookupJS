@@ -2,42 +2,59 @@
 
 angular
 .module('auditpagesApp')
-.controller('GetStartedCtrl', function ($log, $rootScope, $fb, $user, $scope) {
+.controller('GetStartedCtrl', function ($rootScope, $fb, $user, $scope, $log, Auth) {
 
   //
   // $rootScope.hideNavbar = true;
 
-  function loadFacebookUser() {
-    var
-    auth          = $fb.currentAuth(),
-    permissions   = $fb.currentPermissions(),
-    accessToken   = auth.accessToken,
-    signedRequest = auth.signedRequest,
-    userId        = auth.userID;
+  function checkUserStep(v) {
+    if(v === false) return false;
+    if(angular.isObject(v) && v.hasOwnProperty('step')) {
+      v = v.step;
+    }
+    if(v > -1) {
+      $scope.initSetupStep(v);
+    }
+    return true;
+  }
 
-    // check if a user has already been setup for this facebook account:
-    $user.facebookLogin({id: userId, token: auth.accessToken})
-      .then(function (resp) {
-        $scope.user = {
-          id: resp.id,
-          name: resp.name
-        };
+  function fbErrorHandler(err) {
+    $log.warn('Facebook Error:', err);
+  }
 
-        if(resp.step > -1) {
-          $scope.initSetupStep(resp.step);
-        }
+  function checkFacebookAuth() {
+    return Auth.facebookAuth()
+      .then(function (connectionStep) {
+        console.log('facebookAuth:', connectionStep);
+        $scope.user = false;
+
+        if(connectionStep === false) return false;
+
+        checkUserStep(connectionStep);
+
+        $scope.user = Auth.getCurrentUser();
+
+        return connectionStep;
       })
-      .catch(function (err) {
-        $log.error('got back error:', err);
-      });
+      .catch(fbErrorHandler);
   }
 
-  $rootScope.$on('$fb:status_connected', loadFacebookUser);
+  $fb.whenReady()
+    .then(checkFacebookAuth);
 
-  if($fb.isReady()) {
-    loadFacebookUser();
-  }
+  var
+  cancelConnected = $rootScope.$on('$fb:status_connected', function() {
+    $log.debug('facebook is connected', arguments);
 
+    checkFacebookAuth()
+      .then(cancelConnected);
+  });
+
+  $scope.$on('$destroy', function(){ // clean up $on('$fb:status_connected') listener if not triggered
+    cancelConnected();
+  });
+
+  // for views
   $scope.fbCurrentStatus    = $fb.currentStatus;
   $scope.fbIsReady          = $fb.isReady;
   $scope.fbIsActive         = $fb.isActive;
@@ -45,48 +62,18 @@ angular
   $scope.fbHasRequiredPerms = $fb.hasRequiredPerms;
   $scope.fbHasAllPerms      = $fb.hasAllPerms;
 
-  function fbErrorHandler(err) {
-    $log.warn('Facebook Error:', err);
-  }
-
-  $scope.fbDeAuthorize = function() {
-    $scope.user = null;
-    $scope.setup = null;
-
-    return $fb.deAuthorize()
-      .catch(fbErrorHandler);
-  };
-
-  $scope.fbReAuthorize = function() {
-    return $fb.deAuthorize()
-      .then($scope.fbLogin)
-      .catch(fbErrorHandler);
-  };
-
-  $scope.fbLogin = function() {
-    return $fb.authenticate()
-      .then(function (result) {
-        return $fb.reloadState();
-      })
-      .catch(fbErrorHandler);
-  };
-
-  $scope.form = {
-  };
-
   $scope.initSetupStep = function(step) {
 
     if($scope.setup === undefined) {
       $scope.setup = {};
     }
 
+    $scope.form = {};
     $scope.setup.step = step;
 
     switch(step) {
-      case 2:
-
+      case 1:
       $scope.form.loading = true;
-
       $fb.getObjects()
         .then(function (result) {
           $scope.form.facebookObjects = result;
@@ -97,78 +84,74 @@ angular
         .finally(function(){
           $scope.form.loading = false;
         });
+      break;
+      case 2:
 
+      $scope.form.loading = true;
+      $user.getFacebookObject()
+        .then(function (object) {
+          $scope.form.page = object;
+        })
+        .catch(fbErrorHandler)
+        .finally(function(){
+          $scope.form.loading = false;
+        });
       break;
     }
   };
 
-  $scope.setupFinalize = function() {
+  $scope.changeFacebookObject = function() {
     $scope.formError = false;
-
-    $user.setupFinalize({
-      id: $scope.user.id
-    })
-      .then(function (result) {
-        $scope.setup = null;
-        return result;
-      })
+    $user.changeFacebookObject()
+      .then(checkUserStep)
       .catch(function (err) {
         $scope.formError = err;
       });
   };
 
-  $scope.setupTermsAgreement = function(agree) {
-    if(!agree) return;
-
+  $scope.setupFacebookObject = function(item) {
     $scope.formError = false;
-
-    $user.setupToSAgreement({
-      id: $scope.user.id
-    })
-      .then(function (result) {
-        if(result.step > -1 && $scope.setup.step === 3) {
-          $scope.initSetupStep(result.step);
-        }
-      })
-      .catch(function (err) {
-        $scope.formError = err;
-      });
-  };
-
-  $scope.chooseFacebookObject = function(item) {
-
-    $scope.formError = false;
-
     $user.setupFacebookObject({
-      id: $scope.user.id,
       objectId: item.id,
       accessToken: item.access_token
     })
-      .then(function (result) {
-        if(result.step > -1 && $scope.setup.step === 2) {
-          $scope.initSetupStep(result.step);
-        }
-      })
+      .then(checkUserStep)
       .catch(function (err) {
         $scope.formError = err;
       });
   };
 
-  $scope.submitPassword = function(form) {
-
+  $scope.setupPassword = function(form) {
     $scope.formError = false;
-
     $user.setupPassword({
-      id: $scope.user.id,
       password: $scope.form.password
     })
-      .then(function (result) {
-        if(result.step > -1 && $scope.setup.step === 1) {
-          $scope.initSetupStep(result.step);
-        }
-      })
+      .then(checkUserStep)
       .catch(function (err) {
         $scope.formError = err;
+      });
+  };
+
+  $scope.setupFinalize = function() {
+    $scope.formError = false;
+    $user.setupFinalize()
+      .then(checkUserStep)
+      .catch(function (err) {
+        $scope.formError = err;
+      });
+  };
+})
+.controller('GetStartedNoAuthCtrl', function ($scope, $fb, $log) {
+  $log.debug('GetStartedNoAuthCtrl : init');
+
+  $scope.form = {
+    agreesWithTerms: true
+  };
+
+  $scope.fbLogin = function() {
+    return $fb.authenticate()
+      .then(function (result) {
+        return $fb.reloadState();
       });
   };
 });

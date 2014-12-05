@@ -30,6 +30,8 @@ var all = {
     session: 'auditpages-secret'
   },
 
+  sessionDuration: 300,
+
   publicUrl: process.env.HOOKUP_URL || 'http://localhost',
 
   inviteService: {

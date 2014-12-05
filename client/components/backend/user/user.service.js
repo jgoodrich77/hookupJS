@@ -18,32 +18,17 @@ angular
       name: ROLE_SELF
     }],
 
-    [ // load all resource methods in dot notation
-    'global.query',
-    'global.get',
-    'global.get.groups',
-    'global.update',
-    'global.update.security',
-    'self.get',
-    'self.get.groups',
-    'self.update',
-    'self.update.security'
+    [
+    // load all role-resource methods in dot notation
     ]);
 
   // allow to all roles:
-  acl.allow(ROLE_ADMIN, '*');
-  acl.allow('self.*');
+  // acl.allow(ROLE_ADMIN, '*');
+  // acl.allow('self.*');
 
-  var
-  api = acl.buildService('/api/users/:resource/:id', {
+  return acl.buildService('/api/users/:resource/:id', {
     id: '@_id'
   },{
-    create: {
-      method: 'POST',
-      params: {
-        resource: 'create'
-      }
-    },
     facebookLogin: {
       method: 'PUT',
       params: {
@@ -51,39 +36,36 @@ angular
         id: '@id'
       }
     },
-    setupFinalize: {
-      method: 'PUT',
+    getFacebookObject: {
+      method: 'GET',
       params: {
-        resource: 'setup-finalize',
-        id: '@id'
+        resource:'me',
+        id:'facebook-object'
       }
     },
-    setupToSAgreement: {
+    changeFacebookObject: {
       method: 'PUT',
       params: {
-        resource: 'setup-tos',
-        id: '@id'
-      }
-    },
-    setupPassword: {
-      method: 'PUT',
-      params: {
-        resource: 'setup-password',
-        id: '@id'
+        resource: 'change-fb-object'
       }
     },
     setupFacebookObject: {
       method: 'PUT',
       params: {
-        resource: 'setup-fb-object',
-        id: '@id'
+        resource: 'setup-fb-object'
+      }
+    },
+    setupPassword: {
+      method: 'PUT',
+      params: {
+        resource: 'setup-password'
+      }
+    },
+    setupFinalize: {
+      method: 'PUT',
+      params: {
+        resource: 'setup-finalize'
       }
     }
   });
-
-  //
-  // do other things to API
-  //
-
-  return api;
 });

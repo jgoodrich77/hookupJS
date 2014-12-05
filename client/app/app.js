@@ -42,10 +42,37 @@ angular.module('auditpagesApp', [
     });
 
   $locationProvider.html5Mode(true);
+  $httpProvider.interceptors.push('TokenAuth');
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+  $httpProvider.defaults.withCredentials = false;
    FacebookProvider.init('1508937439378506');
 })
+.provider('TokenAuth',[function () {
+  var
+  headerName = 'authorization',
+  cookieName = 'token',
+  prefix     = 'Bearer ';
 
+  this.setHeaderName = function(n) {
+    headerName = n;
+  }
+  this.setCookieName = function(n) {
+    cookieName = n;
+  }
+  this.setPrefix = function(n) {
+    prefix = n;
+  }
+  this.$get = ['$auth', function ($auth) {
+    return {
+      'request': function(config) {
+        if($auth.hasAccessToken()) {
+          config.headers[headerName] = prefix + $auth.getAccessToken();
+        }
+        return config;
+      }
+    }
+  }];
+}])
 .factory('stateRedirector', function ($state) {
   return function() {
    return function (redirectTo) {

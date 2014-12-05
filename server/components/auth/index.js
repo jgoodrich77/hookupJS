@@ -11,6 +11,8 @@ var
 User = require('../../api/user/user.model');
 
 var
+cookieToken = 'token',
+queryToken = 'access_token',
 validateJwt = expressJwt({
   secret: config.secrets.session
 });
@@ -20,15 +22,31 @@ module.exports = {
     return compose()
       // Validate jwt
       .use(function (req, res, next) {
-        // allow access_token to be passed through query parameter as well
-        if(req.query && req.query.hasOwnProperty('access_token')) {
-          req.headers.authorization = 'Bearer ' + req.query.access_token;
+
+        if(!req.headers.authorization) {
+
+          var
+          token = !!req.cookies && req.cookies.hasOwnProperty(cookieToken)
+            ? JSON.parse(req.cookies[cookieToken])
+            : false;
+
+          // allow access_token to be passed through query parameter as well
+          if(!token && (!!req.query && req.query.hasOwnProperty(queryToken))) {
+            token = req.query[queryToken];
+          }
+
+          if(!token) { // no authorization token found
+            return next(new Error('User is not authorized'));
+          }
+
+          req.headers.authorization = 'Bearer ' + token;
         }
+
         validateJwt(req, res, next);
       })
       // Attach user to request
       .use(function (req, res, next) {
-        User.findOne({_id: req.user._id, activated: true}, function (err, user) {
+        User.findOne({_id: req.user._id}, function (err, user) {
           if (err) return next(err);
           if (!user) return res.send(401);
 

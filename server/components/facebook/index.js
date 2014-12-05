@@ -33,6 +33,13 @@ module.exports = {
       access_token: accessToken
     });
   },
+  basicPageInfo: function(pageId, accessToken) {
+    console.log('getting page info:', pageId);
+    return cli.get(pageId, {
+      access_token: accessToken,
+      fields: ['id','link','name','website'].join(',')
+    });
+  },
   post: function(objectId, objectAccessToken, message) {
     return cli.post(path.join('/',objectId,'feed'), {
       access_token: objectAccessToken

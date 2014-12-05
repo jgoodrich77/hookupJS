@@ -6,17 +6,16 @@ var auth = require('../../components/auth');
 
 var router = express.Router();
 
-// router.get('/', auth.hasRole('admin'), controller.index);
-// router.delete('/:id', auth.hasRole('admin'), controller.destroy);
-// router.get('/me', auth.isAuthenticated(), controller.me);
-// router.put('/:id/password', auth.isAuthenticated(), controller.changePassword);
-// router.get('/:id', auth.isAuthenticated(), controller.show);
-// router.post('/', controller.create);
-
+// facebook public login/signup:
 router.put('/facebook/:id', controller.facebookLogin);
-router.put('/setup-password/:id', controller.setupPassword);
-router.put('/setup-fb-object/:id', controller.setupFacebookObject);
-router.put('/setup-tos/:id', controller.setupToS);
-router.put('/setup-finalize/:id', controller.setupFinalize);
+
+// current user information
+router.get('/me/facebook-object', auth.isAuthenticated(), controller.currentUserFacebookObject);
+router.get('/me',                 auth.isAuthenticated(), controller.currentUser);
+
+router.put('/change-fb-object',   auth.isAuthenticated(), controller.changeFacebookObject);
+router.put('/setup-fb-object',    auth.isAuthenticated(), controller.setupFacebookObject);
+router.put('/setup-password',     auth.isAuthenticated(), controller.setupPassword);
+router.put('/setup-finalize',     auth.isAuthenticated(), controller.setupFinalize);
 
 module.exports = router;

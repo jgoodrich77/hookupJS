@@ -53,6 +53,7 @@ angular.module('auditpagesApp')
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
+    $scope.isSettingUp = Auth.isSettingUp;
     $scope.currentUser = Auth.getCurrentUser;
 
     $scope.logout = function() {

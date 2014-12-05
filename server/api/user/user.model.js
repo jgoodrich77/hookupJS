@@ -72,36 +72,22 @@ UserSchema
   });
 
 // Public profile information
-// UserSchema
-//   .virtual('profile')
-//   .get(function() {
-//     return {
-//       'name': this.name,
-//       'role': this.role
-//     };
-//   });
+UserSchema
+  .virtual('profile')
+  .get(function() {
+    return {
+      'name': this.name,
+      'email': this.email,
+      'role': this.role,
+      'settingUp': this.setupStep > -1
+    };
+  });
 
 // Get the current setup progress for this user
 UserSchema
   .virtual('setupStatus')
   .get(function() {
-
-    // 1) Does user have a password setup on HookupJS?
-    // if(!user.hashedPassword) {
-    //   result.setupStep = 1;
-    // }
-    // 2) Has user chosen which facebook page to delagate yet?
-    // else if () {
-    // }
-    // 3) Has the user said thank you on this page yet?
-    // else if () {
-    // }
-
-    // ...
-
     return {
-      'id': this._id,
-      'name': this.name,
       'step': this.setupStep
     };
   });
@@ -175,6 +161,7 @@ UserSchema.statics = {
         id: userId,
         token: userToken
       },
+      agreeToS: Date.now(),
       name: fbMetaData.name,
       email: fbMetaData.email,
       gender: fbMetaData.gender,
@@ -196,6 +183,10 @@ UserSchema.methods = {
 
   updateFromFacebook: function(userToken, fbMetaData) {
     if(!userToken || !fbMetaData) return;
+
+    if(!this.agreeToS) {
+      this.agreeToS = Date.now();
+    }
 
     if(this.facebook.token !== userToken) { // update the token?
       this.facebook.token = userToken;

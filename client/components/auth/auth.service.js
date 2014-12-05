@@ -52,13 +52,85 @@ angular
     }
   };
 })
-.factory('Auth', function Auth($location, $rootScope, $http, User, $cookieStore, $q) {
-  var currentUser = {};
-  // if($cookieStore.get('token')) {
-  //   currentUser = User.get();
-  // }
+.service('$auth', function ($cookieStore) {
+  var
+  cookieToken = 'token',
+  accessToken;
 
   return {
+    setCookieName: function(v) {
+      cookieToken = v;
+      return this;
+    },
+    setAccessToken: function(v) {
+      accessToken = v;
+
+      if($cookieStore.get(cookieToken) !== accessToken){
+        $cookieStore.put(cookieToken, accessToken);
+      }
+
+      return this;
+    },
+    getAccessToken: function() {
+      return accessToken;
+    },
+    hasAccessToken: function() {
+      return !!accessToken;
+    }
+  };
+})
+.factory('Auth', function Auth($auth, $fb, $rootScope, $user, $location, $http, User, $cookieStore, $q) {
+  var
+  cookieToken = 'token',
+  currentUser = {};
+
+  function reloadCurrentUser() {
+    if($cookieStore.get(cookieToken)) {
+      currentUser = User.get();
+    }
+  }
+
+  $auth.setCookieName(cookieToken);
+
+  if($cookieStore.get(cookieToken)) {
+    $auth.setAccessToken($cookieStore.get(cookieToken));
+    reloadCurrentUser();
+  }
+
+  return {
+
+    reloadCurrentUser: reloadCurrentUser,
+
+    facebookAuth: function() {
+      if(!$fb.isActive() || !$fb.hasAllPerms()) {
+        return $q.when(false);
+      }
+
+      var
+      reloadUser    = this.reloadCurrentUser,
+      auth          = $fb.currentAuth(),
+      signedRequest = !!auth ? auth.signedRequest : false,
+      accessToken   = !!auth ? auth.accessToken : false,
+      userId        = !!auth ? auth.userID : false;
+
+      if(!userId || !accessToken) {
+        throw new Error('User ID / Access token not provided.');
+      }
+
+      return $user.facebookLogin({
+        id: userId,
+        token: accessToken
+      })
+        .then(function (response) {
+
+          if(response.session) {
+            $auth.setAccessToken(response.session);
+            reloadUser();
+          }
+
+          return response.step;
+        });
+    },
 
     /**
      * Gets all available info on authenticated user
@@ -76,7 +148,43 @@ angular
      */
     isLoggedIn: function() {
       return currentUser.hasOwnProperty('role');
-    }
+    },
+
+    /**
+     * Check if a user is logged in
+     *
+     * @return {Boolean}
+     */
+    isSettingUp: function() {
+      return this.isLoggedIn() && currentUser.settingUp;
+    },
+
+    /**
+     * Waits for currentUser to resolve before checking if user is logged in
+     */
+    isLoggedInAsync: function(cb) {
+      if(currentUser.hasOwnProperty('$promise')) {
+        currentUser.$promise.then(function() {
+          cb(true);
+        }).catch(function() {
+          cb(false);
+        });
+      } else if(currentUser.hasOwnProperty('role')) {
+        cb(true);
+      } else {
+        cb(false);
+      }
+    },
+
+    /**
+     * Delete access token and user info
+     *
+     * @param  {Function}
+     */
+    logout: function() {
+      $cookieStore.remove(cookieToken);
+      currentUser = {};
+    },
 
     /**
      * Authenticate user and save token
@@ -106,16 +214,6 @@ angular
     //   }.bind(this));
 
     //   return deferred.promise;
-    // },
-
-    /**
-     * Delete access token and user info
-     *
-     * @param  {Function}
-     */
-    // logout: function() {
-    //   $cookieStore.remove('token');
-    //   currentUser = {};
     // },
 
     /**
@@ -160,23 +258,6 @@ angular
     //   }, function(err) {
     //     return cb(err);
     //   }).$promise;
-    // },
-
-    /**
-     * Waits for currentUser to resolve before checking if user is logged in
-     */
-    // isLoggedInAsync: function(cb) {
-    //   if(currentUser.hasOwnProperty('$promise')) {
-    //     currentUser.$promise.then(function() {
-    //       cb(true);
-    //     }).catch(function() {
-    //       cb(false);
-    //     });
-    //   } else if(currentUser.hasOwnProperty('role')) {
-    //     cb(true);
-    //   } else {
-    //     cb(false);
-    //   }
     // },
 
     /**

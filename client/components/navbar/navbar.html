@@ -17,7 +17,7 @@
 
       <ul class="nav navbar-nav navbar-right">
         <li ng-repeat="item in menuRight" navbar-item="item"></li>
-        <li ng-show="isLoggedIn()" class="dropdown">
+        <li ng-show="isLoggedIn() && !isSettingUp()" class="dropdown">
           <a class="dropdown-toggle" href="" type="button" id="userMenu" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> {{currentUser().name}} <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="userMenu">
             <li ng-repeat="item in userMenu" navbar-item="item"></li>

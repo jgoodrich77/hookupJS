@@ -207,6 +207,30 @@ angular
     deAuthorize: deAuthorize,
     reloadState: reloadState,
     checkPerms: checkPerms,
+    whenReady: function () {
+      var
+      me = this,
+      defer = $q.defer(),
+      currentFbStat = function(){
+        return {
+          active: me.isActive(),
+          hasRequiredPerms: me.hasRequiredPerms(),
+          hasAllPerms: me.hasAllPerms()
+        };
+      };
+
+      if(!ready) {
+        var once = $rootScope.$on(EVT_NS+':ready', function () {
+          defer.resolve(currentFbStat());
+          once();
+        });
+      }
+      else {
+        defer.resolve(currentFbStat());
+      }
+
+      return defer.promise;
+    },
     isReady: function() {
       return ready;
     },
