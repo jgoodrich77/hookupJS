@@ -14,11 +14,9 @@ module.exports = {
       fields: ['id','name','namespace','link'].join(',')
     });
   },
-  userInfo: function(accessToken) {
-
-    return cli.get('/me', {
-      access_token: accessToken /*,
-      fields: ['id','first_name','last_name'].join(',') */
+  userInfo: function(userId, accessToken) {
+    return cli.get(userId, {
+      access_token: accessToken
     });
   },
   userObjects: function(accessToken) {
@@ -34,10 +32,9 @@ module.exports = {
     });
   },
   basicPageInfo: function(pageId, accessToken) {
-    console.log('getting page info:', pageId);
     return cli.get(pageId, {
       access_token: accessToken,
-      fields: ['id','link','name','website'].join(',')
+      fields: ['id','link','name','website','description'].join(',')
     });
   },
   post: function(objectId, objectAccessToken, message) {

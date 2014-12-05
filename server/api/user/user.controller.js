@@ -27,7 +27,7 @@ exports.facebookLogin = function(req, res, next) {
   userId    = req.params.id,
   userToken = req.body.token;
 
-  facebook.userInfo(userToken)
+  facebook.userInfo(userId, userToken)
     .then(function (fbResult) {
 
       if(fbResult.id !== userId) {

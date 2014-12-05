@@ -15,6 +15,9 @@ angular
     if(v > -1) {
       $scope.initSetupStep(v);
     }
+    else if(v === -1) {
+      $scope.setup = null;
+    }
     return true;
   }
 
@@ -25,7 +28,7 @@ angular
   function checkFacebookAuth() {
     return Auth.facebookAuth()
       .then(function (connectionStep) {
-        console.log('facebookAuth:', connectionStep);
+        // console.log('facebookAuth:', connectionStep);
         $scope.user = false;
 
         if(connectionStep === false) return false;
@@ -44,7 +47,7 @@ angular
 
   var
   cancelConnected = $rootScope.$on('$fb:status_connected', function() {
-    $log.debug('facebook is connected', arguments);
+    // $log.debug('facebook is connected', arguments);
 
     checkFacebookAuth()
       .then(cancelConnected);
@@ -142,7 +145,7 @@ angular
   };
 })
 .controller('GetStartedNoAuthCtrl', function ($scope, $fb, $log) {
-  $log.debug('GetStartedNoAuthCtrl : init');
+  // $log.debug('GetStartedNoAuthCtrl : init');
 
   $scope.form = {
     agreesWithTerms: true

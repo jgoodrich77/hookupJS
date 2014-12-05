@@ -55,7 +55,7 @@ function FacebookGraph(config) {
     },
     createUrl: function(ipath, uriParams) {
       var
-      tempUrl = _.clone(apiUrlParsed);
+      tempUrl = _.merge({}, apiUrlParsed);
 
       // delete aliases
       delete tempUrl.path;

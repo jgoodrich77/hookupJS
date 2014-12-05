@@ -41,7 +41,7 @@
               </div>
 
               <div ng-if="form.hasObjects">
-                <h4>Click the page you wish to delagate</h4>
+                <h4>Click the page you wish to delegate</h4>
 
                 <div class="list-group">
                   <a class="list-group-item" href ng-repeat="item in form.facebookObjects.data" ng-click="setupFacebookObject(item)">
@@ -63,12 +63,13 @@
             <div ng-if="!form.loading">
 
               <h3>Selected Facebook Page</h3>
-              <p>This is page you are currently delagating.</p>
+              <p>This is page you are currently delegating.</p>
 
               <hr />
 
-              <a class="pull-right btn btn-danger" href ng-click="changeFacebookObject()">Change</a>
+              <a class="pull-right btn btn-primary" href ng-click="changeFacebookObject()">Change</a>
               <h4><a href="{{form.page.link}}" target="_blank" ng-bind="form.page.name"></a></h4>
+              <p ng-if="form.page.description" ng-bind="form.page.description"></p>
               <em ng-if="form.page.website"><a href="{{form.page.website}}" ng-bind="form.page.website" target="_blank"></a></em>
               <div class="clearfix"></div>
 
