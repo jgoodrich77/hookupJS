@@ -71,6 +71,12 @@ angular
 
       return this;
     },
+    purgeToken: function() {
+      accessToken = undefined;
+      if($cookieStore.get(cookieToken)){
+        $cookieStore.remove(cookieToken);
+      }
+    },
     getAccessToken: function() {
       return accessToken;
     },
@@ -182,7 +188,7 @@ angular
      * @param  {Function}
      */
     logout: function() {
-      $cookieStore.remove(cookieToken);
+      $auth.purgeToken();
       currentUser = {};
     },
 
