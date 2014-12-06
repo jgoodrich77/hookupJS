@@ -11,68 +11,132 @@ $badge-border-radius: 3px;
  * App-wide configurations
  */
 
-$well-default-bg:     $well-bg;
-$well-default-text:   $text-color;
-$well-default-border: $well-border;
-$well-primary-bg:     $btn-primary-bg;
-$well-primary-text:   $btn-primary-color;
-$well-primary-border: $btn-primary-border;
-$well-success-bg:     $btn-success-bg;
-$well-success-text:   $btn-success-color;
-$well-success-border: $btn-success-border;
-$well-info-bg:        $btn-info-bg;
-$well-info-text:      $btn-info-color;
-$well-info-border:    $btn-info-border;
-$well-warning-bg:     $btn-warning-bg;
-$well-warning-text:   $btn-warning-color;
-$well-warning-border: $btn-warning-border;
-$well-danger-bg:      $btn-danger-bg;
-$well-danger-text:    $btn-danger-color;
-$well-danger-border:  $btn-danger-border;
+$well-default-border:             $well-border;
+$well-default-bg:                 $well-bg;
+$well-default-text:               $text-color;
+$well-default-link:               #428BCA;
+$well-default-hover-link:         #164773;
+$well-default-badge-bg:           $btn-primary-bg;
+$well-default-badge-fg:           #fff;
+$well-default-badge-hover-bg:     $text-color;
+$well-default-badge-hover-fg:     $well-bg;
 
-$badge-default-bg:     $badge-bg;
-$badge-default-text:   $badge-color;
+$well-primary-border:         $btn-primary-border;
+$well-primary-bg:             $btn-primary-bg;
+$well-primary-text:           $btn-primary-color;
+$well-primary-link:           #092742;
+$well-primary-hover-link:     #021526;
+$well-success-border:         $btn-success-border;
+$well-success-bg:             $btn-success-bg;
+$well-success-text:           $btn-success-color;
+$well-success-link:           #195C19;
+$well-success-hover-link:     #083D08;
+$well-info-border:            $btn-info-border;
+$well-info-bg:                $btn-info-bg;
+$well-info-text:              $btn-info-color;
+$well-info-link:              #1F6378;
+$well-info-hover-link:        #063847;
+$well-warning-border:         $btn-warning-border;
+$well-warning-bg:             $btn-warning-bg;
+$well-warning-text:           $btn-warning-color;
+$well-warning-link:           #694615;
+$well-warning-hover-link:     #4A2F0A;
+$well-danger-border:          $btn-danger-border;
+$well-danger-bg:              $btn-danger-bg;
+$well-danger-text:            $btn-danger-color;
+$well-danger-link:            #590A07;
+$well-danger-hover-link:      #380402;
+
+$badge-default-bg:     $well-default-link;
+$badge-default-text:   $well-default-badge-fg;
 $badge-default-border: $badge-border-radius;
-$badge-primary-bg:     $btn-primary-bg;
+$badge-primary-bg:     $well-primary-link;
 $badge-primary-text:   $btn-primary-color;
 $badge-primary-border: $badge-border-radius;
-$badge-success-bg:     $btn-success-bg;
+$badge-success-bg:     $well-success-link;
 $badge-success-text:   $btn-success-color;
 $badge-success-border: $badge-border-radius;
-$badge-info-bg:        $btn-info-bg;
+$badge-info-bg:        $well-info-link;
 $badge-info-text:      $btn-info-color;
 $badge-info-border:    $badge-border-radius;
-$badge-warning-bg:     $btn-warning-bg;
+$badge-warning-bg:     $well-warning-link;
 $badge-warning-text:   $btn-warning-color;
 $badge-warning-border: $badge-border-radius;
-$badge-danger-bg:      $btn-danger-bg;
+$badge-danger-bg:      $well-danger-link;
 $badge-danger-text:    $btn-danger-color;
 $badge-danger-border:  $badge-border-radius;
-
-
 
 /**
  * App-wide styles
  */
 
+@mixin badge-variant(
+  $bg-color: $badge-bg-color,
+  $text-color: $badge-text-color,
+  $border-radius: $badge-border-radius
+) {
+  background-color: $bg-color;
+  color: $text-color;
+  border-radius: $border-radius;
+}
+
 @mixin well-variant(
   $well-bg-color,
   $well-border-color,
-  $well-text-color
+  $well-text-color,
+  $well-link-color,
+  $well-link-hover-color: false,
+  $badge-bg: false,
+  $badge-fg: false,
+  $badge-hover-bg: false,
+  $badge-hover-fg: false
 ) {
   background-color: $well-bg-color;
   border-color: $well-border-color;
   color: $well-text-color;
-}
 
-@mixin badge-variant(
-  $badge-bg-color,
-  $badge-text-color,
-  $badge-border-radius
-) {
-  background-color: $badge-bg-color;
-  color: $badge-text-color;
-  border-radius: $badge-border-radius;
+  a.well-link {
+    color: $well-link-color;
+
+    @if $well-link-hover-color {
+      &:hover {
+        color: $well-link-hover-color;
+      }
+    }
+  }
+
+  @if $badge-bg == false {
+    $badge-bg: $well-link-color;
+  }
+  @if $badge-fg == false {
+    $badge-fg: $well-text-color;
+  }
+  @if $badge-hover-bg == false {
+    $badge-hover-bg: $well-text-color;
+  }
+  @if $badge-hover-fg == false {
+    $badge-hover-fg: $well-link-hover-color;
+  }
+
+  h1 small, h2 small, h3 small, h4 small, h5 small,
+  .text-muted {
+    color: rgba($well-text-color, 0.7);
+  }
+
+  .badge.well-badge {
+    @include badge-variant( $badge-bg, $badge-fg );
+  }
+
+  a.badge.well-badge {
+    @include badge-variant( $badge-bg, $badge-fg );
+
+    &:hover {
+      @include badge-variant(
+        $badge-hover-bg,
+        $badge-hover-fg
+      );
+    }
+  }
 }
 
 .well {
@@ -80,43 +144,63 @@ $badge-danger-border:  $badge-border-radius;
     @include well-variant(
       $well-default-bg,
       $well-default-border,
-      $well-default-text
+      $well-default-text,
+      $well-default-link,
+      $well-default-hover-link,
+      $well-default-badge-bg,
+      $well-default-badge-fg,
+      $well-default-badge-hover-bg,
+      $well-default-badge-hover-fg
     );
   }
   &.well-primary {
     @include well-variant(
       $well-primary-bg,
       $well-primary-border,
-      $well-primary-text
+      $well-primary-text,
+      $well-primary-link,
+      $well-primary-hover-link
     );
   }
   &.well-success {
     @include well-variant(
       $well-success-bg,
       $well-success-border,
-      $well-success-text
+      $well-success-text,
+      $well-success-link,
+      $well-success-hover-link
     );
   }
   &.well-info {
     @include well-variant(
       $well-info-bg,
       $well-info-border,
-      $well-info-text
+      $well-info-text,
+      $well-info-link,
+      $well-info-hover-link
     );
   }
   &.well-warning {
     @include well-variant(
       $well-warning-bg,
       $well-warning-border,
-      $well-warning-text
+      $well-warning-text,
+      $well-warning-link,
+      $well-warning-hover-link
     );
   }
   &.well-danger {
     @include well-variant(
       $well-danger-bg,
       $well-danger-border,
-      $well-danger-text
+      $well-danger-text,
+      $well-danger-link,
+      $well-danger-hover-link
     );
+  }
+
+  .well-title {
+    margin: 0;
   }
 }
 
@@ -124,42 +208,36 @@ $badge-danger-border:  $badge-border-radius;
   &.badge-default {
     @include badge-variant(
       $badge-default-bg,
-      $badge-default-border,
       $badge-default-text
     );
   }
   &.badge-primary {
     @include badge-variant(
       $badge-primary-bg,
-      $badge-primary-border,
       $badge-primary-text
     );
   }
   &.badge-success {
     @include badge-variant(
       $badge-success-bg,
-      $badge-success-border,
       $badge-success-text
     );
   }
   &.badge-info {
     @include badge-variant(
       $badge-info-bg,
-      $badge-info-border,
       $badge-info-text
     );
   }
   &.badge-warning {
     @include badge-variant(
       $badge-warning-bg,
-      $badge-warning-border,
       $badge-warning-text
     );
   }
   &.badge-danger {
     @include badge-variant(
       $badge-danger-bg,
-      $badge-danger-border,
       $badge-danger-text
     );
   }

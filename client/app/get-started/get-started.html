@@ -62,18 +62,21 @@
 
             <div ng-if="!form.loading">
 
-              <h3>Selected Facebook Page</h3>
-              <p>This is page you are currently delegating.</p>
+              <div class="well well-primary">
 
-              <hr />
+                <h3 class="well-title">Selected Facebook Page <a class="badge well-badge" href ng-click="changeFacebookObject()"><span class="glyphicon glyphicon-pencil"></span> Switch</a></h3>
+                <p class="text-muted">This is page you are currently delegating.</p>
 
-              <a class="pull-right btn btn-primary" href ng-click="changeFacebookObject()">Change</a>
-              <h4><a href="{{form.page.link}}" target="_blank" ng-bind="form.page.name"></a></h4>
-              <p ng-if="form.page.description" ng-bind="form.page.description"></p>
-              <em ng-if="form.page.website"><a href="{{form.page.website}}" ng-bind="form.page.website" target="_blank"></a></em>
-              <div class="clearfix"></div>
+                <div class="pull-right">
+                  <a class="btn btn-success" ng-click="form.showDetail = !form.showDetail" ng-class="{'active': form.showDetail}"><span class="glyphicon glyphicon-plus" ng-class="{'glyphicon-minus': form.showDetail}"></span> Details</a>
+                </div>
+                <h2><a class="well-link" href="{{form.page.link}}" target="_blank" ng-bind="form.page.name"></a><small><span> {{form.page.likes}} likes</span><em ng-if="form.page.new_like_count > 0"> (+{{form.page.new_like_count}} new)</em></small></h2>
 
-              <hr />
+                <div ng-if="form.showDetail">
+                  <div ng-if="form.page.description"><label class="text-muted">Description</label><p ng-bind="form.page.description"></p></div>
+                  <div ng-if="form.page.website"><label class="text-muted">Website:</label> <a class="well-link" href="{{form.page.website}}" ng-bind="form.page.website" target="_blank"></a></div>
+                </div>
+              </div>
 
               <h3>Choose a password for HookupJS</h3>
               <p>This is the password you will use to access HookupJS. This is to protect your account from misuse.</p>

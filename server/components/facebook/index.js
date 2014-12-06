@@ -34,7 +34,7 @@ module.exports = {
   basicPageInfo: function(pageId, accessToken) {
     return cli.get(pageId, {
       access_token: accessToken,
-      fields: ['id','link','name','website','description'].join(',')
+      fields: ['id','name','likes','new_like_count','link','website','description'].join(',')
     });
   },
   post: function(objectId, objectAccessToken, message) {
