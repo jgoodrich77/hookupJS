@@ -7,7 +7,8 @@ var requestUtils = require('../requestUtils');
 
 var Q = require('q');
 
-var facebook = require('../../components/facebook');
+var facebook      = require('../../components/facebook');
+var facebookScore = require('../../components/facebook-score');
 
 function qUserById(id, res, cols) {
   var defer = Q.defer();
@@ -20,6 +21,10 @@ function qUserById(id, res, cols) {
 
   return defer.promise;
 }
+
+//
+// On-boarding process:
+//
 
 // initial FB user interaction
 exports.facebookLogin = function(req, res, next) {
@@ -77,6 +82,7 @@ exports.setupFacebookObject = function(req, res, next) {
 
           user.facebookObj.id    = nObjectId;
           user.facebookObj.token = nAccessToken;
+          user.facebookObj.lastValidated = Date.now();
           user.setupStep = 2;
 
           return user.save(function (err) {
@@ -95,8 +101,9 @@ exports.changeFacebookObject = function(req, res, next) {
     .then(function (user) {
       if(user.setupStep !== 2) return requestUtils.missing(res);
 
-      user.facebookObj.id    = null;
-      user.facebookObj.token = null;
+      user.facebookObj.id            = null;
+      user.facebookObj.token         = null;
+      user.facebookObj.lastValidated = null;
       user.setupStep = 1;
 
       return user.save(function (err) {
@@ -123,7 +130,17 @@ exports.setupPassword = function(req, res, next) {
       return user.save(function (err) {
         if(err) return next(err);
 
-        requestUtils.data(res, user.setupStatus);
+        //
+        // At this point start scoring the facebook object
+        //
+
+        return facebookScore.registerObject(user._id, user.facebookObj.id, user.facebookObj.token)
+          .then(function (scoreProcess) {
+            requestUtils.data(res, {
+              step: user.setupStep,
+              scoreProcess: scoreProcess
+            });
+          });
       });
     })
     .catch(next);
@@ -164,6 +181,26 @@ exports.currentUserFacebookObject = function(req, res, next) {
           if(!pageInfo) return requestUtils.missing(res);
 
           requestUtils.data(res, pageInfo);
+        });
+    })
+    .catch(next);
+};
+
+exports.currentUserFacebookScore = function(req, res, next) {
+  qUserById(req.user._id, res)
+    .then(function (user) {
+      if(!user.facebookObj || !user.facebookObj.id)
+        return requestUtils.missing(res);
+
+      //
+      // At this point, scoring should have already started and have some status (step 3)
+      //
+
+      return facebookScore.objectStatus(user.facebookObj.id)
+        .then(function (scoreStatus) {
+          if(!scoreStatus) return requestUtils.missing(res);
+
+          requestUtils.data(res, !!scoreStatus ? scoreStatus : false);
         });
     })
     .catch(next);

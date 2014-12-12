@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('GetStartedCtrl', function ($rootScope, $fb, $user, $scope, $log, Auth) {
+.controller('GetStartedCtrl', function ($rootScope, $fb, $user, $scope, $log, Auth, FancyCountdown) {
 
   //
   // $rootScope.hideNavbar = true;
@@ -67,6 +67,28 @@ angular
 
   $scope.initSetupStep = function(step) {
 
+    function step3Reload() {
+      $scope.form.loading = true;
+      $user.getFacebookScore()
+        .then(function (object) {
+          // console.log('object:', object);
+          $scope.form.scoreRes = object;
+
+          if(object.etaMS !== undefined) {
+            $scope.form.clock = new FancyCountdown($scope, {
+              delay: object.etaMS,
+              interval: 100,
+              useFrame: true,
+              autoStart: true
+            });
+          }
+        })
+        .catch(fbErrorHandler)
+        .finally(function(){
+          $scope.form.loading = false;
+        });
+    }
+
     if($scope.setup === undefined) {
       $scope.setup = {};
     }
@@ -89,7 +111,6 @@ angular
         });
       break;
       case 2:
-
       $scope.form.loading = true;
       $user.getFacebookObject()
         .then(function (object) {
@@ -100,7 +121,32 @@ angular
           $scope.form.loading = false;
         });
       break;
+      case 3:
+
+      $scope.$on('FancyCountdown:complete', function(evt, ctrl) {
+        setTimeout(step3Reload, 2000);
+      });
+
+      step3Reload();
+
+      break;
     }
+  };
+
+  var objectsLikes = {};
+
+  $scope.objectLikes = function(item) {
+
+    if(objectsLikes[item.id] !== undefined) {
+      return objectsLikes[item.id];
+    }
+
+    objectsLikes[item.id] = '---';
+
+    return $fb.getObjectLikes(item)
+      .then(function (result) {
+        return objectsLikes[item.id] = result;
+      });
   };
 
   $scope.changeFacebookObject = function() {

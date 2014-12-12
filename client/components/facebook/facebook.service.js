@@ -183,6 +183,35 @@ angular
     return defer.promise;
   }
 
+  function getObjectInfo(object) {
+    var
+    defer = $q.defer();
+
+    Facebook.api(object.id, {
+      access_token: object.access_token
+    }, function (response) {
+      if(checkResponseError(response)) return defer.reject(new Error(getErrorMsg(response, MSG_INVAL)));
+      defer.resolve(response);
+    });
+
+    return defer.promise;
+  }
+
+  function getObjectLikes(object) {
+    var
+    defer = $q.defer();
+
+    Facebook.api(object.id, {
+      access_token: object.access_token,
+      fields: 'likes'
+    }, function (response) {
+      if(checkResponseError(response)) return defer.reject(new Error(getErrorMsg(response, MSG_INVAL)));
+      defer.resolve(response.likes);
+    });
+
+    return defer.promise;
+  }
+
   applyFacebookResult(); // reset
 
   var
@@ -203,6 +232,8 @@ angular
   return {
     getStatus: getStatus,
     getObjects: getObjects,
+    getObjectInfo: getObjectInfo,
+    getObjectLikes: getObjectLikes,
     authenticate: authenticate,
     deAuthorize: deAuthorize,
     reloadState: reloadState,

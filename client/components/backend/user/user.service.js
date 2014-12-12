@@ -43,6 +43,13 @@ angular
         id:'facebook-object'
       }
     },
+    getFacebookScore: {
+      method: 'GET',
+      params: {
+        resource:'me',
+        id:'facebook-score'
+      }
+    },
     changeFacebookObject: {
       method: 'PUT',
       params: {

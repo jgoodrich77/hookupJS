@@ -20,7 +20,8 @@ var UserSchema = new Schema({
   salt: String,
   facebookObj: {
     id: String,
-    token: String
+    token: String,
+    lastValidated: Date
   },
   facebook: {
     id: String,
