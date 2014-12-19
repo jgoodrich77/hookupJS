@@ -11,13 +11,14 @@ var // required models:
 User = require('../../api/user/user.model'),
 FacebookScore = require('../../api/facebook/score/score.model'),
 ScoreLikes = require('./lib/score-likes'),
-ScorePosts = require('./lib/score-posts');
+ScorePosts = require('./lib/score-posts'),
+ScorePostFreq = require('./lib/score-post-freq');
 
 function qValidateToken(token, accessToken) {
   return facebook.tokenInfo(token, accessToken)
     .then(function (result) {
       var tokenData = result.data;
-      console.log('token information:', tokenData);
+      // console.log('token information:', tokenData);
       return !!tokenData.is_valid;
     });
 }
@@ -54,9 +55,56 @@ function qExtraPostData(posts, accessToken) {
   return result;
 }
 
+function qAllPageData(ownerToken, objectId, objectAccessToken) {
+
+  // check this token, and see if it's still valid:
+  return qValidateToken(objectAccessToken, ownerToken)
+    .then(function (valid) {
+      if(!valid) {
+        throw new Error(util.format('The token supplied for object (%s) is not valid (or has expired).', objectId));
+      }
+
+      var
+      data = {};
+
+      return facebook.pageLikes(objectId, objectAccessToken)
+        .then(function (result) {
+          data.likes = result; // buffer this
+          return facebook.pagePosts(objectId, objectAccessToken, 10);
+        })
+        .then(function (result) {
+          return qExtraPostData(result.data, objectAccessToken);
+        })
+        .then(function (result) {
+          data.posts = result; // buffer this
+          return data;
+        });
+    });
+}
+
 module.exports = {
+
+  //
+  // analyze score data
+  //
+  calculateScore: function(data) {
+
+    // console.log(JSON.stringify(data, 0, 2));
+
+    var scoreLikes = new ScoreLikes(data.likes);
+
+    return new Score([ // produce a final score
+      scoreLikes,
+      new ScorePosts(scoreLikes, data.posts),
+      new ScorePostFreq(data.posts)
+    ]);
+  },
+  //
+  // complete scoring process for a page
+  //
   startScoring: function(fbScoreDoc) {
     var
+    me    = this,
     defer = Q.defer(),
     started = Date.now(),
     ownerId = fbScoreDoc.owner._id || fbScoreDoc.owner,
@@ -75,60 +123,15 @@ module.exports = {
       if(!owner.facebook || !owner.facebook.token)
         return defer.reject(new Error('User has no stored facebook token.'));
 
-      // check this token, and see if it's still valid:
-      qValidateToken(objectAccessToken, owner.facebook.token)
-        .then(function (valid) {
-          if(!valid) {
-            throw new Error(util.format('The token supplied for object (%s) is not valid (or has expired).', objectId));
-          }
-
-          //
-          // load prerequisite scoring data
-          //
+      return qAllPageData(owner.facebook.token, objectId, objectAccessToken)
+        .then(function (data) {
 
           var
-          scoreWeights = {};
-
-          return facebook.pageLikes(objectId, objectAccessToken)
-            .then(function (data) {
-              scoreWeights.likes = new ScoreLikes(data);
-              return facebook.pagePosts(objectId, objectAccessToken, 10);
-            })
-            .then(function (posts) {
-              return qExtraPostData(posts.data, objectAccessToken);
-            })
-            .then(function (rows) {
-              scoreWeights.posts = new ScorePosts(scoreWeights.likes, rows);
-              return scoreWeights;
-            });
-        })
-        .then(function (scoreWeights) {
-
-          //
-          // analyze score data
-          //
-
-          // console.log('Score (Likes): %s (i: %d)',
-          //   scoreWeights.likes.compute().toFixed(10),
-          //   scoreWeights.likes.getImportance()
-          // );
-
-          // console.log('Score (Posts): %s (i: %d)',
-          //   scoreWeights.posts.compute().toFixed(10),
-          //   scoreWeights.posts.getImportance()
-          // );
-
-          var
-          score = new Score([ // produce a final score
-            scoreWeights.likes,
-            scoreWeights.posts
-          ]).compute();
-
-          // save this for optional use later.
-          scoreWeights.total = score;
+          finalScore = me.calculateScore(data);
 
           fbScoreDoc.markFinished({
-            score: score
+            score: finalScore.compute(),
+            explained: finalScore.explain()
           });
 
           return  Q.nfcall(fbScoreDoc.save.bind(fbScoreDoc))
@@ -151,6 +154,7 @@ module.exports = {
   },
   checkZombies: function() { // meant to be run once on start up
     var
+    me = this,
     defer = Q.defer(),
     startScoring = this.startScoring;
 
@@ -158,13 +162,13 @@ module.exports = {
       if(err) return defer.reject(err);
       if(!docs.length) return defer.resolve([]);
 
-      defer.resolve(docs.map(startScoring));
+      defer.resolve(docs.map(startScoring.bind(me)));
     });
 
     return defer.promise;
   },
   registerObject: function(owner, id, token) {
-    var startScoring = this.startScoring;
+    var startScoring = this.startScoring.bind(this);
     return facebook.pageInfo(id, token)
       .then(function (pageInfo) {
         if(!pageInfo) throw new Error('No page information was returned from Facebook.');

@@ -1,7 +1,6 @@
 'use strict';
 
-module.exports = function Weight(value, minimum, maximum, importance) {
-
+module.exports = function Weight(value, minimum, maximum, importance, label) {
   importance = (importance === undefined) ? 1 : parseFloat(importance);
 
   minimum = parseFloat(minimum || 0);
@@ -22,11 +21,27 @@ module.exports = function Weight(value, minimum, maximum, importance) {
 
   value = Math.min(nMax, Math.max(nMin, value));
 
+  this.getValue = function() {
+    return value;
+  };
+
+  this.getMinValue = function() {
+    return nMin;
+  };
+
+  this.getMaxValue = function() {
+    return nMax;
+  };
+
+  this.getLabel = function() {
+    return label;
+  };
+
   this.getImportance = function() {
     return importance;
   };
 
   this.compute = function () {
-    return value / nMax;
+    return (value - nMin) / (nMax - nMin);
   };
 };

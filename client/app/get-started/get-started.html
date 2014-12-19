@@ -127,6 +127,8 @@
 
                 <p>We finished scoring your page "{{form.scoreRes.page.name}}" with a score of {{form.scoreRes.result.score * 100 | percentage:3}}.</p>
 
+                <pre class="text-left" ng-bind="form.scoreRes.result.explained | json"></pre>
+
                 <p>You now have your account setup on HookupJS, click finish and let's get started!</p>
                 <button type="button" class="btn btn-primary btn-lg" ng-click="setupFinalize()">Finish</button>
               </div>

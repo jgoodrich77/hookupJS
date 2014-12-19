@@ -1,8 +1,8 @@
 'use strict';
 
 var
-Score = require('./lib/score'),
-Weight = require('./lib/weight');
+Score = require('../server/components/score'),
+Weight = Score.Weight;
 
 var
 ////////////////////////////////////////////////////
@@ -33,3 +33,20 @@ testNames      = [
     return new Weight(w, 0, 1, testImportance[i]);
   })).compute().toFixed(5));
 });
+
+var
+score = new Score([
+  new Weight(0,   0, 1, 1, 'test 1'),
+  new Weight(0.5, 0, 1, 1, 'test 2'),
+  new Weight(1,   0, 1, 1, 'test 3')
+]);
+
+console.log(score.compute(), score.explain());
+
+var
+totalScore = new Score([
+  score,
+  new Weight(0.75, 0, 1, 1, 'test 4')
+]);
+
+console.log(totalScore.compute(), totalScore.explain());
