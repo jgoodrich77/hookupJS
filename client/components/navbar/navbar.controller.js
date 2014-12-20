@@ -40,8 +40,13 @@ angular.module('auditpagesApp')
     }];
 
     $scope.userMenu = [{
+      'caption': 'Dashboard',
+      'title': 'Access your amazing dashboard.',
+      'state': 'app.dashboard',
+      'glyph': 'fa fa-plug'
+    },{
       'caption': 'Groups',
-      'title': 'Choose which groups you are associated with,',
+      'title': 'Choose which groups you are associated with',
       'state': 'app.account.groups',
       'glyph': 'glyphicon glyphicon-plane'
     },{

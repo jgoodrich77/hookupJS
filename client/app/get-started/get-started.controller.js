@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('GetStartedCtrl', function ($rootScope, $fb, $user, $scope, $log, Auth, FancyCountdown) {
+.controller('GetStartedCtrl', function ($rootScope, $state, $fb, $user, $scope, $log, Auth, FancyCountdown) {
 
   //
   // $rootScope.hideNavbar = true;
@@ -185,6 +185,10 @@ angular
     $scope.formError = false;
     $user.setupFinalize()
       .then(checkUserStep)
+      .then(function (res) { // nav to the amazing dashboard
+        $state.go('app.dashboard');
+        return res;
+      })
       .catch(function (err) {
         $scope.formError = err;
       });

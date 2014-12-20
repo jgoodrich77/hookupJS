@@ -321,14 +321,15 @@ $badge-danger-border:  $badge-border-radius;
     background: #4393B9;
 }
 
-.well.terms-and-conditions {
-  max-height: 250px;
-  overflow-y: auto;
-}
-
 .footer {
     text-align: center;
     padding: 30px 0;
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
 }
+
+// Component styles are injected through grunt
+// injector
+@import 'get-started/get-started.scss';
+@import 'scheduler/scheduler.scss';
+// endinjector

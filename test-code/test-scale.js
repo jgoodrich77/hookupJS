@@ -7,7 +7,7 @@ var
 prec    = 5,
 samples = 5,
 vLow  = 1,
-vHigh = 100,
+vHigh = 10,
 
 oLow  = 0,
 oHigh = 1,
@@ -21,7 +21,7 @@ testAlgos = Object.keys(Scale.Algorithms)
 
       console.log('Algorithm: %s', algo);
       for(var i = vLow; i <= vHigh; i += sampleSize) {
-        console.log('Sample (%s): %d', i.toFixed(3), scale.calculate(i));
+        console.log('(%s): %d', i.toFixed(3), scale.calculate(i));
       }
     };
   });

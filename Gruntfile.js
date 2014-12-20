@@ -96,7 +96,6 @@ module.exports = function (grunt) {
       livereload: {
         files: [
           '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.css',
-          '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.scss',
           '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.html',
           '{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
           '!{.tmp,<%= yeoman.client %>}{app,components}/**/*.spec.js',
@@ -472,8 +471,7 @@ module.exports = function (grunt) {
             '<%= yeoman.client %>/bower_components',
             '<%= yeoman.client %>/app',
             '<%= yeoman.client %>/components'
-          ],
-          compass: false
+          ]
         },
         files: {
           '.tmp/app/app.css' : '<%= yeoman.client %>/app/app.scss'

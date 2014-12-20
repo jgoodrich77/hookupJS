@@ -1,5 +1,15 @@
 <div class="container">
   <div class="row">
-    <h2>Amazing Dashboard!</h2>
+    <div scheduler="scheduler" class="planner"></div>
+
+    <hr/>
+
+    <div class="button-container">
+      <button ng-click="scheduler.shiftPrevious()" ng-disabled="!scheduler.canShiftPrevious()" class="pull-left btn btn-primary"><span class="glyphicon glyphicon-step-backward"></span>Last Week</button>
+      <button ng-click="scheduler.shiftNext()" ng-disabled="!scheduler.canShiftNext()" class="pull-right btn btn-primary">Next Week<span class="glyphicon glyphicon-step-forward"></span></button>
+      <div class="text-center">
+        <button ng-click="scheduler.reloadData()" ng-disabled="scheduler.isLoading()" class="btn btn-primary">Reload</button>
+      </div>
+      <div class="clearfix"></div>
   </div>
 </div>

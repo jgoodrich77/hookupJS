@@ -1,0 +1,164 @@
+$scheduler-breakpoint-sm: 480px;
+
+.scheduler {
+  position: relative;
+  padding: 0;
+
+  .scheduler-loader {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(#fff, 0.8);
+    z-index: 100;
+
+    .loader-text {
+      background-color: #fff;
+      display: block;
+      position: absolute;
+      width: 60%;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      top: 50%;
+      left: 50%;
+      margin-top: -25px;
+      margin-left: -30%;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      box-shadow: 0 0 25px rgba(#000, 0.15);
+    }
+  }
+
+  .scheduler-heading {
+  }
+  .scheduler-period {
+  }
+  .row {
+    margin: 0;
+  }
+  .col-desc,
+  .col-fill,
+  .col-day  {
+    box-sizing: border-box;
+    float: left;
+  }
+  .col-desc {
+    width: 30%;
+  }
+  .col-fill {
+    width: 70%;
+  }
+  .col-day {
+    width: 10%;
+    text-align: center;
+  }
+}
+
+.scheduler-heading {
+  .col-day {
+    @include transform(rotate(-45deg));
+
+    &.current {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .date {
+      display: none;
+    }
+
+    @media (min-width: $scheduler-breakpoint-sm) {
+      @include transform(rotate(0));
+
+      &.current {
+        border-radius: 5px;
+      }
+
+      .date {
+        display: block;
+        font-size: 25px;
+      }
+    }
+  }
+}
+
+.scheduler-period {
+  $border-width: 1px;
+
+  margin-bottom: 10px;
+
+  .scheduler-period-heading {
+    margin: 0;
+    font-size: 15px;
+    line-height: 25px;
+    font-style: italic;
+  }
+
+  .col-desc,
+  .col-day  {
+    line-height: 35px;
+  }
+
+  .col-desc {
+    font-size: 10px;
+
+    @media (min-width: $scheduler-breakpoint-sm) {
+      font-size: 1em;
+    }
+  }
+  .col-day {
+    border: $border-width solid #111;
+    border-width: $border-width 0 0 $border-width;
+    cursor: pointer;
+
+    &.negative {
+      background-color: #FFD3C2;
+      color: #8A2700;
+    }
+    &.neutral {
+      background-color: #C9E8FF;
+      color: #2B628C;
+    }
+    &.positive {
+      background-color: #CFFFC2;
+      color: #187200;
+    }
+    &.disabled {
+      background-color: #ddd;
+      color: #777;
+      cursor: default;
+    }
+
+    &.current {
+      color: #fff;
+      background-color: #222;
+
+      &.negative {
+        background-color: #FF692E;
+      }
+      &.neutral {
+        background-color: #2BA3FF;
+      }
+      &.positive {
+        background-color: #229C00;
+      }
+      &.disabled {
+        background-color: #595959;
+      }
+    }
+  }
+
+  .row {
+    .col-day:last-child {
+      border-width: $border-width $border-width 0 $border-width;
+    }
+    &:last-child {
+      .col-day {
+        border-width: $border-width 0 $border-width $border-width;
+
+        &:last-child {
+          border-width: $border-width;
+        }
+      }
+    }
+  }
+}
