@@ -1,14 +1,20 @@
 'use strict';
 
-var User = require('./user.model');
-var config = require('../../config/environment');
-var jwt = require('jsonwebtoken');
-var requestUtils = require('../requestUtils');
-
 var Q = require('q');
+var jwt = require('jsonwebtoken');
+var User = require('./user.model');
+var UserJob = require('./job/job.model');
+var config = require('../../config/environment');
+var requestUtils = require('../requestUtils');
+var facebook = require('../../components/facebook');
 
-var facebook      = require('../../components/facebook');
-var facebookScore = require('../../components/facebook-score');
+function createToken(user) {
+  return jwt.sign({
+      _id: user._id
+    }, config.secrets.session, {
+      expiresInMinutes: config.sessionDuration
+    });
+}
 
 function qUserById(id, res, cols) {
   var defer = Q.defer();
@@ -51,15 +57,9 @@ exports.facebookLogin = function(req, res, next) {
         return user.save(function (err) {
           if(err) return next(err);
 
-          var token = jwt.sign({
-            _id: user._id
-          }, config.secrets.session, {
-            expiresInMinutes: config.sessionDuration
-          });
-
           requestUtils.data(res, {
             step: user.setupStep,
-            session: token
+            session: createToken(user)
           });
         });
       });
@@ -80,10 +80,8 @@ exports.setupFacebookObject = function(req, res, next) {
         .then(function (pageInfo) {
           if(!pageInfo) return;
 
-          user.facebookObj.id    = nObjectId;
-          user.facebookObj.token = nAccessToken;
-          user.facebookObj.lastValidated = Date.now();
-          user.setupStep = 2;
+          user.facebookObj.id = nObjectId;
+          user.setupStep      = 2;
 
           return user.save(function (err) {
             if(err) return next(err);
@@ -101,10 +99,8 @@ exports.changeFacebookObject = function(req, res, next) {
     .then(function (user) {
       if(user.setupStep !== 2) return requestUtils.missing(res);
 
-      user.facebookObj.id            = null;
-      user.facebookObj.token         = null;
-      user.facebookObj.lastValidated = null;
-      user.setupStep = 1;
+      user.facebookObj.id = null;
+      user.setupStep      = 1;
 
       return user.save(function (err) {
         if(err) return next(err);
@@ -123,37 +119,37 @@ exports.setupPassword = function(req, res, next) {
   qUserById(req.user._id, res)
     .then(function (user) {
       if(user.setupStep !== 2) return requestUtils.missing(res);
+      if(!user.facebookObj || !user.facebookObj.id)
+        return requestUtils.missing(res);
 
       user.password = nPassword;
-      user.setupStep = 3;
+      user.setupStep = 3; // wait for job to finish
 
+      // at this point the user should have full-capabilities as a user:
       return user.save(function (err) {
         if(err) return next(err);
 
-        //
-        // At this point start scoring the facebook object
-        //
+        // create a job to score their facebook page
+        UserJob.createJob(res.agenda, req.user._id, 'facebook-page-score', {
+          userId:           user._id,
+          facebookObjectId: user.facebookObj.id
+        }, false, function (err, job) {
+          if(err) return next(err);
 
-        return facebookScore.registerObject(user._id, user.facebookObj.id, user.facebookObj.token)
-          .then(function (scoreProcess) {
-            requestUtils.data(res, {
-              step: user.setupStep,
-              scoreProcess: scoreProcess
-            });
-          });
+          console.log('created job for user:', job.attrs);
+
+          requestUtils.data(res, user.setupStatus);
+        });
       });
     })
     .catch(next);
 };
 
-// step 3
 exports.setupFinalize = function(req, res, next) {
   qUserById(req.user._id, res)
     .then(function (user) {
       if(user.setupStep !== 3) return requestUtils.missing(res);
-
-      user.setupStep = -1;
-
+      user.setupStep = -1; // wait for job to finish
       return user.save(function (err) {
         if(err) return next(err);
         requestUtils.data(res, user.setupStatus);
@@ -173,10 +169,10 @@ exports.currentUser = function(req, res, next) {
 exports.currentUserFacebookObject = function(req, res, next) {
   qUserById(req.user._id, res)
     .then(function (user) {
-      if(!user.facebookObj || !user.facebookObj.token)
+      if(!user.facebookObj || !user.facebookObj.id)
         return requestUtils.missing(res);
 
-      return facebook.basicPageInfo(user.facebookObj.id, user.facebookObj.token)
+      return facebook.basicPageInfo(user.facebookObj.id, user.facebook.token)
         .then(function (pageInfo) {
           if(!pageInfo) return requestUtils.missing(res);
 
@@ -187,21 +183,31 @@ exports.currentUserFacebookObject = function(req, res, next) {
 };
 
 exports.currentUserFacebookScore = function(req, res, next) {
+  var
+  userId = req.user._id;
+
   qUserById(req.user._id, res)
     .then(function (user) {
       if(!user.facebookObj || !user.facebookObj.id)
         return requestUtils.missing(res);
 
-      //
-      // At this point, scoring should have already started and have some status (step 3)
-      //
+      // find a job that matches this criteria:
+      UserJob.findUserJobs(res.agenda, userId, {
+        'name': 'facebook-page-score',
+        'data.userId': userId,
+        'data.facebookObjectId': user.facebookObj.id
+      }, function (err, jobs) {
+        if(err) return next(err);
+        if(!jobs || !jobs.length) {
+          return requestUtils.data(res, []);
+        }
 
-      return facebookScore.objectStatus(user.facebookObj.id)
-        .then(function (scoreStatus) {
-          if(!scoreStatus) return requestUtils.missing(res);
+        var
+        jobDataNorm = jobs.map(UserJob.normalizeJob.bind(UserJob))
+          .sort(UserJob.jobSorter(false)); // sort newest to oldest
 
-          requestUtils.data(res, !!scoreStatus ? scoreStatus : false);
-        });
+        requestUtils.data(res, jobDataNorm[0]);
+      });
     })
     .catch(next);
 };

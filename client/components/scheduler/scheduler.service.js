@@ -37,7 +37,7 @@ angular
   }
   return Scheduler;
 })
-.factory('ScheduleData', function($log, $q, $timeout, $inherit, Time, CacheMemory) {
+.factory('ScheduleData', function ($log, $q, $timeout, $inherit, Time, CacheMemory) {
 
   function ScheduleDataLoader(opts) {
     var loading = false;
@@ -194,13 +194,6 @@ angular
 
   var boW = 0;
 
-  // loading promised data
-  ScheduleData.LoaderPromised = function(opts) {
-    ScheduleDataLoader.call(this, opts);
-  };
-  $inherit(ScheduleData.LoaderPromised, ScheduleDataLoader);
-
-  // loading random test data
   ScheduleData.LoaderRandom = function(opts) {
     ScheduleDataLoader.call(this, opts);
 

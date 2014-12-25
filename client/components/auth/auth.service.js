@@ -5,7 +5,7 @@ angular
 .factory('Authorizer', function ($q, $rootScope, $state, Auth) {
 
   var
-  stateLogin        = 'app.login',
+  stateLogin        = 'app.get-started',
   stateAccessDenied = 'app.errors.accessdenied';
 
   return {

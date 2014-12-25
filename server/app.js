@@ -11,9 +11,8 @@ var Q = require('q');
 var util = require('util');
 var express = require('express');
 var mongoose = require('mongoose');
+var Agenda = require('agenda');
 var config = require('./config/environment');
-var facebook = require('./components/facebook');
-var facebookScore = require('./components/facebook-score');
 
 // Connect to database
 mongoose.connect(config.mongo.uri, config.mongo.options);
@@ -29,8 +28,16 @@ var socketio = require('socket.io')(server, {
   path: '/socket.io-client'
 });
 
+var // setup job scheduler
+agenda = app.agenda = new Agenda({
+  db: {
+    address: config.mongo.uri
+  }
+});
+
 app.use(require('./config/winston.logger'));
 
+require('./jobs')(app);
 require('./config/mailer')(app);
 require('./config/socketio')(socketio);
 require('./config/express')(app);
@@ -41,42 +48,23 @@ server.listen(config.port, config.ip, function () {
   console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
 });
 
-facebookScore.checkZombies()
-  .then(function (zombies) {
-    if(!zombies.length) {
-      console.log('Yay, no zombies!');
-      return;
-    }
+/// Job scheduling
 
-    console.log('Found %d zombie(s), re-testing these zombies!', zombies.length);
+agenda.start();
 
-    Q.allSettled(zombies)
-      .then(function (results) {
+// process interaction:
 
-        var
-        hasErrors = results
-          .reduce(function (p, c) {
-            if(p) return p;
-            return c.state === 'rejected';
-          }, false);
+function graceful() {
+  console.log('Shutting down..');
 
-        console.log('All zombie re-tests are completed%s', !!hasErrors ? ', but with errors:' : '');
-
-        if(hasErrors) {
-          results
-            .filter(function (v) { return v.state === 'rejected'; })
-            .forEach(function (v) {
-              console.error('--', util.isError(v.reason) ? v.reason.stack : v.reason);
-            });
-        }
-      });
-
-    return zombies;
-  })
-  .catch(function (err) {
-    console.error('Error while zombie checking:', err);
-    return err;
+  agenda.stop(function() {
+    console.log('Exited gracefully.');
+    process.exit(0);
   });
+}
+
+process.on('SIGTERM', graceful);
+process.on('SIGINT' , graceful);
 
 //var
 // background services

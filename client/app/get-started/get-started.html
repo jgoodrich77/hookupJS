@@ -104,36 +104,9 @@
           </div>
 
           <div ng-switch-when="3" class="text-center">
-            <div ng-switch="form.scoreRes.status">
-              <div ng-switch-when="pending">
-                <h3>Pending Score</h3>
-                <p class="text-muted">Please wait, we are experiencing a high load of requests, we'll score your page soon.</p>
-              </div>
-              <div ng-switch-when="running">
-                <h3>Scoring "{{form.scoreRes.page.name}}"..</h3>
-                <p class="text-muted">Please wait, we are downloading information about your page and stats.</p>
-
-                <div ng-if="form.loading">
-                  <h4>checking status..</h4>
-                </div>
-
-                <div ng-if="!form.loading">
-                  <h4>Estimated time remaining:</h4>
-                  <div fancy-countdown="form.clock"></div>
-                </div>
-              </div>
-              <div ng-switch-when="complete">
-                <h2>Congratulations {{user.name}}!</h2>
-
-                <p>We finished scoring your page "{{form.scoreRes.page.name}}" with a score of {{form.scoreRes.result.score * 100 | percentage:3}}.</p>
-
-                <p>You now have your account setup on HookupJS, click finish and let's get started!</p>
-                <button type="button" class="btn btn-primary btn-lg" ng-click="setupFinalize()">Finish</button>
-              </div>
-              <div ng-switch-when="error">
-                <h3>Score Error</h3>
-                <p class="text-error">Whoa, something happened while scoring your page.</p>
-              </div>
+            <div ng-if="form.loading || form.scoring">
+              <h3>Scoring your Facebook Page</h3>
+              <p class="text-muted">Please wait, loading your available Facebook data for your page and analyzing it.</p>
             </div>
           </div>
         </div>

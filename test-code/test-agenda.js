@@ -21,9 +21,9 @@ agenda.define('post-facebook', function (job, done) {
   done();
 });
 
-agenda.schedule(when, 'post-facebook', {
+console.log( 'schedule:', agenda.schedule(when, 'post-facebook', {
   time: new Date()
-});
+}));
 
 agenda.start();
 

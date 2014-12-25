@@ -9,7 +9,7 @@ var
 Q = require('q'),
 moment = require('moment'),
 User = require('../api/user/user.model'),
-UserLog = require('../api/user/user-log.model'),
+UserLog = require('../api/user/log/log.model'),
 Achievement = require('../api/achievement/achievement.model'),
 Group = require('../api/group/group.model'),
 Service = require('../api/service/service.model'),

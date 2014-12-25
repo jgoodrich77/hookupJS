@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('GetStartedCtrl', function ($rootScope, $state, $fb, $user, $scope, $log, Auth, FancyCountdown) {
+.controller('GetStartedCtrl', function ($timeout, $rootScope, $state, $fb, $user, $scope, $log, Auth, FancyCountdown) {
 
   //
   // $rootScope.hideNavbar = true;
@@ -47,8 +47,6 @@ angular
 
   var
   cancelConnected = $rootScope.$on('$fb:status_connected', function() {
-    // $log.debug('facebook is connected', arguments);
-
     checkFacebookAuth()
       .then(cancelConnected);
   });
@@ -66,28 +64,6 @@ angular
   $scope.fbHasAllPerms      = $fb.hasAllPerms;
 
   $scope.initSetupStep = function(step) {
-
-    function step3Reload() {
-      $scope.form.loading = true;
-      $user.getFacebookScore()
-        .then(function (object) {
-          // console.log('object:', object);
-          $scope.form.scoreRes = object;
-
-          if(object.etaMS !== undefined) {
-            $scope.form.clock = new FancyCountdown($scope, {
-              delay: object.etaMS,
-              interval: 100,
-              useFrame: true,
-              autoStart: true
-            });
-          }
-        })
-        .catch(fbErrorHandler)
-        .finally(function(){
-          $scope.form.loading = false;
-        });
-    }
 
     if($scope.setup === undefined) {
       $scope.setup = {};
@@ -122,13 +98,23 @@ angular
         });
       break;
       case 3:
-
-      $scope.$on('FancyCountdown:complete', function(evt, ctrl) {
-        setTimeout(step3Reload, 2000);
-      });
-
-      step3Reload();
-
+      (function loopStep3() {
+        $scope.form.loading = true;
+        $user.getObjectScore()
+          .then(function (objectScore) {
+            if(objectScore.status === 'finished') { // nothing to wait for:
+              $scope.form.scoring = false;
+              return $user.setupFinalize()
+                .then(checkUserStep);
+            }
+            $scope.form.scoring = true;
+            $timeout(loopStep3, 2500);
+            return objectScore;
+          })
+          .finally(function() {
+            $scope.form.loading = false;
+          });
+      })();
       break;
     }
   };
@@ -180,23 +166,8 @@ angular
         $scope.formError = err;
       });
   };
-
-  $scope.setupFinalize = function() {
-    $scope.formError = false;
-    $user.setupFinalize()
-      .then(checkUserStep)
-      .then(function (res) { // nav to the amazing dashboard
-        $state.go('app.dashboard');
-        return res;
-      })
-      .catch(function (err) {
-        $scope.formError = err;
-      });
-  };
 })
 .controller('GetStartedNoAuthCtrl', function ($scope, $fb, $log) {
-  // $log.debug('GetStartedNoAuthCtrl : init');
-
   $scope.form = {
     agreesWithTerms: true
   };
