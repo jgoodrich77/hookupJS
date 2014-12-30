@@ -1,0 +1,58 @@
+<div class="container-fluid">
+  <div class="well well-danger" ng-if="validation && !showExisting">
+    <div class="well-body" ng-if="validation.missingDetails">Your post is missing text.</div>
+  </div>
+
+  <div ng-show="existingRecords.length">
+    <h4>Scheduled posts for this period</h4>
+
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="record in existingRecords">
+        <button class="btn btn-default pull-right" ng-click="toggleShowingRecord(record)">
+          <span class="glyphicon glyphicon-plus" ng-if="!record.isShowing"></span>
+          <span class="glyphicon glyphicon-minus" ng-if="record.isShowing"></span>
+        </button>
+        <h4 class="list-group-item-head" ng-bind="record.scheduledFor | date:'short'"></h4>
+        <span class="list-group-item-text"><b>Job ID:</b> <em>{{record.jobId}}</em></span>
+
+        <div ng-if="record.loading">
+          <p>Please wait, loading job information..</p>
+        </div>
+
+        <div ng-if="record.isShowing">
+          <p><b>Post Text:</b> {{record.detail.data.text}}</p>
+          <p ng-if="record.detail.data.media">With media attachments</p>
+
+          <button class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
+        </div>
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" ng-hide="showExisting"><!-- the time-slot that we're adding to -->
+    <dl class="col-xs-6">
+      <dt>Date</dt>
+      <dd>{{result.date | date:'mediumDate'}}</dd>
+    </dl>
+    <dl class="col-xs-6">
+      <dt>Time slot</dt>
+      <dd>{{result.period | schedulerPeriod}}</dd>
+    </dl>
+  </div>
+  <div class="row" ng-hide="showExisting"><!-- the time-slot that we're adding to -->
+    <div class="col-sm-12">
+      <h3>Post Text</h3>
+      <p class="text-muted">Enter the message you wish to have appear in your post.</p>
+      <textarea class="fill" rows="6" placeholder="Post text here" ng-model="result.text"></textarea>
+    </div>
+  </div>
+  <div class="row" ng-hide="showExisting || true"><!-- the time-slot that we're adding to -->
+    <div class="col-sm-12">
+      <h4>Post Media</h4>
+      <p class="text-muted">Upload an image or video to post along with your message.</p>
+      <input type="file" ng-model="result.media" />
+    </div>
+  </div>
+</div>

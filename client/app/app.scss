@@ -243,6 +243,20 @@ $badge-danger-border:  $badge-border-radius;
   }
 }
 
+textarea.fill {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-content {
+  .modal-body {
+    dl {
+      margin: 0;
+    }
+  }
+}
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;

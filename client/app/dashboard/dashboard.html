@@ -1,6 +1,10 @@
 <div class="container">
   <div class="row">
-    <div scheduler="scheduler" class="planner"></div>
+    <scheduler
+      datasource="scheduler"
+      do-item-click="scheduler.itemClick"
+      do-item-classes="scheduler.itemClasses"
+      class="planner"></scheduler>
 
     <hr/>
 

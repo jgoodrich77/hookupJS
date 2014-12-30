@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('auditpagesApp')
-  .factory('Modal', function ($rootScope, $modal) {
+  .factory('Modal', function ($rootScope, $modal, $http) {
     /**
      * Opens a modal
      * @param  {Object} scope      - an object to be merged with modal's scope
@@ -72,6 +72,76 @@ angular.module('auditpagesApp')
             });
           };
         }
+      },
+
+      scheduleAdd: function(add) {
+        add = add || angular.noop;
+
+        return function (date, period, records, prevValidation) {
+          var
+          modal, scopeRes = {
+            date: date,
+            period: period
+          };
+
+          modal = openModal({
+            modal: {
+              dismissable: true,
+              title: 'Add Schedule',
+              template: 'components/modal/tpl/tpl.schedule-add.html',
+              buttons: [{
+                classes: 'btn-success',
+                text: 'Schedule Post',
+                click: function(e) {
+                  modal.close(e);
+                }
+              }, {
+                classes: 'btn-default',
+                text: 'Cancel',
+                click: function(e) {
+                  modal.dismiss(e);
+                }
+              }]
+            },
+            result: scopeRes,
+            existingRecords: records,
+            validation: prevValidation,
+            cancelScheduledJob: function(record, index) {
+              var scope = this;
+              $http.delete('/api/user-schedule/'+record.jobId)
+                .then(function (response) {
+                  records.splice(index, 1);
+                  scope.showExisting = (records.length > 0);
+                });
+            },
+            toggleShowingRecord: function(record) {
+              if(!record || !!record.loading) return;
+
+              if(!record.isShowing) {
+                record.loading = true;
+                record.isShowing = false;
+
+                $http.get('/api/user-schedule/'+record.jobId)
+                  .then(function (response) {
+                    record.loading = false;
+                    record.isShowing = true;
+                    record.detail = response.data;
+                  })
+                  .finally(function () {
+                    record.loading = false;
+                  });
+              }
+              else {
+                record.isShowing = false;
+                record.detail = undefined;
+              }
+            }
+          }, 'modal-success');
+
+          modal.result.then(function (event) {
+            add.call(event, scopeRes);
+          });
+        };
       }
     };
   });

@@ -84,6 +84,24 @@ angular
       .setMilliseconds(msec);
   }
 
+  Time.isSameDay = function (date, now) {
+    now = now || new Date;
+    var d = new Date(date);
+    return (d.getFullYear() === now.getFullYear()) &&
+           (d.getMonth()    === now.getMonth()) &&
+           (d.getDate()     === now.getDate());
+  };
+
+  Time.isFuture = function(date, now) {
+    now = now || new Date;
+    return (new Date(date)).getTime() > now.getTime();
+  };
+
+  Time.isPast = function(date, now) {
+    now = now || new Date;
+    return (new Date(date)).getTime() < now.getTime();
+  };
+
   Time.parse = function (str) {
 
     if(str instanceof Time) {

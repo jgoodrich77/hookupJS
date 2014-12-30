@@ -1,26 +1,28 @@
 <div class="scheduler">
-  <div ng-if="data.isLoading()" class="scheduler-loader">
+  <div ng-if="datasource.getData().isLoading()" class="scheduler-loader">
     <p class="loader-text"><span class="glyphicon glyphicon-refresh"></span> Please wait, loading ..</p>
   </div>
   <div class="row">
     <div class="col-desc">&nbsp;</div>
     <div class="col-fill">
-      <h2 class="text-center">{{data.month()}}</h2>
+      <h2 class="text-center">{{datasource.getPlan().getMonthName()}}</h2>
     </div>
   </div>
   <div class="row scheduler-heading">
     <div class="col-desc text-right">
-      <div class="pad-right"><span class="text-muted">Week {{data.weekNumber()}}</span>
-        <div class="text-primary">{{data.year()}}</div>
+      <div class="pad-right"><span class="text-muted">Week {{datasource.getPlan().getWeekNumber()}}</span>
+        <div class="text-primary">{{datasource.getPlan().getYear()}}</div>
       </div>
     </div>
-    <div ng-repeat="item in data.dates" ng-class="{ 'current': util.isToday(item)}" class="col-day"><span class="date">{{item | date:'dd'}}</span><span class="day">{{item | date:'EEE'}}</span></div>
+    <div ng-repeat="item in datasource.getPlan().getDates()" ng-class="{ 'current': util.isToday(item)}" class="col-day"><span class="date">{{item | date:'dd'}}</span><span class="day">{{item | date:'EEE'}}</span></div>
   </div>
-  <div ng-repeat="item in data.segments" class="scheduler-period">
+  <div ng-repeat="item in datasource.getPlan().getSegments()" class="scheduler-period">
     <h4 ng-bind="item.name" class="scheduler-period-heading"></h4>
     <div ng-repeat="period in item.periods" class="row">
-      <div class="col-desc">{{util.getPeriodTitle(period)}}</div>
-      <div ng-repeat="day in data.dates" ng-class="util.getItemClasses(period, day)" class="col-day"><span ng-bind="data.getRecord(period, day)"></span></div>
+      <div class="col-desc" ng-bind="period | schedulerPeriod"></div>
+      <div ng-repeat="day in datasource.getPlan().getDates()" ng-class="doItemClasses(period, day, datasource.getData().getRecord(period, day))" ng-click="doItemClick(period, day, datasource.getData().getRecord(period, day))" class="col-day">
+        <span ng-bind="datasource.getData().getRecord(period, day) | schedulerRecordLabel"></span>
+      </div>
     </div>
   </div>
 </div>

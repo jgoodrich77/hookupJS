@@ -37,7 +37,7 @@ angular
   }
   return Scheduler;
 })
-.factory('ScheduleData', function ($log, $q, $timeout, $inherit, Time, CacheMemory) {
+.factory('ScheduleData', function ($log, $q, $timeout, $http, $inherit, Time, CacheMemory) {
 
   function ScheduleDataLoader(opts) {
     var loading = false;
@@ -60,6 +60,7 @@ angular
     opts = opts || {};
     var loader = opts.loader || false;
     var cache = new CacheMemory();
+    var rowDateProperty = opts.rowDateProperty || 'date';
 
     function cacheKey(period, date) {
       var
@@ -136,7 +137,7 @@ angular
             return function (test) {
               var ms = test instanceof Date ? test.getTime() : Date.parse(test).getTime();
               if(!ms) return false;
-              return (ms > msStart && ms < msEnd) ? bucketId : false;
+              return (ms >= msStart && ms <= msEnd) ? bucketId : false;
             };
           })(period, date));
         });
@@ -148,16 +149,16 @@ angular
 
           data.forEach(function (entry) {
             var
-            rowDate = entry.date,
+            rowDate = new Date(entry[rowDateProperty]),
             matched = !buckets.every(function (bucket) {
               var bucketId = bucket(rowDate);
               if(!bucketId) return true; // keep looking
 
-              var bucket = cache.has(bucketId)
+              var cbucket = cache.has(bucketId)
                 ? cache.get(bucketId)
                 : cache.set(bucketId, []);
 
-              bucket.push(entry);
+              cbucket.push(entry);
 
               return false;
             });
@@ -171,7 +172,7 @@ angular
         });
     };
     this.getRecord = function(period, date) {
-      return (cache.get(cacheKey(period, date))||[]).length;
+      return (cache.get(cacheKey(period, date))||[]);
     };
     this.isLoading = function() {
       if(!this.hasLoader()) return false;
@@ -193,6 +194,29 @@ angular
   ScheduleData.Loader = ScheduleDataLoader;
 
   var boW = 0;
+
+  ScheduleData.LoaderHttp = function(opts) {
+    ScheduleDataLoader.call(this, opts);
+    opts        = opts || {};
+    opts.params = opts.params || {};
+
+    var
+    propYear    = opts.propertyYear       || 'year',
+    propWeekNum = opts.propertyWeekNumber || 'weekNumber';
+
+    delete opts.propertyYear;
+    delete opts.propertyWeekNumber;
+
+    this.query = function(year, weekNumber) { // should be implemented by child class
+      opts.params[propYear]    = year;
+      opts.params[propWeekNum] = weekNumber;
+      return $http(opts)
+        .then(function (response) {
+          return response.data;
+        });
+    };
+  };
+  $inherit(ScheduleData.LoaderHttp, ScheduleDataLoader);
 
   ScheduleData.LoaderRandom = function(opts) {
     ScheduleDataLoader.call(this, opts);
