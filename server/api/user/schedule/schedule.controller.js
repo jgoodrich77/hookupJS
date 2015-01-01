@@ -41,7 +41,9 @@ exports.create  = function(req, res, next) {
   sDate   = new Date(dates.start),
   eDate   = new Date(dates.end),
   data    = {
-    text:  reqData.text || false,
+    userId: req.user._id,
+    facebookObjectId: req.user.facebookObj.id,
+    text: reqData.text || false,
     media: reqData.media || false
   };
 

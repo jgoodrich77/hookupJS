@@ -1,6 +1,7 @@
 'use strict';
 
 var
+facebook = require('../../components/facebook'),
 qLoadUserObjectInfo = require('../common/load-user-info');
 
 module.exports = function(job, done) {
@@ -12,11 +13,15 @@ module.exports = function(job, done) {
 
   return qLoadUserObjectInfo(userId, objectId)
     .then(function (objectInfo) {
-
-      console.log(objectInfo);
+      return facebook.post(objectId, objectInfo.pageToken, jobData.text)
+        .then(function (result) {
+          jobData.result = result;
+          return result;
+        });
+    })
+    .then(function (result) {
       done();
-
-      return objectInfo;
+      return result;
     })
     .catch(done);
 };

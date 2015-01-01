@@ -1,6 +1,7 @@
 'use strict';
 
 var
+path = require('path'),
 Q = require('q'),
 FBGraph = require('./lib/graph'),
 config = require('../../config/environment');
