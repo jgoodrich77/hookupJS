@@ -7,7 +7,8 @@ util = require('util'),
 path = require('path'),
 url = require('url'),
 crypto = require('crypto'),
-request = require('request');
+request = require('request'),
+qs = require('querystring');
 
 function FacebookGraph(config) {
   var
@@ -98,7 +99,9 @@ function FacebookGraph(config) {
         }, '')
         .replace(/\&$/, '');
     },
-    request: function(path, uriParams, method, data) {
+    request: function(path, uriParams, method, data, isJson) {
+
+      isJson = (isJson === undefined) ? true : !!isJson;
 
       var
       defer = Q.defer(),
@@ -132,10 +135,24 @@ function FacebookGraph(config) {
           return defer.reject(new Error(util.format('Unexpected return code (%d) was received.%s', response.statusCode, !!errorMessage ? ' Facebook said: ' + errorMessage : '')));
         }
 
-        return defer.resolve(JSON.parse(body));
+        if(isJson) {
+          return defer.resolve(JSON.parse(body));
+        }
+        else {
+          return defer.resolve(body);
+        }
       });
 
       return defer.promise;
+    },
+    extendToken: function(token) {
+      return this.request('oauth/access_token', {
+        grant_type: 'fb_exchange_token',
+        client_id: opt('appId', false),
+        client_secret: opt('appSecret', false),
+        fb_exchange_token: token
+      }, 'GET', undefined, false)
+        .then(qs.parse.bind(qs));
     },
     get: function(path, uriParams) {
       return this.request(path, uriParams, 'GET');

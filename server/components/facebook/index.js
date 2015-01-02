@@ -10,6 +10,9 @@ var
 cli = new FBGraph(config.facebookSdk);
 
 module.exports = {
+  createProof: function(accessToken) {
+    return cli.createAppSecretProof(accessToken, config.facebookSdk.appSecret);
+  },
   appInfo: function(accessToken) {
     return cli.get('/app', {
       access_token: accessToken,
@@ -96,5 +99,8 @@ module.exports = {
     }, {
       message: message
     });
+  },
+  extendToken: function(token) {
+    return cli.extendToken(token);
   }
 };

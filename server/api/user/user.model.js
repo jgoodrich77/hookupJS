@@ -23,7 +23,8 @@ var UserSchema = new Schema({
   },
   facebook: {
     id: String,
-    token: String
+    token: String,
+    expires: Date
   },
   setupStep: {
     type: Number,

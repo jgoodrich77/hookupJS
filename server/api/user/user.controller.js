@@ -45,24 +45,35 @@ exports.facebookLogin = function(req, res, next) {
         return requestUtils.error(res, new Error('User ID does not match facebook access token.'));
       }
 
-      User.findByFacebookId(userId, '-salt -hashedPassword', function (err, user) {
-        if (err) return next(err);
-        if (!user) {
-          user = User.createFromFacebook(userId, userToken, fbResult);
-        }
-        else {
-          user.updateFromFacebook(userToken, fbResult);
-        }
+      // extend user token for long lived token:
+      facebook.extendToken(userToken)
+        .then(function (resp) {
+          var
+          longLivedToken = resp.access_token,
+          expires = new Date(Date.now() + (resp.expires * 1000));
 
-        return user.save(function (err) {
-          if(err) return next(err);
+          return User.findByFacebookId(userId, '-salt -hashedPassword', function (err, user) {
+            if (err) return next(err);
 
-          requestUtils.data(res, {
-            step: user.setupStep,
-            session: createToken(user)
+            if (!user) {
+              user = User.createFromFacebook(userId, longLivedToken, fbResult);
+            }
+            else {
+              user.updateFromFacebook(longLivedToken, fbResult);
+            }
+
+            user.facebook.expires = expires;
+
+            return user.save(function (err) {
+              if(err) return next(err);
+
+              requestUtils.data(res, {
+                step: user.setupStep,
+                session: createToken(user)
+              });
+            });
           });
         });
-      });
     })
     .catch(next)
 };
@@ -160,8 +171,15 @@ exports.setupFinalize = function(req, res, next) {
 
 exports.currentUser = function(req, res, next) {
   qUserById(req.user._id, res)
-    .then(function (user) {
-      requestUtils.data(res, user.profile);
+    .then(function (user) { // validate the user facebook token:
+      return facebook.tokenInfo(user.facebook.token, user.facebook.token)
+        .then(function (result) {
+          if(!result.data || !result.data.is_valid) return requestUtils.missing(res); // force re-authentication
+          requestUtils.data(res, user.profile);
+        })
+        .catch(function (err) {
+          return requestUtils.missing(res);
+        });
     })
     .catch(next);
 };
