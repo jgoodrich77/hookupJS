@@ -19,11 +19,11 @@
           <p>Please wait, loading job information..</p>
         </div>
 
-        <div ng-if="record.isShowing">
+        <div ng-show="record.isShowing">
           <p><b>Post Text:</b> {{record.detail.data.text}}</p>
-          <p ng-if="record.detail.data.media">With media attachments</p>
+          <p ng-show="record.detail.data.media">With media attachments</p>
 
-          <button class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
+          <button ng-hide="!!record.detail.lastFinishedAt" class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
         </div>
 
         <div class="clearfix"></div>
@@ -48,11 +48,21 @@
       <textarea class="fill" rows="6" placeholder="Post text here" ng-model="result.text"></textarea>
     </div>
   </div>
-  <div class="row" ng-hide="showExisting || true"><!-- the time-slot that we're adding to -->
+  <div class="row" ng-hide="showExisting"><!-- the time-slot that we're adding to -->
     <div class="col-sm-12">
       <h4>Post Media</h4>
       <p class="text-muted">Upload an image or video to post along with your message.</p>
-      <input type="file" ng-model="result.media" />
+
+      <div ng-if="result.media.length">
+        <div class="pull-right btn btn-sm btn-success" ng-click="result.media = undefined"><span class="glyphicon glyphicon-remove"></span> Remove</div>
+        <label ng-bind="result.media[0].name"></label>
+        <div class="clearfix"></div>
+      </div>
+
+      <button class="btn btn-primary" ng-file-select ng-model="result.media" accept="image/*">
+        <span ng-if="!!result.media.length">Change file..</span>
+        <span ng-if=" !result.media.length">Choose a file..</span>
+      </button>
     </div>
   </div>
 </div>

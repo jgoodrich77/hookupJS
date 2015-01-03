@@ -15,6 +15,7 @@ angular.module('auditpagesApp', [
   'ui.bootstrap',
   'angularUtils.directives.uiBreadcrumbs',
   'angularUtils.directives.dirPagination',
+  'angularFileUpload',
   'facebook'
 ])
 .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {

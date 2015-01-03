@@ -93,11 +93,12 @@ module.exports = {
       fields: ['id','name','likes','new_like_count','link','website','about','description'].join(',')
     });
   },
-  post: function(objectId, objectAccessToken, message) {
+  post: function(objectId, objectAccessToken, message, pictureUrl) {
     return cli.post(path.join('/',objectId,'feed'), {
       access_token: objectAccessToken
     }, {
-      message: message
+      message: message,
+      picture: pictureUrl
     });
   },
   extendToken: function(token) {

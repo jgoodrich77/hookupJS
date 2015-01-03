@@ -3,6 +3,7 @@
 var path = require('path');
 var winston = require('winston');
 var _ = require('lodash');
+var os = require('os');
 
 function requiredProcessEnv(name) {
   if(!process.env[name]) {
@@ -13,11 +14,13 @@ function requiredProcessEnv(name) {
 
 // All configurations will extend these options
 // ============================================
-var all = {
+var
+baseDir = path.normalize(__dirname + '/../../..'),
+all = {
   env: process.env.NODE_ENV,
 
   // Root path of server
-  root: path.normalize(__dirname + '/../../..'),
+  root: baseDir,
 
   // Server port
   port: process.env.PORT || 3000,
@@ -55,6 +58,12 @@ var all = {
         safe: true
       }
     }
+  },
+
+  uploads: {
+    saveDir: path.join(baseDir, 'uploads'),
+    route: 'api/user-uploads',
+    routeCdn: 'cdn'
   },
 
   mailer: {

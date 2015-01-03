@@ -1,27 +1,54 @@
 'use strict';
 
 var
+Q = require('q'),
 facebook = require('../../components/facebook'),
+UserUpload = require('../../api/user/upload/upload.model'),
 qLoadUserObjectInfo = require('../common/load-user-info');
 
 module.exports = function(job, done) {
 
   var
   jobData  = job.attrs.data = (job.attrs.data || {}),
+  promise  = Q(jobData),
   userId   = jobData.userId,
-  objectId = jobData.facebookObjectId;
+  dmedia;
 
-  return qLoadUserObjectInfo(userId, objectId)
-    .then(function (objectInfo) {
-      return facebook.post(objectId, objectInfo.pageToken, jobData.text)
-        .then(function (result) {
-          jobData.result = result;
-          return result;
-        });
-    })
-    .then(function (result) {
-      done();
-      return result;
-    })
-    .catch(done);
+  if(jobData.media) {
+    promise = promise.then(function (buffer) {
+      return Q.nfcall(UserUpload.findOne.bind(UserUpload), {
+        user: buffer.userId,
+        _id: buffer.media
+      }).then(function (fileUpload) {
+        dmedia = fileUpload;
+        return buffer;
+      })
+    });
+  }
+
+  return  promise.then(function (buffer) {
+    var objectId = buffer.facebookObjectId;
+     return qLoadUserObjectInfo(buffer.userId, objectId)
+      .then(function (objectInfo) {
+
+        var
+        postMessage = buffer.text || '',
+        postPicture = null;
+
+        if(dmedia) {
+          postPicture = dmedia.urlFqdn;
+        }
+
+        return facebook.post(objectId, objectInfo.pageToken, postMessage, postPicture)
+          .then(function (result) {
+            buffer.result = result;
+            return result;
+          });
+      });
+  })
+  .then(function (result) {
+    done();
+    return result;
+  })
+  .catch(done);
 };

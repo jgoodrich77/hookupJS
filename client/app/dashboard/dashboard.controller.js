@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardCtrl', function ($scope, $http, $fb, $interval, Modal, Time, Scheduler, ScheduleData, SchedulePlan) {
+.controller('DashboardCtrl', function ($scope, $http, $fb, $interval, $userUpload, Modal, Time, Scheduler, ScheduleData, SchedulePlan) {
 
   var
   endpoint = '/api/user-schedule',
@@ -33,6 +33,11 @@ angular
     })
   });
 
+  // $userUpload.query().$promise
+  //   .then(function (result) {
+  //     console.log('uploads:', result);
+  //   });
+
   $scope.scheduler = new Scheduler(plan, data, {
     minDate: new Date(new Date(dates[0]).getTime() - (8.64e7 * dateLen * 8)),
     maxDate: new Date(new Date(dates[dateLen - 1]).getTime() + (8.64e7 * dateLen)),
@@ -40,6 +45,9 @@ angular
   });
 
   $interval(function(){}, 2500);
+
+  $scope.adding    = false;
+  $scope.uploading = false;
 
   $scope.scheduler.itemClick = function(period, date, records) {
     var
@@ -56,6 +64,33 @@ angular
 
     if(isPresent || isFuture) {
       var
+      submitPost = function(formData, media) {
+
+        var
+        date   = formData.date,
+        period = formData.period;
+
+        return $http.post(endpoint, {
+          dates: {
+            start: Time.parse(period.start).toDate(date),
+            end:   Time.parse(period.end).toDate(date)
+          },
+          text: formData.text,
+          media: media
+        })
+          .success(function (response) {
+            console.log('Posted successfully', response);
+            return response;
+          })
+          .error(function (err) {
+            console.log('Error!', err);
+            return err;
+          });
+      },
+      onPost = function() {
+        data.reload();
+        $scope.adding = false;
+      },
       onAdd = function (result) {
         if(!result.text && !result.media) { // criteria did not pass validation
           return addFn(date, period, records, {
@@ -63,24 +98,37 @@ angular
           });
         }
 
-        var
-        date   = result.date,
-        period = result.period;
+        $scope.adding    = true;
+        $scope.uploading = false;
 
-        $http.post(endpoint, {
-          dates: {
-            start: Time.parse(period.start).toDate(date),
-            end:   Time.parse(period.end).toDate(date)
-          },
-          text: result.text,
-          media: result.media
-        })
-          .success(function (response) {
-            data.reload();
-          })
-          .error(function (err) {
-            console.log('Error!', err);
-          });
+        // upload media separatly if any
+        if(!!result.media && !!result.media.length) {
+          $scope.uploading = true;
+
+          var file = result.media[0];
+
+          $scope.upload = $userUpload.doUpload(file)
+            .progress(function (evt) { // file upload progress
+              console.log('progress:', parseFloat(100.0 * evt.loaded / evt.total), 'file:', file.name);
+            })
+            .success(function (data, status, headers, config) { // file is uploaded successfully
+              console.log('file', file.name, 'is uploaded successfully. Response:', data);
+              return submitPost(result, data._id);
+            })
+            .error(function () { // file upload failed
+              console.log('file upload failed', arguments);
+            })
+            .then(onPost)
+            .finally(function(){
+              $scope.uploading = false;
+            });
+        }
+        else {
+          submitPost(result, false)
+            .then(onPost);
+        }
+
+        return;
       },
       addFn = Modal.scheduleAdd(onAdd);
       addFn(date, period, records);
