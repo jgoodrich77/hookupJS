@@ -161,6 +161,12 @@ UserScheduleSchema.statics = {
       if(err) return cb(err);
       if(!docs) return cb(null, startDate);
 
+      var now = new Date();
+
+      if(startDate.getTime() < now.getTime()) {
+        startDate = now;
+      }
+
       cb(null, relativeDateNext(startDate, endDate, docs.map(function (doc) {
         return doc.scheduledFor;
       })));

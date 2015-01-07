@@ -44,7 +44,11 @@ exports.create  = function(req, res, next) {
     userId: req.user._id,
     facebookObjectId: req.user.facebookObj.id,
     text: reqData.text || false,
-    media: reqData.media || false
+    link: reqData.link || false,
+    media: reqData.media || false,
+    caption: reqData.caption || false,
+    name: reqData.name || false,
+    description: reqData.description || false
   };
 
   // check the incoming data:
@@ -53,7 +57,7 @@ exports.create  = function(req, res, next) {
   }
 
   // check the incoming data:
-  if(!data.text && !data.media) {
+  if(!data.text && !data.link && !data.media) {
     return res.send(401, 'No post information was provided');
   }
 

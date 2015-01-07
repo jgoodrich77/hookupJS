@@ -20,8 +20,16 @@
         </div>
 
         <div ng-show="record.isShowing">
-          <p><b>Post Text:</b> {{record.detail.data.text}}</p>
-          <p ng-show="record.detail.data.media">With media attachments</p>
+          <hr />
+
+          <p ng-if="record.detail.data.text"><b>Post Text:</b> {{record.detail.data.text}}</p>
+          <p ng-if="record.detail.data.link"><b>Link:</b> {{record.detail.data.link}}</p>
+          <p ng-if="record.detail.data.name"><b>Name:</b> {{record.detail.data.name}}</p>
+          <p ng-if="record.detail.data.caption"><b>Caption:</b> {{record.detail.data.caption}}</p>
+          <p ng-if="record.detail.data.description"><b>Description:</b> {{record.detail.data.description}}</p>
+          <p ng-show="record.detail.data.media">
+            <img src="{{'/api/user-uploads/' + record.detail.data.media}}" width="100%" height="auto" />
+          </p>
 
           <button ng-hide="!!record.detail.lastFinishedAt" class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
         </div>
@@ -50,6 +58,12 @@
   </div>
   <div class="row" ng-hide="showExisting"><!-- the time-slot that we're adding to -->
     <div class="col-sm-12">
+      <h4>Link</h4>
+      <input type="text" class="form-control" placeholder="http://" ng-model="result.link" />
+    </div>
+  </div>
+  <div class="row" ng-hide="showExisting"><!-- the time-slot that we're adding to -->
+    <div class="col-sm-12">
       <h4>Post Media</h4>
       <p class="text-muted">Upload an image or video to post along with your message.</p>
 
@@ -63,6 +77,15 @@
         <span ng-if="!!result.media.length">Change file..</span>
         <span ng-if=" !result.media.length">Choose a file..</span>
       </button>
+    </div>
+  </div>
+  <div class="row" ng-if="result.media.length"><!-- the time-slot that we're adding to -->
+    <div class="col-sm-12">
+      <h4>Meta Info</h4>
+      <p class="text-muted">Extra media information to include in post</p>
+      <input type="text" class="form-control" placeholder="Caption for media" ng-model="result.caption" />
+      <input type="text" class="form-control" placeholder="Name for media" ng-model="result.name" />
+      <textarea class="fill" rows="3" placeholder="Description for media" ng-model="result.description"></textarea>
     </div>
   </div>
 </div>

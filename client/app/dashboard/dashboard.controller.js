@@ -49,7 +49,7 @@ angular
   $scope.adding    = false;
   $scope.uploading = false;
 
-  $scope.scheduler.itemClick = function(period, date, records) {
+  $scope.itemClick = function(period, date, records) {
     var
     now = new Date,
     pStartDate = Time.parse(period.start).toDate(date),
@@ -75,10 +75,13 @@ angular
             start: Time.parse(period.start).toDate(date),
             end:   Time.parse(period.end).toDate(date)
           },
-          text: formData.text,
-          media: media
-        })
-          .success(function (response) {
+          text:        formData.text,
+          link:        formData.link,
+          caption:     formData.caption,
+          name:        formData.name,
+          description: formData.description,
+          media:       media
+        }).success(function (response) {
             console.log('Posted successfully', response);
             return response;
           })
@@ -111,9 +114,9 @@ angular
             .progress(function (evt) { // file upload progress
               console.log('progress:', parseFloat(100.0 * evt.loaded / evt.total), 'file:', file.name);
             })
-            .success(function (data, status, headers, config) { // file is uploaded successfully
-              console.log('file', file.name, 'is uploaded successfully. Response:', data);
-              return submitPost(result, data._id);
+            .success(function (res) { // file is uploaded successfully
+              console.log('file', file.name, 'is uploaded successfully. Response:', res);
+              return submitPost(result, res._id);
             })
             .error(function () { // file upload failed
               console.log('file upload failed', arguments);
@@ -137,7 +140,7 @@ angular
 
     }
   };
-  $scope.scheduler.itemClasses = function(period, date, records) {
+  $scope.itemClasses = function(period, date, records) {
     var
     now = new Date,
     pStartDate = Time.parse(period.start).toDate(date),

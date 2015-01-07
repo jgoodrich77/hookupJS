@@ -93,14 +93,38 @@ module.exports = {
       fields: ['id','name','likes','new_like_count','link','website','about','description'].join(',')
     });
   },
-  post: function(objectId, objectAccessToken, message, pictureUrl) {
+
+  postFeed: function(objectId, objectAccessToken, payload) {
     return cli.post(path.join('/',objectId,'feed'), {
       access_token: objectAccessToken
-    }, {
-      message: message,
-      picture: pictureUrl
-    });
+    }, payload);
   },
+
+  postMessage: function(objectId, objectAccessToken, message, link, picture, caption, name, description) {
+    var payload = {};
+
+    if(!!message) {
+      payload.message = message;
+    }
+    if(!!link) {
+      payload.link = link;
+    }
+    if(!!picture) {
+      payload.picture = picture;
+    }
+    if(!!caption) {
+      payload.caption = caption;
+    }
+    if(!!name) {
+      payload.name = name;
+    }
+    if(!!description) {
+      payload.description = description;
+    }
+
+    return this.postFeed(objectId, objectAccessToken, payload);
+  },
+
   extendToken: function(token) {
     return cli.extendToken(token);
   }
