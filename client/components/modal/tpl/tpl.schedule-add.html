@@ -28,7 +28,7 @@
           <p ng-if="record.detail.data.caption"><b>Caption:</b> {{record.detail.data.caption}}</p>
           <p ng-if="record.detail.data.description"><b>Description:</b> {{record.detail.data.description}}</p>
           <p ng-show="record.detail.data.media">
-            <img src="{{'/api/user-uploads/' + record.detail.data.media}}" width="100%" height="auto" />
+            <img ng-src="{{'/api/user-uploads/' + record.detail.data.media}}" width="100%" height="auto" />
           </p>
 
           <button ng-hide="!!record.detail.lastFinishedAt" class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>

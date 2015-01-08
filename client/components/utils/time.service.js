@@ -25,14 +25,18 @@ angular
       return n;
     }
 
-    this.get12Hr = function() {
-      return String(hour % 12 || 12) + (hour >= 12 ? 'PM' : 'AM');
+    this.getAmPm = function() {
+      return (hour >= 12 ? 'PM' : 'AM');
+    };
+
+    this.get12Hr = function(ampm) {
+      return String(hour % 12 || 12) + (!!ampm ? this.getAmPm() : '');
     };
     this.getHours = function () {
       return hour   || 0;
     };
-    this.getMinutes = function () {
-      return minute || 0;
+    this.getMinutes = function (padded) {
+      return !!padded ? $padLeft(minute, 2) : (minute || 0);
     };
     this.getSeconds = function () {
       return second || 0;

@@ -10,19 +10,19 @@ angular
   dateLen = dates.length,
   plan = new SchedulePlan([
       { name: 'Morning', periods: [
+        { start: '00:00', end: '04:59:59.999' },
         { start: '05:00', end: '07:59:59.999' },
-        { start: '08:00', end: '09:59:59.999' },
-        { start: '10:00', end: '11:59:59.999' }
+        { start: '08:00', end: '09:59:59.999' }
       ] },
       { name: 'Afternoon', periods: [
+        { start: '10:00', end: '11:59:59.999' },
         { start: '12:00', end: '14:59:59.999' },
-        { start: '15:00', end: '16:59:59.999' },
-        { start: '17:00', end: '18:59:59.999' }
+        { start: '15:00', end: '16:59:59.999' }
       ] },
       { name: 'Evening', periods: [
+        { start: '17:00', end: '18:59:59.999' },
         { start: '19:00', end: '20:59:59.999' },
-        { start: '21:00', end: '23:59:59.999' },
-        { start: '00:00', end: '04:59:59.999' }
+        { start: '21:00', end: '23:59:59.999' }
       ] }
     ], dates),
   data = new ScheduleData(plan, {

@@ -13,6 +13,6 @@ angular
     sT = Time.parse(period.start),
     eT = Time.parse(period.end);
 
-    return sT.get12Hr() + ' - ' + eT.get12Hr();
+    return sT.get12Hr(true) + ' - ' + (eT.get12Hr() + ':' + eT.getMinutes(true) + eT.getAmPm());
   }
 });
