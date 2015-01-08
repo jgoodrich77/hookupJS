@@ -27,7 +27,7 @@
           <p ng-if="record.detail.data.name"><b>Name:</b> {{record.detail.data.name}}</p>
           <p ng-if="record.detail.data.caption"><b>Caption:</b> {{record.detail.data.caption}}</p>
           <p ng-if="record.detail.data.description"><b>Description:</b> {{record.detail.data.description}}</p>
-          <p ng-show="record.detail.data.media">
+          <p ng-if="record.detail.data.media">
             <img ng-src="{{'/api/user-uploads/' + record.detail.data.media}}" width="100%" height="auto" />
           </p>
 
