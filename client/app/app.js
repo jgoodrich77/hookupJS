@@ -91,6 +91,9 @@ angular.module('auditpagesApp', [
 
 .run(function ($rootScope, $state, Authorizer, stateRedirector) {
   var firstRouteLoad = true;
+
+  $rootScope.copyrightDate = new Date();
+
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams) {
 
     // used by state Authorizor
