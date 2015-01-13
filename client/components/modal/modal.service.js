@@ -74,7 +74,7 @@ angular.module('auditpagesApp')
         }
       },
 
-      scheduleAdd: function(add) {
+      scheduleAdd: function(add, currentUserId) {
         add = add || angular.noop;
 
         return function (date, period, records, prevValidation) {
@@ -123,8 +123,10 @@ angular.module('auditpagesApp')
 
                 $http.get('/api/user-schedule/'+record.jobId)
                   .then(function (response) {
+                    var userId = (response.data||{data: {}}).data.userId;
                     record.loading = false;
                     record.isShowing = true;
+                    record.isUsersJob = (currentUserId === userId);
                     record.detail = response.data;
                   })
                   .finally(function () {

@@ -76,6 +76,7 @@ UserSchema
   .virtual('profile')
   .get(function() {
     return {
+      'id': this._id,
       'name': this.name,
       'email': this.email,
       'role': this.role,
@@ -205,6 +206,7 @@ UserSchema.methods = {
       this.birthday = new Date(fbMetaData.birthday);
     }
   },
+
   /**
    * Authenticate - check if the passwords are the same
    *

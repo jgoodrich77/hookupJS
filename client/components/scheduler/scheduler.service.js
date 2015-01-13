@@ -40,18 +40,22 @@ angular
 .factory('ScheduleData', function ($log, $q, $timeout, $http, $inherit, Time, CacheMemory) {
 
   function ScheduleDataLoader(opts) {
-    var loading = false;
+    var loading = false, hasLoaded = false;
     this.isLoading = function() {
       return loading;
     };
     this.query = function(year, weekNumber) { // should be implemented by child class
       return [];
     };
+    this.hasLoaded = function () {
+      return hasLoaded;
+    };
     this.load = function(year, weekNumber) {
       loading = true;
       return $q.when(this.query(year, weekNumber))
         .finally(function(){
           loading = false;
+          hasLoaded = true;
         });
     };
   }
@@ -170,6 +174,10 @@ angular
 
           return data;
         });
+    };
+
+    this.hasLoaded = function () {
+      return this.hasLoader() && loader.hasLoaded();
     };
     this.getRecord = function(period, date) {
       return (cache.get(cacheKey(period, date))||[]);

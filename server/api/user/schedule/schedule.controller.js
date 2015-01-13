@@ -20,7 +20,6 @@ function adjustForTimezone(date, offset) {
   return nDate;
 }
 
-
 exports.index = function(req, res, next) {
   var
   year = parseInt(req.query.year),
@@ -28,7 +27,8 @@ exports.index = function(req, res, next) {
 
   if(isNaN(year) || isNaN(week) || (week < 1)) return next(new Error('Invalid date was provided in query.'));
 
-  UserSchedule.findByYearWeek(req.user._id, year, week, function (err, data) {
+  // find the current user's fb group id:
+  UserSchedule.findByObjectYearWeek(req.user.facebookObj.id, year, week, function (err, data) {
     if(err) return next(err);
     res.json(data);
   });

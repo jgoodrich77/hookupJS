@@ -1,18 +1,20 @@
 <div class="container">
-
-    <!-- <pre>adding: {{adding|json}}
-uploading: {{uploading|json}}
-upload: {{upload|json}}</pre> -->
-
   <div class="row">
+
+    <div ng-if="currentFbObject">
+      <p class="pull-right lead"><span><label>Likes:</label> {{currentFbObject.likes|number}}</span> <span ng-if="currentFbObject.new_like_count > 0"> ({{currentFbObject.new_like_count|number}} new)</span></p>
+      <h3>{{currentFbObject.name}} <small ng-if="currentFbObject.link"><a ng-href="{{currentFbObject.link}}" target="_blank">Link</a></small></h3>
+    </div>
+
     <scheduler
       datasource="scheduler"
       do-item-click="itemClick"
       do-item-classes="itemClasses"
       class="planner"></scheduler>
-    <hr/>
 
-    <div class="button-container">
+    <div class="button-container" ng-show="scheduler.getData().hasLoaded()">
+      <hr/>
+
       <button ng-click="scheduler.shiftPrevious()" ng-disabled="!scheduler.canShiftPrevious()" class="pull-left btn btn-primary"><span class="glyphicon glyphicon-step-backward"></span>Last Week</button>
       <button ng-click="scheduler.shiftNext()" ng-disabled="!scheduler.canShiftNext()" class="pull-right btn btn-primary">Next Week<span class="glyphicon glyphicon-step-forward"></span></button>
       <div class="text-center">

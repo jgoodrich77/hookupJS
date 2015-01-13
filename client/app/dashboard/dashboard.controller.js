@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardCtrl', function ($scope, $http, $fb, $interval, $userUpload, Modal, Time, Scheduler, ScheduleData, SchedulePlan) {
+.controller('DashboardCtrl', function ($scope, $http, $fb, $interval, $user, $userUpload, Auth, Modal, Time, Scheduler, ScheduleData, SchedulePlan) {
 
   var
   endpoint = '/api/user-schedule',
@@ -38,11 +38,19 @@ angular
   //     console.log('uploads:', result);
   //   });
 
-  $scope.scheduler = new Scheduler(plan, data, {
-    minDate: new Date(new Date(dates[0]).getTime() - (8.64e7 * dateLen * 8)),
-    maxDate: new Date(new Date(dates[dateLen - 1]).getTime() + (8.64e7 * dateLen)),
-    autoLoad: true
-  });
+  $user.getFacebookObject()
+    .then(function (res) {
+      $scope.currentFbObject = res
+      $scope.scheduler = new Scheduler(plan, data, {
+        minDate: new Date(new Date(dates[0]).getTime() - (8.64e7 * dateLen * 8)),
+        maxDate: new Date(new Date(dates[dateLen - 1]).getTime() + (8.64e7 * dateLen)),
+        autoLoad: false
+      });
+      return data.reload();;
+    })
+    .catch(function (err) {
+      console.log('ERROR:', err);
+    });
 
   $interval(function(){}, 2500);
 
@@ -133,7 +141,7 @@ angular
 
         return;
       },
-      addFn = Modal.scheduleAdd(onAdd);
+      addFn = Modal.scheduleAdd(onAdd, Auth.getCurrentUser().id);
       addFn(date, period, records);
     }
     else {

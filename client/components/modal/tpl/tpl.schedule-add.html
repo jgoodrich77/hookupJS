@@ -13,15 +13,13 @@
           <span class="glyphicon glyphicon-minus" ng-if="record.isShowing"></span>
         </button>
         <h4 class="list-group-item-head" ng-bind="record.scheduledFor | date:'short'"></h4>
-        <span class="list-group-item-text"><b>Job ID:</b> <em>{{record.jobId}}</em></span>
 
         <div ng-if="record.loading">
           <p>Please wait, loading job information..</p>
         </div>
 
         <div ng-show="record.isShowing">
-          <hr />
-
+          <p ng-if="record.isUsersJob === false"><b>By:</b> <em>{{record.user.name}}</em></p>
           <p ng-if="record.detail.data.text"><b>Post Text:</b> {{record.detail.data.text}}</p>
           <p ng-if="record.detail.data.link"><b>Link:</b> {{record.detail.data.link}}</p>
           <p ng-if="record.detail.data.name"><b>Name:</b> {{record.detail.data.name}}</p>
@@ -31,7 +29,9 @@
             <img ng-src="{{'/api/user-uploads/' + record.detail.data.media}}" width="100%" height="auto" />
           </p>
 
-          <button ng-hide="!!record.detail.lastFinishedAt" class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
+          <!-- <pre ng-bind="record|json"></pre> -->
+
+          <button ng-hide="!!record.detail.lastFinishedAt||!record.isUsersJob" class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
         </div>
 
         <div class="clearfix"></div>

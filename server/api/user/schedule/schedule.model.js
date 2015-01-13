@@ -5,14 +5,21 @@ var mongoose = require('mongoose'),
 
 var
 UserScheduleSchema = new Schema({
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    index: true
   },
   jobId: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    index: true
+  },
+  facebookObjectId: {
+    type: String,
+    required: true,
+    index: true
   },
   scheduledFor: {
     type: Date,
@@ -100,7 +107,7 @@ function relativeDateNext(minDate, maxDate, previousDates) {
 
 UserScheduleSchema.statics = {
   findDetail: function(agenda, userId, jobId, cb) {
-    this.findOne({ userId: userId, jobId: jobId }, function (err, doc) {
+    this.findOne({ user: userId, jobId: jobId }, function (err, doc) {
       if(err) return cb(err);
       if(!doc) return cb(null);
 
@@ -112,7 +119,7 @@ UserScheduleSchema.statics = {
     });
   },
   cancelJob: function(agenda, userId, jobId, cb) {
-    this.findOne({ userId: userId, jobId: jobId }, function (err, doc) {
+    this.findOne({ user: userId, jobId: jobId }, function (err, doc) {
       if(err) return cb(err);
       if(!doc) return cb(null);
 
@@ -139,8 +146,13 @@ UserScheduleSchema.statics = {
       var jobId = job.attrs._id;
 
       me.findOneAndUpdate(
-        { userId: userId, jobId: jobId },
-        { userId: userId, jobId: jobId, scheduledFor: date },
+        { user: userId, jobId: jobId },
+        {
+          user: userId,
+          jobId: jobId,
+          facebookObjectId: data.facebookObjectId,
+          scheduledFor: date
+        },
         { upsert: true },
         function (err, doc) {
           if(err)  return cb(err);
@@ -152,7 +164,7 @@ UserScheduleSchema.statics = {
   },
   findNextSlot: function(userId, startDate, endDate, cb) {
     return this.find({
-      userId: userId,
+      user: userId,
       scheduledFor: {
         '$gte': startDate,
         '$lte': endDate
@@ -176,7 +188,7 @@ UserScheduleSchema.statics = {
     var dateRange = dateRangeWeek(year, week);
 
     return this.find({
-      userId: userId,
+      user: userId,
       scheduledFor: {
         '$gte': dateRange.start,
         '$lte': dateRange.end
@@ -184,6 +196,20 @@ UserScheduleSchema.statics = {
     }).sort({
       scheduledFor: 1
     }).exec(cb);
+  },
+  findByObjectYearWeek: function(objectId, year, week, cb) {
+    var dateRange = dateRangeWeek(year, week);
+
+    return this.find({
+      facebookObjectId: objectId,
+      scheduledFor: {
+        '$gte': dateRange.start,
+        '$lte': dateRange.end
+      }
+    }).sort({
+      scheduledFor: 1
+    }).populate('user', '_id name')
+    .exec(cb);
   }
 };
 

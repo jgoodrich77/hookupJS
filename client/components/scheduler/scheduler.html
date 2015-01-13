@@ -2,13 +2,13 @@
   <div ng-if="datasource.getData().isLoading()" class="scheduler-loader">
     <p class="loader-text"><span class="glyphicon glyphicon-refresh"></span> Please wait, loading ..</p>
   </div>
-  <div class="row">
+  <div class="row" ng-show="datasource.getData().hasLoaded()">
     <div class="col-desc">&nbsp;</div>
     <div class="col-fill">
       <h2 class="text-center">{{datasource.getPlan().getMonthName()}}</h2>
     </div>
   </div>
-  <div class="row scheduler-heading">
+  <div class="row scheduler-heading" ng-show="datasource.getData().hasLoaded()">
     <div class="col-desc text-right">
       <div class="pad-right"><span class="text-muted">Week {{datasource.getPlan().getWeekNumber()}}</span>
         <div class="text-primary">{{datasource.getPlan().getYear()}}</div>
