@@ -112,7 +112,7 @@
         </div>
 
         <div ng-if="!setup" class="text-center">
-          <h2>You're all set up!</h2>
+          <h2>You're all set up! Step 3 of 3</h2>
           <p class="lead">Your account is all ready to get started. To access your amazing dashboard, click the button below!</p>
 
           <a class="btn btn-primary btn-lg" ui-sref="app.dashboard">Amazing Dashboard</a>
@@ -120,10 +120,10 @@
       </div>
 
       <div ng-if="fbIsNoAuth() || !fbHasRequiredPerms()" ng-controller="GetStartedNoAuthCtrl">
-        <h2>Terms of service headline text</h2>
-        <p class="lead">Here can go some text preceeding the terms of service.</p>
-
-        <p>A brief description of what is about to happen once we start this process can go here in this spot.</p>
+        <h2>Review the legal stuff because our lawyers forced us to do it - Step 2 of 3</h2>
+        <p class="lead">
+	The terms below govern your use of our free, open source service. Please review carefully then click the blue button to continue.
+</p>
 
         <button class="btn btn-lg btn-primary" ng-click="fbLogin()" ng-disabled="!form.agreesWithTerms" ng-class="{'btn-danger': !form.agreesWithTerms}">Let's go!</button>
         <div class="clearfix"></div>
