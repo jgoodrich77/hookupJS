@@ -18,15 +18,15 @@ angular
   permsRequired = [
     'manage_pages',
     'publish_actions',
-    'read_insights'
+    'read_insights',
+    'email'
   ],
   permsOptional = [
-    'email',
-    'user_website',
-    'user_status',
-    'user_about_me',
-    'user_birthday',
-    'user_likes'
+    // 'user_website',
+    // 'user_status',
+    // 'user_about_me',
+    // 'user_birthday',
+    // 'user_likes'
   ];
 
   function applyReady(v) {

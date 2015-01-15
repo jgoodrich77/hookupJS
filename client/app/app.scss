@@ -243,6 +243,40 @@ $badge-danger-border:  $badge-border-radius;
   }
 }
 
+$margin-size: 15px;
+
+.margin-top {
+  margin-top: $margin-size;
+}
+
+.margin-left {
+  margin-left: $margin-size;
+}
+
+.margin-right {
+  margin-right: $margin-size;
+}
+
+.margin-bottom {
+  margin-bottom: $margin-size;
+}
+
+.no-margin-top {
+  margin-top: 0;
+}
+
+.no-margin-left {
+  margin-left: 0;
+}
+
+.no-margin-right {
+  margin-right: 0;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0;
+}
+
 textarea.fill {
   width: 100%;
   max-width: 100%;

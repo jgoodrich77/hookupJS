@@ -193,7 +193,6 @@ exports.currentUserFacebookObject = function(req, res, next) {
       return facebook.basicPageInfo(user.facebookObj.id, user.facebook.token)
         .then(function (pageInfo) {
           if(!pageInfo) return requestUtils.missing(res);
-
           requestUtils.data(res, pageInfo);
         });
     })

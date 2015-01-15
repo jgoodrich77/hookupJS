@@ -33,6 +33,8 @@ angular
     })
   });
 
+  $scope.fullLoading = true;
+
   // $userUpload.query().$promise
   //   .then(function (result) {
   //     console.log('uploads:', result);
@@ -46,16 +48,34 @@ angular
         maxDate: new Date(new Date(dates[dateLen - 1]).getTime() + (8.64e7 * dateLen)),
         autoLoad: false
       });
-      return data.reload();;
+
+      return $user.getObjectScore()
+        .then(function (objectScore) {
+          $scope.currentObjectScore = objectScore;
+          return objectScore;
+        });
+    })
+    .then(function() {
+      return data.reload();
     })
     .catch(function (err) {
       console.log('ERROR:', err);
+    })
+    .finally(function() {
+      $scope.fullLoading = false;
     });
 
   $interval(function(){}, 2500);
 
   $scope.adding    = false;
   $scope.uploading = false;
+
+  $scope.explainScore = function (result) {
+    $scope.explaining = true;
+
+    $scope.explainedScore = result;
+
+  };
 
   $scope.itemClick = function(period, date, records) {
     var

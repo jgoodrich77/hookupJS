@@ -71,7 +71,7 @@
                 <div class="pull-right">
                   <a class="btn btn-success" ng-click="form.showDetail = !form.showDetail" ng-class="{'active': form.showDetail}"><span class="glyphicon glyphicon-plus" ng-class="{'glyphicon-minus': form.showDetail}"></span> Details</a>
                 </div>
-                <h2><a class="well-link" href="{{form.page.link}}" target="_blank" ng-bind="form.page.name"></a> <small ng-if="form.page.likes > 0"><span>{{form.page.likes | number}} likes</span> <em ng-if="form.page.new_like_count > 0">(+{{form.page.new_like_count | number}} new)</em></small></h2>
+                <h2><a class="well-link" href="{{form.page.link}}" target="_blank" ng-bind="form.page.name"></a> <small ng-if="form.page.likes > 0"><span>{{form.page.likes | number}} likes</span></small></h2>
 
                 <div ng-if="form.showDetail">
                   <div ng-if="form.page.about"><label class="text-muted">About</label><p ng-bind="form.page.about"></p></div>

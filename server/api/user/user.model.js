@@ -164,11 +164,11 @@ UserSchema.statics = {
       },
       agreeToS: Date.now(),
       name: fbMetaData.name,
-      email: fbMetaData.email,
-      gender: fbMetaData.gender,
-      birthday: !!fbMetaData.birthday
-        ? new Date(fbMetaData.birthday)
-        : null
+      email: fbMetaData.email //,
+      // gender: fbMetaData.gender,
+      // birthday: !!fbMetaData.birthday
+      //   ? new Date(fbMetaData.birthday)
+      //   : null
     });
   }
 };
@@ -199,12 +199,12 @@ UserSchema.methods = {
     if(!!fbMetaData.email && this.facebook.email !== fbMetaData.email) {
       this.email = fbMetaData.email;
     }
-    if(!!fbMetaData.gender && this.facebook.gender !== fbMetaData.gender) {
-      this.gender = fbMetaData.gender;
-    }
-    if(!!fbMetaData.birthday && !compareDates(this.facebook.birthday, fbMetaData.birthday)) {
-      this.birthday = new Date(fbMetaData.birthday);
-    }
+    // if(!!fbMetaData.gender && this.facebook.gender !== fbMetaData.gender) {
+    //   this.gender = fbMetaData.gender;
+    // }
+    // if(!!fbMetaData.birthday && !compareDates(this.facebook.birthday, fbMetaData.birthday)) {
+    //   this.birthday = new Date(fbMetaData.birthday);
+    // }
   },
 
   /**

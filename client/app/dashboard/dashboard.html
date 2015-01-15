@@ -1,12 +1,30 @@
 <div class="container">
   <div class="row">
 
-    <div ng-if="currentFbObject">
-      <p class="pull-right lead"><span><label>Likes:</label> {{currentFbObject.likes|number}}</span> <span ng-if="currentFbObject.new_like_count > 0"> ({{currentFbObject.new_like_count|number}} new)</span></p>
-      <h3>{{currentFbObject.name}} <small ng-if="currentFbObject.link"><a ng-href="{{currentFbObject.link}}" target="_blank">Link</a></small></h3>
+    <div ng-if="fullLoading" class="text-center">
+      <h3>Please wait..</h3>
+      <p class="text-muted lead">Loading your personalized dashboard..</p>
+    </div>
+
+    <div ng-show="!fullLoading && currentFbObject">
+      <div class="pull-right text-right" ng-show="!explaining">
+        <label>Page Score</label>
+        <p>
+          <span ng-bind="currentObjectScore.result.score * 100 | percentage:2"></span>
+          <a href ng-click="explaining = true"><span class="glyphicon glyphicon-question-sign"></span></a>
+        </p>
+      </div>
+      <h3>{{currentFbObject.name}} <div class="badge">{{currentFbObject.likes|number}} Likes</div> <small ng-if="currentFbObject.link"><a ng-href="{{currentFbObject.link}}" target="_blank">Link</a></small></h3>
+    </div>
+
+    <div ng-show="explaining" class="well">
+      <a href class="pull-right" ng-click="explaining = false">Hide Explaination</a>
+      <score-visualizer score="currentObjectScore"></score-visualizer>
+      <!-- <pre ng-bind="currentObjectScore|json"></pre> -->
     </div>
 
     <scheduler
+      ng-show="!fullLoading"
       datasource="scheduler"
       do-item-click="itemClick"
       do-item-classes="itemClasses"
