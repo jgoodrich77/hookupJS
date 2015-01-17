@@ -84,7 +84,7 @@ exports.create  = function(req, res, next) {
 
 exports.show  = function(req, res, next) { // pass thru content
   Q.nfcall(UserUpload.findOne.bind(UserUpload), {
-      user: req.user._id,
+    //  user: req.user._id,
       _id: req.params.id
     })
     .then(function (doc) {
