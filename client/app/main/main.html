@@ -1,19 +1,29 @@
-<div class="container">
-  <div class="row">
+<div class="container" ng-switch="isConnected()">
+  <div class="row" ng-switch-when="false">
 
-  <h1>Welcome, click the big blue button to get started.</h1>
-<ol class="lead">
-<h3>What does hookupJS do for your business?</h3>
-<li>Sign up through Facebook to manage your page.</li>
-<li>Invite your team to use our Amazing innovative time based dashboard.</li>
-<li>Post images, links or other content to your page to delight your audience.</li>
-</ol>
+    <h1>Welcome, click the big blue button to get started.</h1>
+    <h3>What does hookupJS do for your business?</h3>
 
-<p>
-  <a ui-sref="app.get-started" class="btn btn-lg btn-primary">Click here to get started!</a>
-</p>
+    <ol class="lead">
+      <li>Sign up through Facebook to manage your page.</li>
+      <li>Invite your team to use our Amazing innovative time based dashboard.</li>
+      <li>Post images, links or other content to your page to delight your audience.</li>
+    </ol>
 
-  <p class="lead">Check out <a href="http://blog.hookupjs.com/product-1/">hookupJS screenshots and demo.</a></p>
+    <p>
+      <a ui-sref="app.get-started" class="btn btn-lg btn-primary">Click here to get started!</a>
+    </p>
+
+    <p class="lead">Check out <a href="http://blog.hookupjs.com/product-1/">hookupJS screenshots and demo.</a></p>
+
+  </div>
+  <div class="row text-center" ng-switch-when="true">
+
+    <h1>You're all set!</h1>
+
+    <p>
+      <a ui-sref="app.dashboard" class="btn btn-lg btn-primary">Check out my dashboard</a>
+    </p>
 
   </div>
 </div>

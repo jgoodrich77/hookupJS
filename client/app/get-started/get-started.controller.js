@@ -105,7 +105,8 @@ angular
             if(objectScore.status === 'finished') { // nothing to wait for:
               $scope.form.scoring = false;
               return $user.setupFinalize()
-                .then(checkUserStep);
+                .then(checkUserStep)
+                .then(Auth.reloadCurrentUser.bind(Auth));
             }
             $scope.form.scoring = true;
             $timeout(loopStep3, 2500);
