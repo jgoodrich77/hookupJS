@@ -23,12 +23,48 @@
       <!-- <pre ng-bind="currentObjectScore|json"></pre> -->
     </div>
 
-    <scheduler
-      ng-show="!fullLoading"
-      datasource="scheduler"
-      do-item-click="itemClick"
-      do-item-classes="itemClasses"
-      class="planner"></scheduler>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-9">
+          <scheduler
+            ng-show="!fullLoading"
+            datasource="scheduler"
+            do-item-click="itemClick"
+            do-item-classes="itemClasses"
+            class="planner"></scheduler>
+        </div>
+        <div class="col-sm-3">
+          <div class="scheduler-legend">
+            <dl class="item item1">
+              <dt>Days past with no posts</dt>
+              <dd></dd>
+            </dl>
+            <dl class="item item2">
+              <dt>Present day past time no posts</dt>
+              <dd></dd>
+            </dl>
+            <dl class="item item3">
+              <dt>Current time-slot with no posts</dt>
+              <dd></dd>
+            </dl>
+            <dl class="item item4">
+              <dt>Current time slot with posts</dt>
+              <dd></dd>
+            </dl>
+            <dl class="item item5">
+              <dt>Same day future slot</dt>
+              <dd></dd>
+            </dl>
+            <dl class="item item6">
+              <dt>Future day future slot</dt>
+              <dd></dd>
+            </dl>
+
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="button-container" ng-show="scheduler.getData().hasLoaded()">
       <hr/>

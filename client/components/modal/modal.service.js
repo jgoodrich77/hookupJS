@@ -144,6 +144,61 @@ angular.module('auditpagesApp')
             add.call(event, scopeRes);
           });
         };
+      },
+
+      scheduleView: function(close, currentUserId) {
+        close = close || angular.noop;
+        return function (date, period, records) {
+          var
+          modal, scopeRes = {
+            date: date,
+            period: period
+          };
+
+          modal = openModal({
+            modal: {
+              dismissable: true,
+              title: 'Posts Published',
+              template: 'components/modal/tpl/tpl.schedule-view.html',
+              buttons: [{
+                classes: 'btn-default',
+                text: 'Close',
+                click: function(e) {
+                  modal.dismiss(e);
+                }
+              }]
+            },
+            existingRecords: records,
+            toggleShowingRecord: function(record) {
+              if(!record || !!record.loading) return;
+
+              if(!record.isShowing) {
+                record.loading = true;
+                record.isShowing = false;
+
+                $http.get('/api/user-schedule/'+record.jobId)
+                  .then(function (response) {
+                    var userId = (response.data||{data: {}}).data.userId;
+                    record.loading = false;
+                    record.isShowing = true;
+                    record.isUsersJob = (currentUserId === userId);
+                    record.detail = response.data;
+                  })
+                  .finally(function () {
+                    record.loading = false;
+                  });
+              }
+              else {
+                record.isShowing = false;
+                record.detail = undefined;
+              }
+            }
+          }, 'modal-success');
+
+          modal.result.then(function (event) {
+            close.call(event, scopeRes);
+          });
+        };
       }
     };
   });

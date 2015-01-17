@@ -80,8 +80,9 @@ angular
   $scope.itemClick = function(period, date, records) {
     var
     now = new Date,
-    pStartDate = Time.parse(period.start).toDate(date),
-    pEndDate   = Time.parse(period.end).toDate(date),
+    pStartDate  = Time.parse(period.start).toDate(date),
+    pEndDate    = Time.parse(period.end).toDate(date),
+    currentUser = Auth.getCurrentUser().id,
 
     pStartDateIsPast = Time.isPast(pStartDate, now),
     pEndDateIsPast   = Time.isPast(pEndDate, now),
@@ -110,7 +111,7 @@ angular
           description: formData.description,
           media:       media
         }).success(function (response) {
-            console.log('Posted successfully', response);
+            // console.log('Posted successfully', response);
             return response;
           })
           .error(function (err) {
@@ -140,14 +141,14 @@ angular
 
           $scope.upload = $userUpload.doUpload(file)
             .progress(function (evt) { // file upload progress
-              console.log('progress:', parseFloat(100.0 * evt.loaded / evt.total), 'file:', file.name);
+              // console.log('progress:', parseFloat(100.0 * evt.loaded / evt.total), 'file:', file.name);
             })
             .success(function (res) { // file is uploaded successfully
-              console.log('file', file.name, 'is uploaded successfully. Response:', res);
+              // console.log('file', file.name, 'is uploaded successfully. Response:', res);
               return submitPost(result, res._id);
             })
             .error(function () { // file upload failed
-              console.log('file upload failed', arguments);
+              // console.log('file upload failed', arguments);
             })
             .then(onPost)
             .finally(function(){
@@ -161,11 +162,15 @@ angular
 
         return;
       },
-      addFn = Modal.scheduleAdd(onAdd, Auth.getCurrentUser().id);
+      addFn = Modal.scheduleAdd(onAdd, currentUser);
       addFn(date, period, records);
     }
-    else {
+    else if(records.length > 0) { // show history:
+      // console.log(records);
 
+      var
+      viewFn = Modal.scheduleView(function(){ console.log('model closed', arguments); }, currentUser);
+      viewFn(date, period, records);
     }
   };
   $scope.itemClasses = function(period, date, records) {

@@ -1,0 +1,53 @@
+.scheduler-legend {
+  .item {
+    font-size: 0.8em;
+
+    dt, dd {
+      box-sizing: border-box;
+      float: left;
+      display: block;
+    }
+
+    dt {
+      width: 80%;
+      text-align: right;
+      padding-right: 3px;
+    }
+    dd {
+      width: 20%;
+      height: 1em;
+      outline: 1px solid black;
+    }
+  }
+
+  .item1 {
+    dd {
+      background-color: #FFD3C2;
+    }
+  }
+  .item2 {
+    dd {
+      background-color: #FF692E;
+    }
+  }
+  .item3 {
+    dd {
+      background-color: #222;
+    }
+  }
+  .item4 {
+    dd {
+      background-color: #229C00;
+    }
+  }
+  .item5 {
+    dd {
+      background-color: #2BA3FF;
+    }
+  }
+  .item6 {
+    dd {
+      background-color: #C9E8FF;
+    }
+  }
+}
