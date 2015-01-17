@@ -23,11 +23,10 @@
       <!-- <pre ng-bind="currentObjectScore|json"></pre> -->
     </div>
 
-    <div class="container-fluid">
+    <div class="container-fluid" ng-show="!fullLoading">
       <div class="row">
         <div class="col-sm-9">
           <scheduler
-            ng-show="!fullLoading"
             datasource="scheduler"
             do-item-click="itemClick"
             do-item-classes="itemClasses"
@@ -48,7 +47,7 @@
               <dd></dd>
             </dl>
             <dl class="item item4">
-              <dt>Current time slot with posts</dt>
+              <dt>Time slot with posts</dt>
               <dd></dd>
             </dl>
             <dl class="item item5">
