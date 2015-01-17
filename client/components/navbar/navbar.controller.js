@@ -44,7 +44,7 @@ angular.module('auditpagesApp')
       'title': 'Access your amazing dashboard.',
       'state': 'app.dashboard',
       'glyph': 'fa fa-plug'
-    },{
+    }/*,{
       'caption': 'Groups',
       'title': 'Choose which groups you are associated with',
       'state': 'app.account.groups',
@@ -54,7 +54,7 @@ angular.module('auditpagesApp')
       'title': 'Change your user settings',
       'state': 'app.account.settings',
       'glyph': 'glyphicon glyphicon-cog'
-    }];
+    }*/];
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;
