@@ -161,6 +161,7 @@ module.exports = function (grunt) {
             '.tmp',
             '<%= yeoman.dist %>/*',
             '!<%= yeoman.dist %>/.git*',
+            '!<%= yeoman.dist %>/server/jobs/startup',
             '!<%= yeoman.dist %>/uploads',
             '!<%= yeoman.dist %>/.openshift',
             '!<%= yeoman.dist %>/Procfile'
