@@ -107,7 +107,7 @@ function relativeDateNext(minDate, maxDate, previousDates) {
 
 UserScheduleSchema.statics = {
   findDetail: function(agenda, userId, jobId, cb) {
-    this.findOne({ user: userId, jobId: jobId }, function (err, doc) {
+    this.findOne({ /*user: userId, */ jobId: jobId }, function (err, doc) {
       if(err) return cb(err);
       if(!doc) return cb(null);
 
