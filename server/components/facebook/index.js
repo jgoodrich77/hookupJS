@@ -100,7 +100,24 @@ module.exports = {
     }, payload);
   },
 
-  postMessage: function(objectId, objectAccessToken, message, link, picture, caption, name, description) {
+  publishPhoto: function(objectId, objectAccessToken, photoUrl, message, doNotPublish) {
+    var payload = { url: photoUrl };
+
+    if(!!message) {
+      payload.message = message;
+    }
+
+    if(doNotPublish) {
+      payload.no_story  = true;
+      payload.published = false;
+    }
+
+    return cli.post(path.join('/',objectId,'photos'), {
+      access_token: objectAccessToken
+    }, payload);
+  },
+
+  postMessage: function(objectId, objectAccessToken, message, link, caption, name, description) {
     var payload = {};
 
     if(!!message) {
@@ -108,9 +125,6 @@ module.exports = {
     }
     if(!!link) {
       payload.link = link;
-    }
-    if(!!picture) {
-      payload.picture = picture;
     }
     if(!!caption) {
       payload.caption = caption;

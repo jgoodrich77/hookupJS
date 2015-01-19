@@ -30,19 +30,17 @@ module.exports = function(job, done) {
     var objectId = buffer.facebookObjectId;
      return qLoadUserObjectInfo(buffer.userId, objectId)
       .then(function (objectInfo) {
-        var
-        postPicture = null;
-
         if(dmedia) {
-          postPicture = dmedia.urlFqdn;
+          return facebook.publishPhoto(objectId, objectInfo.pageToken, dmedia.urlFqdn, buffer.text, false)
+            .then(function (result) {
+              buffer.result = result;
+              return result;
+            });
         }
-
-        // (objectId, objectAccessToken, message, link, picture, caption, name, description)
 
         return facebook.postMessage(objectId, objectInfo.pageToken,
             buffer.text,
             buffer.link,
-            postPicture,
             buffer.caption,
             buffer.name,
             buffer.description
