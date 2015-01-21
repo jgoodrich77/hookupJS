@@ -66,6 +66,15 @@ $badge-danger-bg:      $well-danger-link;
 $badge-danger-text:    $btn-danger-color;
 $badge-danger-border:  $badge-border-radius;
 
+$fb-blue:       #3b5998;
+$fb-blue-light: lighten($fb-blue, 10%);
+$fb-blue-dark:  darken($fb-blue, 15%);
+$fb-white:      #F7FAFF;
+$fb-width:      35px;
+$fb-width-lg:   $fb-width + 8px;
+$fb-width-sm:   $fb-width - 8px;
+$fb-logo-url:   url(/assets/images/facebook-logo.svg);
+
 /**
  * App-wide styles
  */
@@ -275,6 +284,62 @@ $margin-size: 15px;
 
 .no-margin-bottom {
   margin-bottom: 0;
+}
+
+.btn.btn-facebook {
+  position: relative;
+  color: $fb-white;
+  text-indent: $fb-width;
+  border-color: $fb-blue-dark;
+  background-color: $fb-blue-light;
+  background-image: linear-gradient(to bottom,
+    transparent 0%,
+    $fb-blue 65%,
+    $fb-blue-dark 100%
+  );
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: $fb-width;
+    left: 0; top: 0;  bottom: 0;
+    border-right: 1px solid rgba($fb-blue-light, 0.6);
+    background-color: $fb-blue-dark;
+    background-image: $fb-logo-url;
+    background-size: auto 75%;
+    background-position: 65% bottom;
+    background-repeat: no-repeat;
+  }
+
+  &:hover {
+    background-color: $fb-blue-dark;
+    background-image: linear-gradient(to bottom,
+      $fb-blue-light 0%,
+      $fb-blue 50%,
+      transparent 100%
+    );
+  }
+
+  &:active,
+  &:focus {
+    outline: none;
+  }
+
+  &.btn-lg {
+    text-indent: $fb-width-lg;
+
+    &:before {
+      width: $fb-width-lg;
+    }
+  }
+  &.btn-sm {
+    text-indent: $fb-width-sm;
+
+    &:before {
+      width: $fb-width-sm;
+    }
+  }
 }
 
 textarea.fill {

@@ -61,8 +61,15 @@
       <h4>Link</h4>
       <input type="text" class="form-control" placeholder="http://" ng-model="result.link" />
     </div>
+    <div class="col-sm-12" ng-show="!!result.link">
+      <h4>Link Meta Info</h4>
+      <p class="text-muted">Extra media information to include in post</p>
+      <input type="text" class="form-control" placeholder="Caption for media" ng-model="result.caption" />
+      <input type="text" class="form-control" placeholder="Name for media" ng-model="result.name" />
+      <textarea class="fill" rows="3" placeholder="Description for media" ng-model="result.description"></textarea>
+    </div>
   </div>
-  <div class="row" ng-hide="showExisting"><!-- the time-slot that we're adding to -->
+  <div class="row"><!-- the time-slot that we're adding to -->
     <div class="col-sm-12">
       <h4>Post Media</h4>
       <p class="text-muted">Upload an image or video to post along with your message.</p>
@@ -77,15 +84,6 @@
         <span ng-if="!!result.media.length">Change file..</span>
         <span ng-if=" !result.media.length">Choose a file..</span>
       </button>
-    </div>
-  </div>
-  <div class="row" ng-if="result.media.length"><!-- the time-slot that we're adding to -->
-    <div class="col-sm-12">
-      <h4>Meta Info</h4>
-      <p class="text-muted">Extra media information to include in post</p>
-      <input type="text" class="form-control" placeholder="Caption for media" ng-model="result.caption" />
-      <input type="text" class="form-control" placeholder="Name for media" ng-model="result.name" />
-      <textarea class="fill" rows="3" placeholder="Description for media" ng-model="result.description"></textarea>
     </div>
   </div>
 </div>

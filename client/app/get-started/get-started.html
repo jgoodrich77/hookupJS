@@ -16,7 +16,7 @@
         <div ng-if="!!setup" ng-switch="setup.step">
 
           <div ng-if="setup.step < 3">
-            <h2>Hello {{user.name}}!</h2>
+            <h2>Hello {{user.name}}! <small>Step 2 of 3</small></h2>
             <p>You're almost there, we just need a little more information to finish setting up your account.</p>
           </div>
 
@@ -105,14 +105,14 @@
 
           <div ng-switch-when="3" class="text-center">
             <div ng-if="form.loading || form.scoring">
-              <h3>Scoring your Facebook Page</h3>
+              <h3>Scoring your Facebook Page <small>Step 3 of 3</small></h3>
               <p class="text-muted">Please wait, loading your available Facebook data for your page and analyzing it.</p>
             </div>
           </div>
         </div>
 
         <div ng-if="!setup" class="text-center">
-          <h2>You're all set up! Step 3 of 3</h2>
+          <h2>You're all set up!</h2>
           <p class="lead">Your account is all ready to get started. To access your amazing dashboard, click the button below!</p>
 
           <a class="btn btn-primary btn-lg" ui-sref="app.dashboard">Amazing Dashboard</a>
@@ -120,12 +120,12 @@
       </div>
 
       <div ng-if="fbIsNoAuth() || !fbHasRequiredPerms()" ng-controller="GetStartedNoAuthCtrl">
-        <h2>Review the legal stuff because our lawyers forced us to do it - Step 2 of 3</h2>
+        <h2>Review the legal stuff because our lawyers forced us to do it  <small>Step 1 of 3</small></h2>
         <p class="lead">
 	The terms below govern your use of our free, open source service. Please review carefully then click the blue button to continue.
 </p>
 
-        <button class="btn btn-lg btn-primary" ng-click="fbLogin()" ng-disabled="!form.agreesWithTerms" ng-class="{'btn-danger': !form.agreesWithTerms}">Let's go!</button>
+        <button class="btn btn-lg btn-facebook" ng-click="fbLogin()" ng-disabled="!form.agreesWithTerms" ng-class="{'btn-danger': !form.agreesWithTerms}">Login with Facebook</button>
         <div class="clearfix"></div>
 
         <h3>Terms and Conditions</h3>
