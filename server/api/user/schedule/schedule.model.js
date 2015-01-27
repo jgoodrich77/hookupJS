@@ -106,6 +106,41 @@ function relativeDateNext(minDate, maxDate, previousDates) {
 }
 
 UserScheduleSchema.statics = {
+  nukeUserSchedules: function (agenda, userId, cb) {
+    var me = this;
+
+    this.findAllUserScheduledJobIds(userId, function (err, jobs) {
+      if(err) return cb(err);
+      if(!jobs || !jobs.length) return cb(null, true);
+
+      // cancel matching agenda jobs
+      agenda.cancel({
+        _id: { '$in': jobs }
+      }, function (err) {
+        if(err) return cb(err);
+
+        // delete matching user jobs
+        me.find({ user: userId})
+          .remove(function (err) {
+            if(err) return cb(err);
+
+            cb(null, true);
+          });
+      });
+    });
+  },
+
+  findAllUserScheduledJobIds: function(userId, cb) {
+    this.find({ user: userId }, 'jobId', function (err, jobs) {
+      if(err) return cb(err);
+      if(!jobs || !jobs.length) return cb(null, jobs);
+
+      cb(null, jobs.map(function (j) {
+        return forceObjectId(j.jobId);
+      }));
+    });
+  },
+
   findDetail: function(agenda, userId, jobId, cb) {
     this.findOne({ /*user: userId, */ jobId: jobId }, function (err, doc) {
       if(err) return cb(err);

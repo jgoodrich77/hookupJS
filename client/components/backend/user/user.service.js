@@ -36,6 +36,13 @@ angular
         id: '@id'
       }
     },
+    closeAccount: {
+      method: 'POST',
+      params: {
+        resource:'me',
+        id:'close-account'
+      }
+    },
     getFacebookObject: {
       method: 'GET',
       params: {

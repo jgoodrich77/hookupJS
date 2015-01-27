@@ -10,6 +10,7 @@ var router = express.Router();
 router.put('/facebook/:id', controller.facebookLogin);
 
 // current user information
+router.post('/me/close-account',  auth.isAuthenticated(), controller.currentUserCloseAccount);
 router.get('/me/facebook-object', auth.isAuthenticated(), controller.currentUserFacebookObject);
 router.get('/me/facebook-score',  auth.isAuthenticated(), controller.currentUserFacebookScore);
 router.get('/me',                 auth.isAuthenticated(), controller.currentUser);

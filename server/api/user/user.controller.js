@@ -4,6 +4,8 @@ var Q = require('q');
 var jwt = require('jsonwebtoken');
 var User = require('./user.model');
 var UserJob = require('./job/job.model');
+var UserUpload = require('./upload/upload.model');
+var UserSchedule = require('./schedule/schedule.model');
 var config = require('../../config/environment');
 var requestUtils = require('../requestUtils');
 var facebook = require('../../components/facebook');
@@ -203,7 +205,7 @@ exports.currentUserFacebookScore = function(req, res, next) {
   var
   userId = req.user._id;
 
-  qUserById(req.user._id, res)
+  qUserById(userId, res)
     .then(function (user) {
       if(!user.facebookObj || !user.facebookObj.id)
         return requestUtils.missing(res);
@@ -224,6 +226,55 @@ exports.currentUserFacebookScore = function(req, res, next) {
           .sort(UserJob.jobSorter(false)); // sort newest to oldest
 
         requestUtils.data(res, jobDataNorm[0]);
+      });
+    })
+    .catch(next);
+};
+
+exports.currentUserCloseAccount = function(req, res, next) {
+
+  var
+  userId = req.user._id;
+
+  //
+  // Prepare thermo-nuclear wipe out of user account
+  //
+
+  qUserById(userId, res)
+    .then(function (user) {
+
+      Q.allSettled([
+
+        // stage 1: wipe out jobs
+        Q.nfcall(UserJob.nukeUserJobs.bind(UserJob), res.agenda, userId),
+
+        // stage 2: wipe out uploads
+        Q.nfcall(UserUpload.nukeUserUploads.bind(UserUpload), userId),
+
+        // stage 3: wipe out schedules
+        Q.nfcall(UserSchedule.nukeUserSchedules.bind(UserSchedule), res.agenda, userId),
+
+        // TODO: stage 4: wipe out groups (that this user is the exclusive owner for?)
+        // Q.nfcall(Group.nukeUserGroups.bind(Group), userId)
+
+        Q.nfcall(user.remove.bind(user))
+
+      ]).then(function (results) {
+
+        var
+        errors = results
+          .filter(function (r) {
+            return r.state !== 'fulfilled';
+          })
+          .map(function (r) {
+            return r.reason;
+          });
+
+        if(errors.length) {
+          console.error('Errors while removing account:', errors);
+        }
+
+        res.send(200);
       });
     })
     .catch(next);

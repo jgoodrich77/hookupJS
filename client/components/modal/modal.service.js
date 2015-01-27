@@ -71,6 +71,51 @@ angular.module('auditpagesApp')
               del.apply(event, args);
             });
           };
+        },
+
+        /**
+         * Create a function to open a delete confirmation modal (ex. ng-click='myModalFn(name, arg1, arg2...)')
+         * @param  {Function} del - callback, ran when delete is confirmed
+         * @return {Function}     - the function to open the modal (ex. myModalFn)
+         */
+        closeAccount: function(del) {
+          del = del || angular.noop;
+
+          /**
+           * Open a delete confirmation modal
+           * @param  {String} name   - name or info to show on modal
+           * @param  {All}           - any additional args are passed staight to del callback
+           */
+          return function() {
+            var args = Array.prototype.slice.call(arguments),
+                name = args.shift(),
+                confirmModal;
+
+            confirmModal = openModal({
+              modal: {
+                dismissable: true,
+                title: 'Confirm Close Account',
+                template: 'components/modal/tpl/tpl.close-account.html',
+                buttons: [{
+                  classes: 'btn-danger',
+                  text: 'Confirm',
+                  click: function(e) {
+                    confirmModal.close(e);
+                  }
+                }, {
+                  classes: 'btn-default',
+                  text: 'Cancel',
+                  click: function(e) {
+                    confirmModal.dismiss(e);
+                  }
+                }]
+              }
+            }, 'modal-danger');
+
+            confirmModal.result.then(function(event) {
+              del.apply(event, args);
+            });
+          };
         }
       },
 

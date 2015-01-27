@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('auditpagesApp')
-  .controller('AccountSettingsSecurityCtrl', function ($scope, User, Auth) {
+  .controller('AccountSecurityCtrl', function ($scope, User, Auth) {
     $scope.submitErr = false;
 
     $scope.reset = function() {

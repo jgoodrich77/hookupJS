@@ -1,9 +1,13 @@
 'use strict';
 
 var mongoose = require('mongoose'),
+    rmdir = require('rimraf'),
     path = require('path'),
     Schema = mongoose.Schema,
     config = require('../../../config/environment/index');
+
+var
+cfgUploads = config.uploads;
 
 var
 UserUploadSchema = new Schema({
@@ -52,5 +56,19 @@ UserUploadSchema
       'url': this.url
     };
   });
+
+
+UserUploadSchema.statics = {
+  nukeUserUploads: function (userId, cb) {
+    this.find({ user: userId }).remove(function (err, remResult) {
+      if(err) return cb(err);
+
+      rmdir(path.join(cfgUploads.saveDir, String(userId)), function (err) {
+        if(err) return cb(err);
+        cb(null, true);
+      });
+    });
+  }
+};
 
 module.exports = mongoose.model('UserUpload', UserUploadSchema);

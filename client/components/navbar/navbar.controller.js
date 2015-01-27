@@ -54,12 +54,12 @@ angular.module('auditpagesApp')
       'title': 'Choose which groups you are associated with',
       'state': 'app.account.groups',
       'glyph': 'glyphicon glyphicon-plane'
-    },{
-      'caption': 'Settings',
-      'title': 'Change your user settings',
-      'state': 'app.account.settings',
+    }*/,{
+      'caption': 'Profile Settings',
+      'title': 'Change your profile settings',
+      'state': 'app.account',
       'glyph': 'glyphicon glyphicon-cog'
-    }*/];
+    }];
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;

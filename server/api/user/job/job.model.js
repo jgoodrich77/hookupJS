@@ -1,7 +1,8 @@
 'use strict';
 
-var mongoose = require('mongoose'),
-    Schema = mongoose.Schema;
+var
+mongoose = require('mongoose'),
+Schema   = mongoose.Schema;
 
 var
 UserJobSchema = new Schema({
@@ -63,6 +64,31 @@ UserJobSchema.statics = {
 
     return record;
   },
+
+  nukeUserJobs: function(agenda, userId, cb) {
+    var me = this;
+
+    this.findAllUserJobIds(userId, function (err, jobs) {
+      if(err) return cb(err);
+      if(!jobs || !jobs.length) return cb(null, true);
+
+      // cancel matching agenda jobs
+      agenda.cancel({
+        _id: { '$in': jobs }
+      }, function (err, agendaResult) {
+        if(err) return cb(err);
+
+        // delete matching user jobs
+        me.find({ userId: userId})
+          .remove(function (err, modelResult) {
+            if(err) return cb(err);
+
+            cb(null, true);
+          });
+      });
+    });
+  },
+
   findAllUserJobIds: function(userId, cb) {
     this.find({ userId: userId }, 'jobId', function (err, jobs) {
       if(err) return cb(err);
