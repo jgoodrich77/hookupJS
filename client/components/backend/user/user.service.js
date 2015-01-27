@@ -43,6 +43,13 @@ angular
         id:'close-account'
       }
     },
+    changePassword: {
+      method: 'POST',
+      params: {
+        resource:'me',
+        id:'change-password'
+      }
+    },
     getFacebookObject: {
       method: 'GET',
       params: {

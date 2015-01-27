@@ -186,6 +186,29 @@ exports.currentUser = function(req, res, next) {
     .catch(next);
 };
 
+exports.currentUserChangePassword = function(req, res, next) {
+  var
+  oldPass = String(req.body.oldPassword),
+  newPass = String(req.body.newPassword);
+
+  qUserById(req.user._id, res, '_id salt hashedPassword')
+    .then(function (user) {
+
+      if( ! user.authenticate(oldPass)) {
+        res.send(403);
+        return;
+      }
+
+      user.password = newPass;
+
+      return user.save(function (err) {
+        if(err) return next(err);
+        requestUtils.ok(res);
+      });
+    })
+    .catch(next);
+};
+
 exports.currentUserFacebookObject = function(req, res, next) {
   qUserById(req.user._id, res)
     .then(function (user) {
