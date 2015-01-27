@@ -1,0 +1,56 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans);
+@import url(http://fonts.googleapis.com/css?family=Slabo+27px);
+@import url(http://fonts.googleapis.com/css?family=Oswald);
+@import url(http://fonts.googleapis.com/css?family=Lato);
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+
+.list-group-item-head {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.cors-warning {
+  font-size: 9pt;
+  min-width: 100px;
+  padding: 5px 8px;
+  background-color: #ddd;
+
+  p {
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+  }
+}
+
+$tile-size: 10px;
+$tile-col-1: #8C8C8C;
+$tile-col-2: #BFBFBF;
+
+.alpha-wrapper {
+  margin-bottom: 15px;
+  background-color: $tile-col-1;
+  background-size: ($tile-size * 2) ($tile-size * 2);
+  background-position: 0 0, $tile-size $tile-size;
+  background-image: linear-gradient(45deg,
+    $tile-col-2 25%,
+    transparent 25%,
+    transparent 75%,
+    $tile-col-2 75%,
+    $tile-col-2
+  ), linear-gradient(45deg,
+    $tile-col-2 25%,
+    transparent 25%,
+    transparent 75%,
+    $tile-col-2 75%,
+    $tile-col-2
+  );
+
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+

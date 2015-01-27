@@ -24,6 +24,11 @@ angular.module('auditpagesApp')
       'showIf': function() {
         return $state.current.name !== 'app.main';
       }
+    }, {
+      'caption': 'Meme Generator',
+      'title': 'Generator a Meme Image',
+      'state': 'app.meme',
+      'glyph': 'glyphicon glyphicon-image'
     }/*,{
       'caption': 'External Link',
       'title': 'Go back to Google.com',

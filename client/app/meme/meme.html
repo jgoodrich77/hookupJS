@@ -1,0 +1,180 @@
+<div class="container">
+  <div class="row alpha-wrapper">
+    <image-generator-canvas igc-controller="imageGenerator" width="{{width}}" height="{{height}}"></image-generator-canvas>
+    <div ng-hide="hideWarning" class="cors-warning">
+      <p>Images that can't be found, or are loaded from a server that doesn't support / allow CORS, will appear as a red X. <a href="#" class="pull-right" ng-click="hideWarning = true">Hide this warning.</a></p>
+    </div>
+  </div>
+  <p>To save image, right-click on the above image and click "save image as.." or <a href="#" igc-downloader="imageGenerator" class="btn btn-default">click here</a> to download it.</p>
+  <form>
+    <dl class="buttons">
+      <div class="pull-right">
+        <label>
+          <input type="checkbox" ng-model="hideLayers"/> Hide Layer Config
+        </label>
+        <label>
+          <input type="checkbox" ng-model="hideBgSettings"/> Hide BG Config
+        </label>
+      </div>
+      <button ng-click="imageGenerator.addLayer({expanded: true})" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Add Layer</button>
+      <!-- <button ng-click="imageGenerator.redraw()" class="btn btn-primary"><span class="glyphicon glyphicon-refresh"></span> Redraw</button> -->
+    </dl>
+    <div ng-hide="hideLayers" class="list-group">
+      <div ng-repeat="layer in imageGenerator.layers" class="list-group-item">
+        <div class="nav pull-right">
+          <button ng-click="layer.expanded = !layer.expanded" ng-class="{active: layer.expanded}" class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></button>
+          <button ng-click="layer.visible = !layer.visible" ng-class="{'btn-success': layer.visible, 'btn-default': !layer.visible}" class="btn"><span ng-class="{'glyphicon-eye-open': layer.visible, 'glyphicon-eye-close': !layer.visible}" class="glyphicon"></span></button>
+          <button ng-click="imageGenerator.removeLayer($index)" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+        </div>
+        <label class="list-group-item-head"><span ng-hide="layer.editingName" ng-click="layer.editingName = true">{{layer.name || 'Layer ' + ($index + 1)}}</span>
+          <input ng-show="layer.editingName" ng-model="layer.name" ng-blur="layer.editingName = false"/>
+        </label>
+        <div ng-if="!!layer.expanded">
+          <div ng-hide="!!layer.text" class="row">
+            <dl class="col-sm-12">
+              <dt>Image (url)</dt>
+              <dd>
+                <input type="text" ng-model="layer.imageUrl" placeholder="http://" class="form-control"/>
+              </dd>
+            </dl>
+          </div>
+          <div ng-hide="!!layer.imageUrl" class="row">
+            <dl class="col-sm-9">
+              <dt>Text</dt>
+              <dd>
+                <input type="text" ng-model="layer.text" class="form-control"/>
+              </dd>
+            </dl>
+            <dl class="col-sm-3">
+              <dt>Color</dt>
+              <dd>
+                <input type="text" colorpicker="hex" ng-model="layer.color" class="form-control"/>
+              </dd>
+            </dl>
+          </div>
+          <div ng-hide="!!layer.imageUrl||!layer.text" class="row">
+            <dl class="col-sm-3">
+              <dt>Alignment</dt>
+              <dd>
+                <select ng-options="o[0] as o[1] for o in alignments" ng-model="layer.align" class="form-control"></select>
+              </dd>
+            </dl>
+            <dl class="col-sm-6">
+              <dt>Font-family</dt>
+              <dd>
+                <select ng-options="o[0] as o[1] for o in fontsAvail" ng-model="layer.font" class="form-control"></select>
+              </dd>
+            </dl>
+            <dl class="col-sm-3">
+              <dt>Font size</dt>
+              <dd>
+                <input type="number" ng-model="layer.fontSize" class="form-control"/>
+              </dd>
+            </dl>
+          </div>
+          <div class="row">
+            <dl class="col-sm-3">
+              <dt>Width</dt>
+              <dd>
+                <input type="number" ng-model="layer.width" min="0" ng-disabled="layer.autoSize" class="form-control"/>
+              </dd>
+            </dl>
+            <dl class="col-sm-3">
+              <dt>Height</dt>
+              <dd>
+                <input type="number" ng-model="layer.height" min="0" ng-disabled="layer.autoSize" class="form-control"/>
+              </dd>
+            </dl>
+            <dl class="col-sm-3">
+              <dt>Pos X</dt>
+              <dd>
+                <input type="number" ng-model="layer.position.x" class="form-control"/>
+              </dd>
+            </dl>
+            <dl class="col-sm-3">
+              <dt>Pos Y</dt>
+              <dd>
+                <input type="number" ng-model="layer.position.y" class="form-control"/>
+              </dd>
+            </dl>
+            <dl class="col-sm-6">
+              <label>
+                <input type="checkbox" ng-model="layer.autoSize"/> Auto Size
+              </label>
+              <label>
+                <input type="checkbox" ng-model="layer.showBorder"/> Show Border
+              </label>
+            </dl>
+            <dl class="col-sm-6"></dl>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-hide="hideBgSettings" class="row">
+      <div class="col-sm-6">
+        <label>
+          <input type="radio" ng-model="backgroundImgType" value="none"/> No background (transparent)
+        </label>
+      </div>
+      <div class="col-sm-6">
+        <label>
+          <input type="radio" ng-model="backgroundImgType" value="solid"/> Solid color background
+        </label>
+        <div ng-show="backgroundImgType === 'solid'">
+          <input type="text" colorpicker="rgba" ng-model="backgroundColor" class="form-control"/><em class="text-muted">All context fillStyle props supported here.</em>
+        </div>
+      </div>
+    </div>
+    <div ng-hide="hideBgSettings" class="row">
+      <div class="col-sm-6">
+        <label>
+          <input type="radio" ng-model="backgroundImgType" value="preset"/> Preset background image
+        </label>
+      </div>
+      <div class="col-sm-6">
+        <label>
+          <input type="radio" ng-model="backgroundImgType" value="custom"/> Custom background image url
+        </label>
+      </div>
+      <dl ng-show="backgroundImgType === 'preset'" class="col-sm-12">
+        <select ng-options="o[0] as o[1] for o in backgroundImgs" ng-model="backgroundImg" class="form-control"></select>
+      </dl>
+      <dl ng-show="backgroundImgType === 'custom'" class="col-sm-12">
+        <input type="text" ng-model="backgroundImg" placeholder="http://" class="form-control"/>
+      </dl>
+    </div>
+    <div ng-show="backgroundImgType === 'custom' || backgroundImgType === 'preset'" class="row">
+      <dl ng-hide="hideBgSettings" class="col-sm-12">
+        <dt>Background Image Position</dt>
+        <dd class="row">
+          <label class="col-sm-3">
+            <input type="radio" name="backgroundImgPos" value="cover" ng-model="backgroundImgPos"/> Cover
+          </label>
+          <label class="col-sm-3">
+            <input type="radio" name="backgroundImgPos" value="fit" ng-model="backgroundImgPos"/> Fit
+          </label>
+          <label class="col-sm-3">
+            <input type="radio" name="backgroundImgPos" value="stretch" ng-model="backgroundImgPos"/> Stretch
+          </label>
+          <label class="col-sm-3">
+            <input type="radio" name="backgroundImgPos" value="repeat" ng-model="backgroundImgPos"/> Repeat
+          </label>
+        </dd>
+      </dl>
+    </div>
+    <div class="row">
+      <dl class="col-sm-6">
+        <dt>Width</dt>
+        <dd>
+          <input type="number" ng-model="width" class="form-control"/>
+        </dd>
+      </dl>
+      <dl class="col-sm-6">
+        <dt>Height</dt>
+        <dd>
+          <input type="number" ng-model="height" class="form-control"/>
+        </dd>
+      </dl>
+    </div>
+  </form>
+</div>
