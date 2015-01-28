@@ -2,7 +2,8 @@
   <div class="row alpha-wrapper">
     <image-generator-canvas igc-controller="imageGenerator" width="{{width}}" height="{{height}}"></image-generator-canvas>
     <div ng-hide="hideWarning" class="cors-warning">
-      <p>Images that can't be found, or are loaded from a server that doesn't support / allow CORS, will appear as a red X. <a href="#" class="pull-right" ng-click="hideWarning = true">Hide this warning.</a></p>
+      <p>Images that can't be found, or are loaded from a server that doesn't support / allow CORS, will appear as a red X. <button class="btn btn-sm btn-default pull-right" ng-click="hideWarning = true">Hide this warning</button></p>
+      <div class="clearfix"></div>
     </div>
   </div>
   <p>To save image, right-click on the above image and click "save image as.." or <a href="#" igc-downloader="imageGenerator" class="btn btn-default">click here</a> to download it.</p>
