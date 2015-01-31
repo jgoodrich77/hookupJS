@@ -52,27 +52,27 @@ function qExtraPostData(posts, accessToken) {
 function qAllPageData(ownerToken, objectId, objectAccessToken) {
 
   // check this token, and see if it's still valid:
-  return qValidateToken(objectAccessToken, ownerToken)
-    .then(function (valid) {
-      if(!valid) {
-        throw new Error(util.format('The token supplied for object (%s) is not valid (or has expired).', objectId));
-      }
+  //return qValidateToken(objectAccessToken, ownerToken)
+  //  .then(function (valid) {
+  //    if(!valid) {
+  //      throw new Error(util.format('The token supplied for object (%s) is not valid (or has expired).', objectId));
+  //    }
+  //  });
 
-      var
-      data = {};
+  var
+  data = {};
 
-      return facebook.pageLikes(objectId, objectAccessToken)
-        .then(function (result) {
-          data.likes = result; // buffer this
-          return facebook.pagePosts(objectId, objectAccessToken, 10);
-        })
-        .then(function (result) {
-          return qExtraPostData(result.data, objectAccessToken);
-        })
-        .then(function (result) {
-          data.posts = result; // buffer this
-          return data;
-        });
+  return facebook.pageLikes(objectId, objectAccessToken)
+    .then(function (result) {
+      data.likes = result; // buffer this
+      return facebook.pagePosts(objectId, objectAccessToken, 10);
+    })
+    .then(function (result) {
+      return qExtraPostData(result.data, objectAccessToken);
+    })
+    .then(function (result) {
+      data.posts = result; // buffer this
+      return data;
     });
 }
 

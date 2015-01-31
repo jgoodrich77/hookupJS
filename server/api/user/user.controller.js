@@ -174,13 +174,14 @@ exports.setupFinalize = function(req, res, next) {
 exports.currentUser = function(req, res, next) {
   qUserById(req.user._id, res)
     .then(function (user) { // validate the user facebook token:
-      return facebook.tokenInfo(user.facebook.token, user.facebook.token)
-        .then(function (result) {
-          if(!result.data || !result.data.is_valid) return requestUtils.missing(res); // force re-authentication
+      return facebook.userInfo(user.facebook.id, user.facebook.token)
+        .then(function (userInfo) {
           requestUtils.data(res, user.profile);
+          return user;
         })
         .catch(function (err) {
-          return requestUtils.missing(res);
+          requestUtils.missing(res);
+          return err;
         });
     })
     .catch(next);
