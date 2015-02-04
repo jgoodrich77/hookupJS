@@ -14,7 +14,7 @@
           <a href ng-click="explaining = true"><span class="glyphicon glyphicon-question-sign"></span></a>
         </p>
       </div>
-      <h3>{{currentFbObject.name}} <div class="badge">{{currentFbObject.likes|number}} Likes</div> <small ng-if="currentFbObject.link"><a ng-href="{{currentFbObject.link}}" target="_blank">Link</a></small></h3>
+      <h3>{{currentFbObject.name}} <div class="badge">{{currentFbObject.likes|number}} Likes</div> <small ng-if="currentFbObject.link"><a ng-href="{{currentFbObject.link}}" target="_blank">Link</a> <a href ng-click="switchPage()"><span class="glyphicon glyphicon-pencil"></span> Switch page</a></small></h3>
     </div>
 
     <div ng-show="explaining" class="well">

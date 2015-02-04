@@ -46,7 +46,7 @@ angular.module('auditpagesApp', [
   $httpProvider.interceptors.push('authInterceptor');
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   $httpProvider.defaults.withCredentials = false;
-   FacebookProvider.init('1508937439378506');
+   FacebookProvider.init('1545240202414896');
 })
 .factory('authInterceptor', function ($auth, $q) {
   var

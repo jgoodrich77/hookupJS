@@ -72,9 +72,21 @@ angular
 
   $scope.explainScore = function (result) {
     $scope.explaining = true;
-
     $scope.explainedScore = result;
+  };
 
+  $scope.switchPage = function () {
+    if(!$scope.currentFbObject) return;
+
+    var
+    lFacebookId = $scope.currentFbObject.id,
+    dlg = Modal.changeObject(function (result) {
+      if(result === lFacebookId) return;
+
+      console.log('changed to', result);
+    });
+
+    dlg($scope.currentFbObject);
   };
 
   $scope.itemClick = function(period, date, records) {
