@@ -1,5 +1,9 @@
 <div class="container">
-  <div class="row">
+  <div class="row text-center" ng-show="scoringObject">
+    <h3>Please wait..</h3>
+    <p class="text-muted lead">Loading information about this page.</p>
+  </div>
+  <div class="row" ng-hide="scoringObject">
 
     <div ng-if="fullLoading" class="text-center">
       <h3>Please wait..</h3>

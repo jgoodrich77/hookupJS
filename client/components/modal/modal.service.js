@@ -121,20 +121,37 @@ angular.module('auditpagesApp')
 
       changeObject: function(change) {
         change = change || angular.noop;
-        return function (currentFacebookObject) {
+        return function (currentFbObjectId) {
 
           var
           modal,
           scopeRes = {
             loading: true,
             facebookObjects: [],
-            selectedObject: null
+            selectedIndex: null
           };
 
           $fb.getObjects()
             .then(function (objects) {
-              Array.prototype.push.apply(scopeRes.facebookObjects, objects.data);
-              scopeRes.selectedObject = currentFacebookObject.id;
+              var objectRows = objects.data;
+              Array.prototype.push.apply(scopeRes.facebookObjects, objectRows);
+
+              var
+              selectedIndex = -1,
+              found = !objectRows.every(function (itm, index) {
+                  if(itm.id === currentFbObjectId) {
+                    selectedIndex = index;
+                  }
+                  return selectedIndex === -1;
+                });
+
+              if(found) {
+                scopeRes.selectedIndex = selectedIndex;
+              }
+
+              return objectRows;
+            })
+            .finally(function () {
               scopeRes.loading = false;
             });
 
@@ -161,7 +178,7 @@ angular.module('auditpagesApp')
           }, 'modal-success');
 
           modal.result.then(function (event) {
-            change.call(event, scopeRes.selectedObject);
+            change.call(event, scopeRes.facebookObjects[scopeRes.selectedIndex]);
           });
         };
       },

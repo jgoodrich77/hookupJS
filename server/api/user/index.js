@@ -17,6 +17,7 @@ router.get('/me/facebook-score',   auth.isAuthenticated(), controller.currentUse
 router.get('/me',                  auth.isAuthenticated(), controller.currentUser);
 
 router.put('/change-fb-object',    auth.isAuthenticated(), controller.changeFacebookObject);
+router.put('/switch-fb-object',    auth.isAuthenticated(), controller.switchFacebookObject);
 router.put('/setup-fb-object',     auth.isAuthenticated(), controller.setupFacebookObject);
 router.put('/setup-password',      auth.isAuthenticated(), controller.setupPassword);
 router.put('/setup-finalize',      auth.isAuthenticated(), controller.setupFinalize);

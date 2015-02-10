@@ -10,7 +10,7 @@
 
       <div class="list-group">
         <label class="list-group-item" ng-repeat="item in data.facebookObjects">
-          <input type="radio" name="selection" value="{{item.id}}" ng-model="data.selectedObject" />
+          <input type="radio" name="selection" value="{{$index}}" ng-model="data.selectedIndex" />
           <span ng-bind="item.name"></span>
         </label>
       </div>

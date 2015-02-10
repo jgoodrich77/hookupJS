@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardCtrl', function ($scope, $http, $fb, $interval, $user, $userUpload, Auth, Modal, Time, Scheduler, ScheduleData, SchedulePlan) {
+.controller('DashboardCtrl', function ($scope, $http, $fb, $interval, $timeout, $user, $userUpload, Auth, Modal, Time, Scheduler, ScheduleData, SchedulePlan) {
 
   var
   endpoint = '/api/user-schedule',
@@ -33,37 +33,45 @@ angular
     })
   });
 
-  $scope.fullLoading = true;
-
   // $userUpload.query().$promise
   //   .then(function (result) {
   //     console.log('uploads:', result);
   //   });
 
-  $user.getFacebookObject()
-    .then(function (res) {
-      $scope.currentFbObject = res
-      $scope.scheduler = new Scheduler(plan, data, {
-        minDate: new Date(new Date(dates[0]).getTime() - (8.64e7 * dateLen * 8)),
-        maxDate: new Date(new Date(dates[dateLen - 1]).getTime() + (8.64e7 * dateLen)),
-        autoLoad: false
+  function reloadObject() {
+
+    $scope.fullLoading = true;
+
+    data.reset();
+
+    $user.getFacebookObject()
+      .then(function (res) {
+        $scope.currentFbObject = res
+        $scope.scheduler = new Scheduler(plan, data, {
+          minDate: new Date(new Date(dates[0]).getTime() - (8.64e7 * dateLen * 8)),
+          maxDate: new Date(new Date(dates[dateLen - 1]).getTime() + (8.64e7 * dateLen)),
+          autoLoad: false
+        });
+
+        return $user.getObjectScore()
+          .then(function (objectScore) {
+            $scope.currentObjectScore = objectScore;
+            return objectScore;
+          });
+      })
+      .then(function() {
+        return data.reload();
+      })
+      .catch(function (err) {
+        console.log('ERROR:', err);
+      })
+      .finally(function() {
+        $scope.fullLoading = false;
       });
 
-      return $user.getObjectScore()
-        .then(function (objectScore) {
-          $scope.currentObjectScore = objectScore;
-          return objectScore;
-        });
-    })
-    .then(function() {
-      return data.reload();
-    })
-    .catch(function (err) {
-      console.log('ERROR:', err);
-    })
-    .finally(function() {
-      $scope.fullLoading = false;
-    });
+  };
+
+  reloadObject();
 
   $interval(function(){}, 2500);
 
@@ -81,12 +89,36 @@ angular
     var
     lFacebookId = $scope.currentFbObject.id,
     dlg = Modal.changeObject(function (result) {
-      if(result === lFacebookId) return;
+      if(result.id === lFacebookId) return;
+      $user.switchFacebookObject({ switchTo: result.id, accessToken: result.access_token })
+        .then(function (srvResult) {
+          if(srvResult.scored === false) {
+            $scope.scoringObject = true;
 
-      console.log('changed to', result);
+            (function loopCheck() {
+              return $user.getObjectScore()
+                .then(function (objectScore) {
+                  if(objectScore.status === 'finished') { // nothing to wait for:
+                    $scope.scoringObject = false;
+                    return reloadObject();
+                  }
+                  $timeout(loopCheck, 2500);
+                  return objectScore;
+                })
+                .finally(function() {
+                  $scope.form.loading = false;
+                });
+            })();
+          }
+          else {
+            reloadObject();
+          }
+
+          return srvResult;
+        });
     });
 
-    dlg($scope.currentFbObject);
+    dlg(lFacebookId);
   };
 
   $scope.itemClick = function(period, date, records) {

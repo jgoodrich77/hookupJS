@@ -94,6 +94,12 @@ angular
       params: {
         resource: 'setup-finalize'
       }
+    },
+    switchFacebookObject: { // different from change (which is during the setup process)
+      method: 'PUT',
+      params: {
+        resource: 'switch-fb-object'
+      }
     }
   });
 });
