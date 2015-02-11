@@ -58,8 +58,8 @@ $scheduler-breakpoint-sm: 480px;
     @include transform(rotate(-45deg));
 
     &.current {
-      background-color: #333;
-      color: #fff;
+      background-color: #ccc;
+      color: #111;
     }
 
     .date {
@@ -80,6 +80,30 @@ $scheduler-breakpoint-sm: 480px;
     }
   }
 }
+
+$color-bg-negative: #D3D3D3;
+$color-fg-negative: #9C9C9C;
+$color-bg-negative-today: darken($color-bg-negative, 10%);
+$color-fg-negative-today: darken($color-fg-negative, 10%);
+
+
+$color-bg-neutral: #C9E8FF;
+$color-fg-neutral: #2B628C;
+$color-bg-neutral-today: darken($color-bg-neutral, 10%);
+$color-fg-neutral-today: $color-fg-neutral;
+
+$color-bg-positive: #CFFFC2;
+$color-fg-positive: #187200;
+$color-bg-positive-today: darken($color-bg-positive, 10%);
+$color-fg-positive-today: $color-fg-positive;
+
+$color-bg-disabled: #ddd;
+$color-fg-disabled: #777;
+$color-bg-disabled-today: darken($color-bg-disabled, 10%);
+$color-fg-disabled-today: $color-fg-disabled;
+
+$color-bg-current: #2695D1;
+$color-fg-current: #FFFFFF;
 
 .scheduler-period {
   $border-width: 1px;
@@ -106,43 +130,47 @@ $scheduler-breakpoint-sm: 480px;
     }
   }
   .col-day {
-    border: $border-width solid #111;
-    border-width: $border-width 0 0 $border-width;
+    // border: $border-width solid #111;
+    // border-width: $border-width 0 0 $border-width;
     cursor: pointer;
 
     &.negative {
-      background-color: #FFD3C2;
-      color: #8A2700;
+      background-color: $color-bg-negative;
+      color:            $color-fg-negative;
     }
     &.neutral {
-      background-color: #C9E8FF;
-      color: #2B628C;
+      background-color: $color-bg-neutral;
+      color:            $color-fg-neutral;
     }
     &.positive {
-      background-color: #CFFFC2;
-      color: #187200;
+      background-color: $color-bg-positive;
+      color:            $color-fg-positive;
     }
     &.disabled {
-      background-color: #ddd;
-      color: #777;
+      background-color: $color-bg-disabled;
+      color:            $color-fg-disabled;
       cursor: default;
     }
 
     &.current {
-      color: #fff;
-      background-color: #222;
+      background-color:   $color-bg-current;
+      color:              $color-fg-current;
 
       &.negative {
-        background-color: #FF692E;
+        background-color: $color-bg-negative-today;
+        color:            $color-fg-negative-today;
       }
       &.neutral {
-        background-color: #2BA3FF;
+        background-color: $color-bg-neutral-today;
+        color:            $color-fg-neutral-today;
       }
       &.positive {
-        background-color: #229C00;
+        background-color: $color-bg-positive-today;
+        color:            $color-fg-positive-today;
       }
       &.disabled {
-        background-color: #595959;
+        background-color: $color-bg-disabled-today;
+        color:            $color-fg-disabled-today;
       }
     }
   }
@@ -159,6 +187,60 @@ $scheduler-breakpoint-sm: 480px;
           border-width: $border-width;
         }
       }
+    }
+  }
+}
+
+.scheduler-legend {
+  .item {
+    font-size: 0.8em;
+
+    dt, dd {
+      box-sizing: border-box;
+      float: left;
+      display: block;
+    }
+
+    dt {
+      width: 80%;
+      text-align: right;
+      padding-right: 3px;
+    }
+    dd {
+      width: 20%;
+      height: 1em;
+      outline: 1px solid black;
+    }
+  }
+
+  .item1 {
+    dd {
+      background-color: $color-bg-negative;
+    }
+  }
+  .item2 {
+    dd {
+      background-color: $color-bg-negative-today;
+    }
+  }
+  .item3 {
+    dd {
+      background-color: $color-bg-current;
+    }
+  }
+  .item4 {
+    dd {
+      background-color: $color-bg-positive;
+    }
+  }
+  .item5 {
+    dd {
+      background-color: $color-bg-neutral-today;
+    }
+  }
+  .item6 {
+    dd {
+      background-color: $color-bg-neutral;
     }
   }
 }
