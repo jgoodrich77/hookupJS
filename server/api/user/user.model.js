@@ -19,7 +19,8 @@ var UserSchema = new Schema({
   hashedPassword: String,
   salt: String,
   facebookObj: {
-    id: String
+    id: String,
+    associations: [String]
   },
   facebook: {
     id: String,

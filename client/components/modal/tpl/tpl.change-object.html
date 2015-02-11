@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <div>
+
+    <div ng-show="data.loading">
+      <p>Please wait, loading your Facebook data.</p>
+    </div>
+
+    <div ng-hide="data.loading">
+      <h4>Change your current FB object</h4>
+
+      <div class="list-group">
+        <label class="list-group-item" ng-repeat="item in data.facebookObjects">
+          <input type="radio" name="selection" value="{{$index}}" ng-model="data.selectedIndex" />
+          <span ng-bind="item.name"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>

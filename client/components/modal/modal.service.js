@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('auditpagesApp')
-  .factory('Modal', function ($rootScope, $modal, $http) {
+  .factory('Modal', function ($rootScope, $modal, $http, $fb) {
     /**
      * Opens a modal
      * @param  {Object} scope      - an object to be merged with modal's scope
@@ -117,6 +117,70 @@ angular.module('auditpagesApp')
             });
           };
         }
+      },
+
+      changeObject: function(change) {
+        change = change || angular.noop;
+        return function (currentFbObjectId) {
+
+          var
+          modal,
+          scopeRes = {
+            loading: true,
+            facebookObjects: [],
+            selectedIndex: null
+          };
+
+          $fb.getObjects()
+            .then(function (objects) {
+              var objectRows = objects.data;
+              Array.prototype.push.apply(scopeRes.facebookObjects, objectRows);
+
+              var
+              selectedIndex = -1,
+              found = !objectRows.every(function (itm, index) {
+                  if(itm.id === currentFbObjectId) {
+                    selectedIndex = index;
+                  }
+                  return selectedIndex === -1;
+                });
+
+              if(found) {
+                scopeRes.selectedIndex = selectedIndex;
+              }
+
+              return objectRows;
+            })
+            .finally(function () {
+              scopeRes.loading = false;
+            });
+
+          modal = openModal({
+            modal: {
+              dismissable: true,
+              title: 'Change Current Page',
+              template: 'components/modal/tpl/tpl.change-object.html',
+              buttons: [{
+                classes: 'btn-success',
+                text: 'Change Object',
+                click: function(e) {
+                  modal.close(e);
+                }
+              }, {
+                classes: 'btn-default',
+                text: 'Cancel',
+                click: function(e) {
+                  modal.dismiss(e);
+                }
+              }]
+            },
+            data: scopeRes
+          }, 'modal-success');
+
+          modal.result.then(function (event) {
+            change.call(event, scopeRes.facebookObjects[scopeRes.selectedIndex]);
+          });
+        };
       },
 
       scheduleAdd: function(add, currentUserId) {

@@ -21,7 +21,7 @@
     <div ng-repeat="period in item.periods" class="row">
       <div class="col-desc" ng-bind="period | schedulerPeriod"></div>
       <div ng-repeat="day in datasource.getPlan().getDates()" ng-class="doItemClasses(period, day, datasource.getData().getRecord(period, day))" ng-click="doItemClick(period, day, datasource.getData().getRecord(period, day))" class="col-day">
-        <span ng-bind="datasource.getData().getRecord(period, day) | schedulerRecordLabel"></span>
+        <span ng-bind-html="datasource.getData().getRecord(period, day) | schedulerRecordLabel:period:day"></span>
       </div>
     </div>
   </div>

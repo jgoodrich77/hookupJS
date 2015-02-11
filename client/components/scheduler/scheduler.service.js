@@ -41,6 +41,10 @@ angular
 
   function ScheduleDataLoader(opts) {
     var loading = false, hasLoaded = false;
+    this.reset = function () {
+      hasLoaded = false;
+      loading = false;
+    };
     this.isLoading = function() {
       return loading;
     };
@@ -119,6 +123,12 @@ angular
             if(asMS < bsMS) return -1;
           }
         });
+    };
+
+    this.reset = function () {
+      cache.reset();
+      if(!this.hasLoader()) return;
+      loader.reset();
     };
 
     this.reload = function() {

@@ -30,6 +30,44 @@ function qUserById(id, res, cols) {
   return defer.promise;
 }
 
+function qGetPageScore(agenda, userId, fbObjectId) {
+  var defer = Q.defer();
+
+  // find a job that matches this criteria:
+  UserJob.findUserJobs(agenda, userId, {
+    'name': 'facebook-page-score',
+    'data.userId': userId,
+    'data.facebookObjectId': fbObjectId
+  }, function (err, jobs) {
+    if(err) return defer.reject(err);
+    if(!jobs || !jobs.length) return defer.resolve([]);
+
+    var
+    jobDataNorm = jobs
+      .map(UserJob.normalizeJob.bind(UserJob))
+      .sort(UserJob.jobSorter(false)) // sort newest to oldest
+      .shift();
+
+    return defer.resolve(jobDataNorm);
+  });
+
+  return defer.promise;
+}
+
+function qScorePage (agenda, userId, fbObjectId) {
+  var defer = Q.defer();
+
+  UserJob.createJob(agenda, userId, 'facebook-page-score', {
+    userId: userId,
+    facebookObjectId: fbObjectId
+  }, false, function (err, job) {
+    if(err) return defer.reject(err);
+    return defer.resolve(job);
+  });
+
+  return defer.promise;
+}
+
 //
 // On-boarding process:
 //
@@ -124,6 +162,57 @@ exports.changeFacebookObject = function(req, res, next) {
     .catch(next);
 };
 
+exports.switchFacebookObject = function(req, res, next) {
+  var
+  switchTo = req.body.switchTo,
+  accessToken = req.body.accessToken;
+
+  qUserById(req.user._id, res)
+    .then(function (user) {
+      var
+      currentFbObject = user.facebookObj.id;
+
+      return facebook.basicPageInfo(switchTo, accessToken)
+        .then(function (pageInfo) {
+
+          if(!pageInfo) return requestUtils.missing(res);
+
+          // make sure this is in the users associated pages.
+          if(user.facebookObj.associations.indexOf(currentFbObject) === -1) {
+            user.facebookObj.associations.push(currentFbObject);
+          }
+
+          // score the page!!
+          user.facebookObj.id = switchTo;
+
+          // check for an existing score:
+          return qGetPageScore(res.agenda, user._id, switchTo)
+            .then(function (pageScore) {
+
+              if(!pageScore || pageScore.length === 0) {
+
+                // create a job to score their facebook page
+                return qScorePage(res.agenda, user._id, user.facebookObj.id)
+                  .then(function (job) {
+                    console.log('created job for user:', job.attrs);
+                    return { scored: false };
+                  });
+              }
+              else {
+                return { scored: true };
+              }
+            });
+        })
+        .then(function (pageScore) {
+          return user.save(function (err) {
+            if(err) return next(err);
+            requestUtils.data(res, pageScore);
+          });
+        });
+    })
+    .catch(next);
+};
+
 // step 2
 exports.setupPassword = function(req, res, next) {
   var
@@ -143,16 +232,12 @@ exports.setupPassword = function(req, res, next) {
         if(err) return next(err);
 
         // create a job to score their facebook page
-        UserJob.createJob(res.agenda, req.user._id, 'facebook-page-score', {
-          userId:           user._id,
-          facebookObjectId: user.facebookObj.id
-        }, false, function (err, job) {
-          if(err) return next(err);
-
-          console.log('created job for user:', job.attrs);
-
-          requestUtils.data(res, user.setupStatus);
-        });
+        return qScorePage(res.agenda, user._id, user.facebookObj.id)
+          .then(function (job) {
+            console.log('created job for user:', job.attrs);
+            requestUtils.data(res, user.setupStatus);
+            return job;
+          });
       });
     })
     .catch(next);
@@ -235,22 +320,11 @@ exports.currentUserFacebookScore = function(req, res, next) {
         return requestUtils.missing(res);
 
       // find a job that matches this criteria:
-      UserJob.findUserJobs(res.agenda, userId, {
-        'name': 'facebook-page-score',
-        'data.userId': userId,
-        'data.facebookObjectId': user.facebookObj.id
-      }, function (err, jobs) {
-        if(err) return next(err);
-        if(!jobs || !jobs.length) {
-          return requestUtils.data(res, []);
-        }
-
-        var
-        jobDataNorm = jobs.map(UserJob.normalizeJob.bind(UserJob))
-          .sort(UserJob.jobSorter(false)); // sort newest to oldest
-
-        requestUtils.data(res, jobDataNorm[0]);
-      });
+      return qGetPageScore(res.agenda, userId, user.facebookObj.id)
+        .then(function (result) {
+          requestUtils.data(res, result);
+          return result;
+        });
     })
     .catch(next);
 };
