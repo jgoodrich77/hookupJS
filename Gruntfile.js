@@ -17,7 +17,8 @@ module.exports = function (grunt) {
     cdnify: 'grunt-google-cdn',
     protractor: 'grunt-protractor-runner',
     injector: 'grunt-asset-injector',
-    buildcontrol: 'grunt-build-control'
+    buildcontrol: 'grunt-build-control',
+    replace: 'grunt-replace'
   });
 
   // Time how long tasks take. Can help when optimizing build times
@@ -58,6 +59,7 @@ module.exports = function (grunt) {
       injectJS: {
         files: [
           '<%= yeoman.client %>/{app,components}/**/*.js',
+          '!<%= yeoman.client %>/app/app.config.js',
           '!<%= yeoman.client %>/{app,components}/**/*.spec.js',
           '!<%= yeoman.client %>/{app,components}/**/*.mock.js',
           '!<%= yeoman.client %>/app/app.js'],
@@ -92,6 +94,13 @@ module.exports = function (grunt) {
       },
       gruntfile: {
         files: ['Gruntfile.js']
+      },
+      replace: {
+        files: [
+          'server/config/environment/*.public.js',
+          '<%= yeoman.client %>/app/app.config.js'
+        ],
+        tasks: ['replace:dev']
       },
       livereload: {
         files: [
@@ -294,6 +303,36 @@ module.exports = function (grunt) {
         }]
       }
     },
+
+    replace: {
+      dist: {
+        options: {
+          patterns: [{
+            json: require('./server/config/environment/production.public.js')
+          }]
+        },
+        files: [{
+          expand: true,
+          flatten: true,
+          src: ['<%= yeoman.client %>/app/app.config.js'],
+          dest: '.tmp/'
+        }]
+      },
+      dev: {
+        options: {
+          patterns: [{
+            json: require('./server/config/environment/development.public.js')
+          }]
+        },
+        files: [{
+          expand: true,
+          flatten: true,
+          src: ['<%= yeoman.client %>/app/app.config.js'],
+          dest: '.tmp/'
+        }]
+      }
+    },
+
 
     // Allow the use of non-minsafe AngularJS files. Automatically makes it
     // minsafe compatible so Uglify does not destroy the ng references
@@ -500,6 +539,7 @@ module.exports = function (grunt) {
           '<%= yeoman.client %>/index.html': [
               ['{.tmp,<%= yeoman.client %>}/{app,components}/**/*.js',
                '!{.tmp,<%= yeoman.client %>}/app/app.js',
+               '!{.tmp,<%= yeoman.client %>}/app/app.config.js',
                '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.spec.js',
                '!{.tmp,<%= yeoman.client %>}/{app,components}/**/*.mock.js']
             ]
@@ -582,6 +622,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'env:all',
+      'replace:dev',
       'injector:sass',
       'concurrent:server',
       'injector',
@@ -640,24 +681,27 @@ module.exports = function (grunt) {
     ]);
   });
 
-  grunt.registerTask('build', [
-    'clean:dist',
-    'injector:sass',
-    'concurrent:dist',
-    'injector',
-    'wiredep',
-    'useminPrepare',
-    'autoprefixer',
-    'ngtemplates',
-    'concat',
-    'ngAnnotate',
-    'copy:dist',
-    'cdnify',
-    'cssmin',
-    'uglify',
-    'rev',
-    'usemin'
-  ]);
+  grunt.registerTask('build', function (target) {
+    return grunt.task.run([
+      'clean:dist',
+      'injector:sass',
+      'concurrent:dist',
+      'injector',
+      'wiredep',
+      'useminPrepare',
+      'autoprefixer',
+      'ngtemplates',
+      'replace:dist',
+      'concat',
+      'ngAnnotate',
+      'copy:dist',
+      'cdnify',
+      'cssmin',
+      'uglify',
+      'rev',
+      'usemin'
+    ]);
+  });
 
   grunt.registerTask('default', [
     'newer:jshint',
