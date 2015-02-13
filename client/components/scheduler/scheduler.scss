@@ -106,7 +106,7 @@ $color-bg-current: #2695D1;
 $color-fg-current: #FFFFFF;
 
 .scheduler-period {
-  $border-width: 1px;
+  $border-width: 2px;
 
   margin-bottom: 10px;
 
@@ -130,8 +130,8 @@ $color-fg-current: #FFFFFF;
     }
   }
   .col-day {
-    // border: $border-width solid #111;
-    // border-width: $border-width 0 0 $border-width;
+    border: $border-width solid #fff;
+    border-width: $border-width 0 0 $border-width;
     cursor: pointer;
 
     &.negative {
