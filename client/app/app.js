@@ -10,6 +10,8 @@ angular.module('auditpagesApp', [
   'ngCookies',
   'ngResource',
   'ngSanitize',
+  'angulartics',
+  'angulartics.google.analytics',
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
@@ -18,7 +20,7 @@ angular.module('auditpagesApp', [
   'angularFileUpload',
   'facebook'
 ])
-.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {
+.config(function (envConfig, $analyticsProvider, $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {
   $urlRouterProvider
     .otherwise('/');
 
@@ -46,7 +48,19 @@ angular.module('auditpagesApp', [
   $httpProvider.interceptors.push('authInterceptor');
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   $httpProvider.defaults.withCredentials = false;
-  FacebookProvider.init('1508937439378506');
+
+  if(window.console) {
+    console.log('HookupJS Version:', envConfig.version);
+  }
+
+  FacebookProvider.init(envConfig.facebookAppId);
+
+  if(window.ga) {
+    window.ga('create', envConfig.googleAnalyticsId);
+  }
+
+  // turn off automatic tracking
+  // $analyticsProvider.virtualPageviews(false);
 })
 .factory('authInterceptor', function ($auth, $q) {
   var
