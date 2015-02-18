@@ -6,7 +6,7 @@ angular.module('auditpagesApp')
       .state('app.dashboard', {
         url: '/dashboard',
         data: {
-          breadcrumbTitle: 'Amazing Dashboard',
+          breadcrumbTitle: 'My Dashboard',
           roles: ['user']
         },
         views: {

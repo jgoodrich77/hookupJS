@@ -2,20 +2,26 @@
 
 angular
 .module('auditpagesApp')
-.filter('schedulerRecordLabel', function () {
+.filter('schedulerRecordLabel', function (Time) {
   return function (recordSet, period, day) {
 
-    // var endTime = Time.parse(period.end).toDate(day);
+    var
+    startTime = Time.parse(period.start).toDate(day),
+    endTime = Time.parse(period.end).toDate(day);
 
     if(recordSet.length === 0) {
-      // var glyphicon = 'glyphicon-ban-circle';
+      var glyphicon = '';
 
-      // if(!Time.isPast(endTime, new Date)) {
-      //   glyphicon = 'glyphicon-plus';
-      // }
+      if(Time.isPast(startTime, new Date) && Time.isFuture(endTime, new Date)) {
+        glyphicon = 'glyphicon glyphicon-plus';
+      }
 
-      // return '<span class="glyphicon '+ glyphicon +'"></span>';
-      return '&nbsp;';
+      if(glyphicon !== '') {
+        return '<span class="'+ glyphicon +'"></span>';
+      }
+      else {
+        return '&nbsp;';
+      }
     }
 
     return recordSet.length;

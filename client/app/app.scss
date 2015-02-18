@@ -252,6 +252,14 @@ $fb-logo-url:   url(/assets/images/facebook-logo.svg);
   }
 }
 
+.text-muted-darker {
+  color: #777;
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
 $margin-size: 15px;
 
 .margin-top {
@@ -446,5 +454,6 @@ textarea.fill {
 @import 'dashboard/dashboard.scss';
 @import 'get-started/get-started.scss';
 @import 'meme-generator/meme-generator.scss';
+@import 'navbar/navbar.scss';
 @import 'scheduler/scheduler.scss';
 // endinjector
