@@ -9,10 +9,11 @@ angular
     startTime = Time.parse(period.start).toDate(day),
     endTime = Time.parse(period.end).toDate(day);
 
+
     if(recordSet.length === 0) {
       var glyphicon = '';
 
-      if(Time.isPast(startTime, new Date) && Time.isFuture(endTime, new Date)) {
+      if(Time.isFuture(endTime, new Date)) {
         glyphicon = 'glyphicon glyphicon-plus';
       }
 

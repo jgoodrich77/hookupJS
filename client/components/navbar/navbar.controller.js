@@ -28,7 +28,8 @@ angular.module('auditpagesApp')
       'caption': 'Meme Generator',
       'title': 'Generator a Meme Image',
       'state': 'app.meme',
-      'glyph': 'glyphicon glyphicon-image'
+      'glyph': 'glyphicon glyphicon-image',
+      'roles': ['user','admin']
     }/*,{
       'caption': 'External Link',
       'title': 'Go back to Google.com',
@@ -37,6 +38,19 @@ angular.module('auditpagesApp')
     }*/];
 
     $scope.menuRight = [{
+      'caption': 'Free Software',
+      'state': 'app.main'
+    },{
+      'caption': 'About',
+      'title': 'HookupJS Free Software',
+      'link': 'http://blog.hookupjs.com/about/',
+      'external': true
+    },{
+      'caption': 'Contact',
+      'title': 'HookupJS Contact FAQ',
+      'link': 'http://blog.hookupjs.com/faq-items/faq/',
+      'external': true
+    },{
       'caption': 'Administration',
       'title': 'Administration page',
       'state': 'app.admin',
@@ -48,7 +62,7 @@ angular.module('auditpagesApp')
       'caption': 'My Dashboard',
       'title': 'Access your amazing dashboard.',
       'state': 'app.dashboard',
-      'glyph': 'fa fa-plug'
+      'glyph': 'fa fa-tachometer'
     }/*,{
       'caption': 'Groups',
       'title': 'Choose which groups you are associated with',

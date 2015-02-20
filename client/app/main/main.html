@@ -1,31 +1,111 @@
-<div class="container" ng-switch="isConnected()">
-  <div class="row" ng-switch-when="false">
+  <div>
+    <div class="intro-header">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="intro-message">
+              <h1>Share Amazing Stories Today</h1>
+              <h3>Free & Open Source Social Media Management</h3>
+              <hr class="intro-divider">
+              <ul class="list-inline intro-social-buttons">
+                <li ng-show="isConnected()"><a ui-sref="app.dashboard" class="btn btn-default btn-lg"><i class="fa fa-tachometer"></i> <span class="network-name">Access my dashboard</span></a></li>
+                <li ng-show="!isConnected()"><a ui-sref="app.get-started" class="btn btn-default btn-lg"><i class="fa fa-users"></i> <span class="network-name">Free Signup</span></a></li>
+                <li ng-show="!isConnected()"><a href="#" class="btn btn-default btn-lg"><i class="fa fa-film"></i> <span class="network-name">Tour</span></a></li>
 
-    <h2 class="text-success">Now live, Feb 4th, 2015, free SaaS account!</h2>
 
-    <h1>Welcome, click the big blue button to get started.</h1>
-    <h3>What does hookupJS do for your business?</h3>
+                <li><a href="https://github.com/jgoodrich77/hookupJS" target="_blank" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Download On Github</span></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <ol class="lead">
-      <li>Sign up through Facebook to manage your page.</li>
-      <li><strike>Invite your team to use our Amazing innovative time based dashboard.</strike> Coming Soon!</li>
-      <li>Post images, links or other content to your page to delight your audience.</li>
-    </ol>
+     <!-- Page Content -->
+    <a  name="services"></a>
+      <div class="content-section-a">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-5 col-sm-6">
+                <hr class="section-heading-spacer">
+                <div class="clearfix"></div>
+                <h2 class="section-heading">Score Your Facebook Page Engagement for Free</h2>
+                <p class="lead">When you create a free hookupJS account, in the upper left, you'll see a score for your page. Click to see how well each post did:</p>
+                <ul>
+                  <li>Score the posts for the last week on likes, shares and comments.</li><br/>
+                  <li>Know at a glance how well one page, or many pages, perform.</li><br/>
+                  <li>All for a special, bargain price. Free. <a ui-sref="app.get-started">Get your page scored now when you create an account.</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+              <img class="img-responsive" src="assets/images/score.png" alt="">
+            </div>
+          </div>
+        </div>
+        <!-- /.container -->
 
-    <p>
-      <a ui-sref="app.get-started" class="btn btn-lg btn-primary">Click here to get started!</a>
-    </p>
+      </div>
+      <!-- /.content-section-a -->
 
-    <p class="lead">Check out <a href="http://blog.hookupjs.com/product-1/">hookupJS screenshots and demo.</a></p>
+      <div class="content-section-b">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+              <hr class="section-heading-spacer">
+              <div class="clearfix"></div>
+              <h2 class="section-heading">Easily and quickly schedule posts for the whole week</h2>
+              <p class="lead">See at a glance what time slots are free, what ones have posts. Coordinate with the entire team. Every Facebook athorized account can use hookupJS. Free. </p>
+            </div>
+            <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+              <img class="img-responsive" src="assets/images/easilyschedule.png" alt="">
+            </div>
+          </div>
+        </div>
+        <!-- /.container -->
+      </div>
+      <!-- /.content-section-b -->
 
-  </div>
-  <div class="row text-center" ng-switch-when="true">
+      <div class="content-section-a">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-5 col-sm-6">
+              <hr class="section-heading-spacer">
+              <div class="clearfix"></div>
+              <h2 class="section-heading">Do you have more needs?</h2>
+              <p class="lead">That's why we're here, just for you. Free software, free support. And, free virtual hugs. <br/><br/>
+              Learn more about the <a href="http://blog.hookupjs.com/product-1/">upcoming features and functionality in our product roadmap.</a><br/><br/>
+              <a href="http://blog.hookupjs.com/">Contact us here</a>, or call # 408 874-6176 (USA Only). <br/>
+              Customer service available M-F, 9-5pm, PST.<br/>
+              Phone support provided by actual, breathing human.
+              </p>
+            </div>
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+              <img class="img-responsive" src="assets/images/grouphug.png" alt="">
+            </div>
+          </div>
+        </div>
+        <!-- /.container -->
+      </div>
+      <!-- /.content-section-a -->
 
-    <h1>You're all set!</h1>
-
-    <p>
-      <a ui-sref="app.dashboard" class="btn btn-lg btn-primary">Check out my dashboard</a>
-    </p>
-
+    <a  name="contact"></a>
+    <div class="banner">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <h2>Connect to HookupJS:</h2>
+          </div>
+          <div class="col-lg-6">
+            <ul class="list-inline banner-social-buttons">
+              <li><a href="https://twitter.com/HookupJS" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a></li>
+              <li><a href="https://github.com/jgoodrich77/hookupJS" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a></li>
+              <li><a href="https://www.linkedin.com/company/hookupjs" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- /.container -->
+    </div>
+    <!-- /.banner -->
   </div>
 </div>
