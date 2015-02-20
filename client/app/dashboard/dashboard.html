@@ -11,14 +11,21 @@
     </div>
 
     <div ng-show="!fullLoading && currentFbObject">
-      <div class="pull-right text-right" ng-show="!explaining">
-        <label>Page Score</label>
-        <p>
-          <span ng-bind="currentObjectScore.result.score * 100 | percentage:2"></span>
+
+      <div class="col-sm-7">
+        <h3>{{currentFbObject.name}}&nbsp;<div class="badge">{{currentFbObject.likes|number}} Likes</div>&nbsp;<small ng-if="currentFbObject.link"><a class="btn btn-default  btn-sm" ng-href="{{currentFbObject.link}}" target="_blank"><span class="glyphicon glyphicon-link"></span></a></small>&nbsp;<small><a href class="btn btn-sm btn-default" ng-click="switchPage()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Switch page</a></small></h3>
+
+        <p ng-show="!explaining">
+          <label class="text-muted">Facebook Page Score:</label>&nbsp;<strong class="text-underline" ng-bind="currentObjectScore.result.score * 100 | percentage:2"></strong>
           <a href ng-click="explaining = true"><span class="glyphicon glyphicon-question-sign"></span></a>
         </p>
       </div>
-      <h3>{{currentFbObject.name}} <div class="badge">{{currentFbObject.likes|number}} Likes</div> <small ng-if="currentFbObject.link"><a ng-href="{{currentFbObject.link}}" target="_blank">Link</a> <a href ng-click="switchPage()"><span class="glyphicon glyphicon-pencil"></span> Switch page</a></small></h3>
+
+      <div class="col-sm-5 historical-score text-center">
+        <p>Coming soon, some fancy charts of your score history.</p>
+      </div>
+
+      <div class="clearfix"></div>
     </div>
 
     <div ng-show="explaining" class="well">
@@ -37,6 +44,20 @@
             class="planner"></scheduler>
         </div>
         <div class="col-sm-3">
+          <br /><br /><br /><br /><br />
+          <div>
+            <h3 class="helper text-muted-darker">Publishing in three easy steps:</h3>
+
+            <ol class="helper text-muted">
+              <li class="margin-bottom">Click the dark blue box to post into the current time slot.</li>
+              <li class="margin-bottom">Click into a lighter blue slots to schedule a post in the future.</li>
+              <li>If you need more help, <a href="http://blog.hookupjs.com/product-1/" target="_blank">read the blog</a> or <a href="http://blog.hookupjs.com/faq-items/faq/" target="_blank">contact us</a>.</li>
+            </ol>
+
+            <h4></h4>
+
+          </div>
+          <br /><br /><br /><br /><br />
           <div class="scheduler-legend">
             <!-- <dl class="item item1">
               <dt>Days past with no posts</dt>
@@ -64,19 +85,6 @@
             </dl>
 
             <div class="clearfix"></div>
-          </div>
-
-          <div class="helper">
-            <h3>Publishing in three easy steps:</h3>
-
-            <ol>
-              <li class="margin-bottom">Click the dark blue box to post into the current time slot.</li>
-              <li class="margin-bottom">Click into a lighter blue slots to schedule a post in the future.</li>
-              <li>If you need more help, <a href="http://blog.hookupjs.com/product-1/" target="_blank">read the blog</a> or <a href="http://blog.hookupjs.com/faq-items/faq/" target="_blank">contact us</a>.</li>
-            </ol>
-
-            <h4></h4>
-
           </div>
         </div>
       </div>

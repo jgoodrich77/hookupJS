@@ -45,7 +45,7 @@ angular.module('auditpagesApp')
     }];
 
     $scope.userMenu = [{
-      'caption': 'Dashboard',
+      'caption': 'My Dashboard',
       'title': 'Access your amazing dashboard.',
       'state': 'app.dashboard',
       'glyph': 'fa fa-plug'
