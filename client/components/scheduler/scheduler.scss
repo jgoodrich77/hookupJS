@@ -88,9 +88,10 @@ $color-fg-negative-today: darken($color-fg-negative, 10%);
 
 
 $color-bg-neutral: #C9E8FF;
-$color-fg-neutral: #2B628C;
+//$color-fg-neutral: #2B628C;
+$color-fg-neutral: #ACD4F2;
 $color-bg-neutral-today: darken($color-bg-neutral, 10%);
-$color-fg-neutral-today: $color-fg-neutral;
+$color-fg-neutral-today: darken($color-fg-neutral, 20%);
 
 $color-bg-positive: #CFFFC2;
 $color-fg-positive: #187200;
@@ -104,6 +105,7 @@ $color-fg-disabled-today: $color-fg-disabled;
 
 $color-bg-current: #2695D1;
 $color-fg-current: #FFFFFF;
+$color-current-darken: 10%;
 
 .scheduler-period {
   $border-width: 2px;
