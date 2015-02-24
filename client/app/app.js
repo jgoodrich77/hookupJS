@@ -20,7 +20,7 @@ angular.module('auditpagesApp', [
   'angularFileUpload',
   'facebook'
 ])
-.config(function (envConfig, $analyticsProvider, $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {
+.config(function (envConfig, $analyticsProvider, $stateProvider, $uiViewScrollProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {
   $urlRouterProvider
     .otherwise('/');
 
@@ -48,6 +48,7 @@ angular.module('auditpagesApp', [
   $httpProvider.interceptors.push('authInterceptor');
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   $httpProvider.defaults.withCredentials = false;
+  $uiViewScrollProvider.useAnchorScroll();
 
   if(window.console) {
     console.log('HookupJS Version:', envConfig.version);
