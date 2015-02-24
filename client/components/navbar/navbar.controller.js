@@ -38,8 +38,9 @@ angular.module('auditpagesApp')
     }*/];
 
     $scope.menuRight = [{
-      'caption': 'Free Software',
-      'state': 'app.main'
+      'caption': 'Dashboard',
+      'state': 'app.dashboard',
+      'roles': ['user','admin']
     },{
       'caption': 'About',
       'title': 'HookupJS Free Software',
