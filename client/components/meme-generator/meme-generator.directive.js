@@ -22,7 +22,7 @@ angular
 
   // handles broken image displaying
   brokenImage = new ImageCORS();
-  brokenImage.src = '/assets/meme-generator/broken.png';
+  brokenImage.src = '/assets/images/meme-generator/broken.png';
 
   return ImageCORS;
 })
