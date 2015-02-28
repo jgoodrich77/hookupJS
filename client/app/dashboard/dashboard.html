@@ -16,7 +16,7 @@
   </div>
 
   <div ng-hide="scoringObject||fullLoading">
-    <div ng-include="'/app/dashboard/scheduler/scheduler.html'" ng-controller="DashboardSchedulerCtrl" ng-if="isDashboardHome()"></div>
+    <div ng-include="'app/dashboard/scheduler/scheduler.html'" ng-controller="DashboardSchedulerCtrl" ng-if="isDashboardHome()"></div>
     <div ui-view="dashboardView"></div>
   </div>
 </div>
