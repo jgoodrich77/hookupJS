@@ -1,103 +1,22 @@
 <div class="container">
-  <div class="row text-center" ng-show="scoringObject">
+  <div class="row text-center" ng-show="scoringObject||fullLoading">
     <h3>Please wait..</h3>
-    <p class="text-muted lead">Loading information about this page.</p>
+    <p class="text-muted lead" ng-show="scoringObject">Loading information about this page.</p>
+    <p class="text-muted lead" ng-show="fullLoading">Loading your personalized dashboard..</p>
   </div>
-  <div class="row" ng-hide="scoringObject">
 
-    <div ng-if="fullLoading" class="text-center">
-      <h3>Please wait..</h3>
-      <p class="text-muted lead">Loading your personalized dashboard..</p>
+  <div class="row" ng-hide="scoringObject||fullLoading">
+    <div class="col-sm-7">
+      <h3>{{currentFbObject.name}}&nbsp;<div class="badge">{{currentFbObject.likes|number}} Likes</div>&nbsp;<small ng-if="currentFbObject.link"><a class="btn btn-default  btn-sm" ng-href="{{currentFbObject.link}}" target="_blank"><span class="glyphicon glyphicon-link"></span></a></small>&nbsp;<small><a href class="btn btn-sm btn-default" ng-click="switchPage()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Switch page</a></small></h3>
     </div>
 
-    <div ng-show="!fullLoading && currentFbObject">
-
-      <div class="col-sm-7">
-        <h3>{{currentFbObject.name}}&nbsp;<div class="badge">{{currentFbObject.likes|number}} Likes</div>&nbsp;<small ng-if="currentFbObject.link"><a class="btn btn-default  btn-sm" ng-href="{{currentFbObject.link}}" target="_blank"><span class="glyphicon glyphicon-link"></span></a></small>&nbsp;<small><a href class="btn btn-sm btn-default" ng-click="switchPage()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Switch page</a></small></h3>
-
-        <p ng-show="!explaining">
-          <label class="text-muted">Facebook Page Score:</label>&nbsp;<strong class="text-underline" ng-bind="currentObjectScore.result.score * 100 | percentage:2"></strong>
-          <a href ng-click="explaining = true"><span class="glyphicon glyphicon-question-sign"></span></a>
-        </p>
-      </div>
-
-      <div class="col-sm-5 historical-score text-center">
-        <p>Coming soon, some fancy charts of your score history.</p>
-      </div>
-
-      <div class="clearfix"></div>
+    <div class="col-sm-5 historical-score text-center">
+      <p>Coming soon, some fancy charts of your score history.</p>
     </div>
+  </div>
 
-    <div ng-show="explaining" class="well">
-      <a href class="pull-right" ng-click="explaining = false">Hide Explanation</a>
-      <score-visualizer score="currentObjectScore"></score-visualizer>
-      <!-- <pre ng-bind="currentObjectScore|json"></pre> -->
-    </div>
-
-    <div class="container-fluid" ng-show="!fullLoading">
-      <div class="row">
-        <div class="col-sm-9">
-          <scheduler
-            datasource="scheduler"
-            do-item-click="itemClick"
-            do-item-classes="itemClasses"
-            class="planner"></scheduler>
-        </div>
-        <div class="col-sm-3">
-          <br /><br /><br /><br /><br />
-          <div>
-            <h3 class="helper text-muted-darker">Publishing in three easy steps:</h3>
-
-            <ol class="helper text-muted">
-              <li class="margin-bottom">Click the dark blue box to post into the current time slot.</li>
-              <li class="margin-bottom">Click into a lighter blue slots to schedule a post in the future.</li>
-              <li>If you need more help, <a href="http://blog.hookupjs.com/product-1/" target="_blank">read the blog</a> or <a href="http://blog.hookupjs.com/faq-items/faq/" target="_blank">contact us</a>.</li>
-            </ol>
-
-            <h4></h4>
-
-          </div>
-          <br /><br /><br /><br /><br />
-          <div class="scheduler-legend">
-            <!-- <dl class="item item1">
-              <dt>Days past with no posts</dt>
-              <dd></dd>
-            </dl>
-            <dl class="item item2">
-              <dt>Present day past time no posts</dt>
-              <dd></dd>
-            </dl>
-            <dl class="item item3">
-              <dt>Current time-slot with no posts</dt>
-              <dd></dd>
-            </dl> -->
-            <dl class="item item4">
-              <dt>Time slot with posts</dt>
-              <dd></dd>
-            </dl>
-            <dl class="item item5">
-              <dt>Same day future slot</dt>
-              <dd></dd>
-            </dl>
-            <dl class="item item6">
-              <dt>Future day future slot</dt>
-              <dd></dd>
-            </dl>
-
-            <div class="clearfix"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="button-container" ng-show="scheduler.getData().hasLoaded()">
-      <hr/>
-
-      <button ng-click="scheduler.shiftPrevious()" ng-disabled="!scheduler.canShiftPrevious()" class="pull-left btn btn-primary"><span class="glyphicon glyphicon-step-backward"></span>Last Week</button>
-      <button ng-click="scheduler.shiftNext()" ng-disabled="!scheduler.canShiftNext()" class="pull-right btn btn-primary">Next Week<span class="glyphicon glyphicon-step-forward"></span></button>
-      <div class="text-center">
-        <button ng-click="scheduler.reloadData()" ng-disabled="scheduler.isLoading()" class="btn btn-primary">Reload</button>
-      </div>
-      <div class="clearfix"></div>
+  <div ng-hide="scoringObject||fullLoading">
+    <div ng-include="'/app/dashboard/scheduler/scheduler.html'" ng-controller="DashboardSchedulerCtrl" ng-if="isDashboardHome()"></div>
+    <div ui-view="dashboardView"></div>
   </div>
 </div>

@@ -219,32 +219,40 @@ UserScheduleSchema.statics = {
       })));
     });
   },
-  findByYearWeek: function(userId, year, week, cb) {
-    var dateRange = dateRangeWeek(year, week);
-
-    return this.find({
-      user: userId,
+  findByDateRange: function(dateStart, dateEnd, extraCriteria, cb) {
+    var
+    criteria = {
       scheduledFor: {
-        '$gte': dateRange.start,
-        '$lte': dateRange.end
+        '$gte': dateStart,
+        '$lte': dateEnd
       }
-    }).sort({
-      scheduledFor: 1
-    }).exec(cb);
+    };
+
+    if(!!extraCriteria) {
+      Object.keys(extraCriteria).forEach(function (key) {
+        criteria[key] = extraCriteria[key];
+      });
+    }
+
+    return this
+      .find(criteria)
+      .sort({ scheduledFor: 1 })
+      .populate('user', '_id name')
+      .exec(cb);
+  },
+  findByUserDateRange: function(userId, dateStart, dateEnd, cb) {
+    return this.findByDateRange(dateStart, dateEnd, { user: userId }, cb);
+  },
+  findByObjectDateRange: function(objectId, dateStart, dateEnd, cb) {
+    return this.findByDateRange(dateStart, dateEnd, { facebookObjectId: objectId }, cb);
+  },
+  findByUserYearWeek: function(userId, year, week, cb) {
+    var dateRange = dateRangeWeek(year, week);
+    return this.findByUserDateRange(userId, dateRange.start, dateRange.end, cb);
   },
   findByObjectYearWeek: function(objectId, year, week, cb) {
     var dateRange = dateRangeWeek(year, week);
-
-    return this.find({
-      facebookObjectId: objectId,
-      scheduledFor: {
-        '$gte': dateRange.start,
-        '$lte': dateRange.end
-      }
-    }).sort({
-      scheduledFor: 1
-    }).populate('user', '_id name')
-    .exec(cb);
+    return this.findByObjectDateRange(objectId, dateRange.start, dateRange.end, cb);
   }
 };
 

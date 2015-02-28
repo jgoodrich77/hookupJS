@@ -34,6 +34,28 @@ exports.index = function(req, res, next) {
   });
 };
 
+exports.countByDateRange = function(req, res, next) { // get count of schedules between two dates:
+  var
+  dateStart = new Date(req.query.dateStart),
+  dateEnd   = new Date(req.query.dateEnd);
+
+  UserSchedule.findByObjectDateRange(req.user.facebookObj.id, dateStart, dateEnd, function (err, data) {
+    if(err) return next(err);
+    res.json(data.length, 200);
+  });
+};
+
+exports.postsByDateRange = function(req, res, next) { // get count of schedules between two dates:
+  var
+  dateStart = new Date(req.query.dateStart),
+  dateEnd   = new Date(req.query.dateEnd);
+
+  UserSchedule.findByObjectDateRange(req.user.facebookObj.id, dateStart, dateEnd, function (err, data) {
+    if(err) return next(err);
+    res.json(data);
+  });
+};
+
 exports.create  = function(req, res, next) {
   var
   reqData = req.body,

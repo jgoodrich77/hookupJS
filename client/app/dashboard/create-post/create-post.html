@@ -1,0 +1,80 @@
+<div class="row">
+
+  <div class="col-sm-12" ng-show="invalidDate||invalidPeriodStart||invalidPeriodEnd||invalidPeriod">
+    <h3>Page Error</h3>
+    <p class="lead text-muted" ng-show="invalidDate">Invalid date was provided. <a ui-sref="app.dashboard">Back to dashboard</a>.</p>
+    <p class="lead text-muted" ng-show="invalidPeriodStart">Invalid start period was provided. <a ui-sref="app.dashboard">Back to dashboard</a>.</p>
+    <p class="lead text-muted" ng-show="invalidPeriodEnd">Invalid end period was provided. <a ui-sref="app.dashboard">Back to dashboard</a>.</p>
+    <p class="lead text-muted" ng-show="invalidPeriod">You are not allowed to create posts on this date. <a ui-sref="app.dashboard">Back to dashboard</a>.</p>
+  </div>
+
+  <div class="col-sm-12" ng-hide="invalidDate||invalidPeriodStart||invalidPeriodEnd||invalidPeriod">
+    <h2>Schedule A Post <small><a ui-sref="app.dashboard.view-posts({date: paramDate, periodStart: paramPStart, periodEnd: paramPEnd})" ng-show="previousPosts">View Scheduled Posts</a></small></h2>
+
+    <div class="row">
+      <dl class="col-xs-6">
+        <dt>Date</dt>
+        <dd>{{currentDate | date:'mediumDate'}}</dd>
+      </dl>
+      <dl class="col-xs-6">
+        <dt>Time slot</dt>
+        <dd>{{currentPeriod | schedulerPeriod}}</dd>
+      </dl>
+    </div>
+
+    <div class="well well-danger" ng-if="validation">
+      <div class="well-body" ng-if="validation.missingContent">No content was provided for your post.</div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <h3>Post Text</h3>
+        <p class="text-muted">Enter the message you wish to have appear in your post.</p>
+        <textarea class="fill" rows="6" placeholder="Post text here" ng-model="post.text"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <h4>Link</h4>
+        <input type="text" class="form-control" placeholder="http://" ng-model="post.link" />
+      </div>
+      <div class="col-sm-12" ng-show="!!post.link">
+        <h4>Link Meta Info</h4>
+        <p class="text-muted">Extra media information to include in post</p>
+        <input type="text" class="form-control" placeholder="Caption for media" ng-model="post.caption" />
+        <input type="text" class="form-control" placeholder="Name for media" ng-model="post.name" />
+        <textarea class="fill" rows="3" placeholder="Description for media" ng-model="post.description"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <h4>Post Media</h4>
+        <p class="text-muted">Upload an image or video to post along with your message.</p>
+
+        <div ng-if="post.media.length">
+          <div class="pull-right btn btn-sm btn-success" ng-click="post.media = undefined"><span class="glyphicon glyphicon-remove"></span> Remove</div>
+          <label ng-bind="post.media[0].name"></label>
+          <div class="clearfix"></div>
+        </div>
+
+        <button class="btn btn-primary" ng-file-select ng-model="post.media" accept="image/*">
+          <span ng-if="!!post.media.length">Change file..</span>
+          <span ng-if=" !post.media.length">Choose a file..</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <hr />
+
+        <div class="nav navbar-right">
+          <button type="button" ng-click="submitPost()" class="btn btn-primary nav-button">Schedule Post</button>
+          <button type="button" ng-click="cancelPosting()" class="btn btn-danger nav-button">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

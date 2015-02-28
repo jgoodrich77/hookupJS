@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-sm-12" ng-show="loading">
+    <h3>Please wait..</h3>
+    <p class="text-muted lead">Loading scheduled posts..</p>
+  </div>
+
+  <div class="col-sm-12" ng-show="!loading&&!posts.length">
+    <p>There are no posts for this period.</p>
+  </div>
+
+  <div class="col-sm-12" ng-hide="loading||!posts.length">
+
+    <h2>Posts <small>for {{currentStartDate|date:'short'}} - {{currentEndDate|date:'short'}}</small></h2>
+    <a ui-sref="app.dashboard.create-post({date: paramDate, periodStart: paramPStart, periodEnd: paramPEnd})" ng-show="isFutureDate()">Schedule a Post</a>
+
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="record in posts">
+        <button class="btn btn-default pull-right" ng-click="toggleShowingRecord(record)">
+          <span class="glyphicon glyphicon-plus" ng-if="!record.isShowing"></span>
+          <span class="glyphicon glyphicon-minus" ng-if="record.isShowing"></span>
+        </button>
+        <h4 class="list-group-item-head" ng-bind="record.scheduledFor | date:'short'"></h4>
+
+        <div ng-if="record.loading">
+          <p>Please wait, loading job information..</p>
+        </div>
+
+        <div ng-show="record.isShowing">
+          <p ng-if="record.isUsersJob === false"><b>By:</b> <em>{{record.user.name}}</em></p>
+          <p ng-if="record.detail.data.text"><b>Post Text:</b> {{record.detail.data.text}}</p>
+          <p ng-if="record.detail.data.link"><b>Link:</b> {{record.detail.data.link}}</p>
+          <p ng-if="record.detail.data.name"><b>Name:</b> {{record.detail.data.name}}</p>
+          <p ng-if="record.detail.data.caption"><b>Caption:</b> {{record.detail.data.caption}}</p>
+          <p ng-if="record.detail.data.description"><b>Description:</b> {{record.detail.data.description}}</p>
+          <p ng-if="record.detail.data.media">
+            <img ng-src="{{'/api/user-uploads/' + record.detail.data.media}}" width="100%" height="auto" />
+          </p>
+
+          <button ng-hide="!!record.detail.lastFinishedAt||!record.isUsersJob" class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
+
+          <!-- <pre ng-bind="record|json"></pre> -->
+        </div>
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</div>
