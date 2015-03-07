@@ -4,6 +4,7 @@ angular
 .module('auditpagesApp')
 .factory('Scheduler', function() {
   function Scheduler(plan, data, opts) {
+
     this.getPlan = function() {
       return plan;
     };
@@ -37,6 +38,7 @@ angular
   }
   return Scheduler;
 })
+
 .factory('ScheduleData', function ($log, $q, $timeout, $http, $inherit, Time, CacheMemory) {
 
   function ScheduleDataLoader(opts) {
@@ -236,59 +238,59 @@ angular
   };
   $inherit(ScheduleData.LoaderHttp, ScheduleDataLoader);
 
-  ScheduleData.LoaderRandom = function(opts) {
-    ScheduleDataLoader.call(this, opts);
+  // ScheduleData.LoaderRandom = function(opts) {
+  //   ScheduleDataLoader.call(this, opts);
 
-    var
-    simulateLoad = !!opts.simulateLoad,
-    simulateLoadTime = opts.simulateLoadTime || 2500;
+  //   var
+  //   simulateLoad = !!opts.simulateLoad,
+  //   simulateLoadTime = opts.simulateLoadTime || 2500;
 
-    this.query = function(year, weekNumber) { // should be implemented by child class
-      var rnow = (new Date()).getTime();
-      var now = new Date(year, 0, 1);
+  //   this.query = function(year, weekNumber) { // should be implemented by child class
+  //     var rnow = (new Date()).getTime();
+  //     var now = new Date(year, 0, 1);
 
-      now.setHours(0,0,0);
-      now.setDate(now.getDate()+boW-(now.getDay()||7));
-      now.setTime(now.getTime() + (8.64e7 * 7 * (weekNumber - 1)));
+  //     now.setHours(0,0,0);
+  //     now.setDate(now.getDate()+boW-(now.getDay()||7));
+  //     now.setTime(now.getTime() + (8.64e7 * 7 * (weekNumber - 1)));
 
-      var data = [];
+  //     var data = [];
 
-      for(var day = 0; day < 7; day++) {
-        var
-        rRowCnt = Math.ceil((Math.random() * 50) + 1),
-        dayDate = new Date(now.getTime() + (day * 8.64e7));
+  //     for(var day = 0; day < 7; day++) {
+  //       var
+  //       rRowCnt = Math.ceil((Math.random() * 50) + 1),
+  //       dayDate = new Date(now.getTime() + (day * 8.64e7));
 
-        for(var rowNum = 0; rowNum < rRowCnt; rowNum++) {
-          var randMsInc = Math.ceil((Math.random() * 8.64e7) + 1);
+  //       for(var rowNum = 0; rowNum < rRowCnt; rowNum++) {
+  //         var randMsInc = Math.ceil((Math.random() * 8.64e7) + 1);
 
-          if((dayDate.getTime() + randMsInc) > rnow) continue;
+  //         if((dayDate.getTime() + randMsInc) > rnow) continue;
 
-          data.push({
-            date: new Date(dayDate.getTime() + randMsInc),
-            data: {}
-          });
-        }
-      }
+  //         data.push({
+  //           date: new Date(dayDate.getTime() + randMsInc),
+  //           data: {}
+  //         });
+  //       }
+  //     }
 
-      if(!simulateLoad) {
-        return data;
-      }
+  //     if(!simulateLoad) {
+  //       return data;
+  //     }
 
-      var
-      defer = $q.defer();
+  //     var
+  //     defer = $q.defer();
 
-      $timeout(function() {
-        defer.resolve(data);
-      }, simulateLoadTime);
+  //     $timeout(function() {
+  //       defer.resolve(data);
+  //     }, simulateLoadTime);
 
-      return defer.promise;
-    };
-  };
-  $inherit(ScheduleData.LoaderRandom, ScheduleDataLoader);
+  //     return defer.promise;
+  //   };
+  // };
+  // $inherit(ScheduleData.LoaderRandom, ScheduleDataLoader);
 
   return ScheduleData;
 })
-.factory('SchedulePlan', function ($log, Time) {
+.factory('SchedulePlan', function ($log, Time, DateShifter) {
 
   function SchedulePlan(segments, dates) {
 
@@ -302,7 +304,8 @@ angular
 
     var
     maxdate, mindate,
-    months    = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August','September','October','November','December'],
+    shifter = new DateShifter(),
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August','September','October','November','December'],
     monthAbbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug','Sept','Oct','Nov','Dec'];
 
     function reloadDates(d) { // maintains existing reference
@@ -314,26 +317,24 @@ angular
       dates.splice(0, dates.length);
 
       d.forEach(function (dt) {
+        var
+        date = DateShifter.normalizeDate(dt),
+        dateMs = date.getTime();
 
-        if(!dt instanceof Date) {
-          var parsed = Date.parse(dt);
-          if(!parsed) return false;
-          dt = new Date(parsed);
-        }
+        maxdate = Math.max(maxdate, dateMs);
+        mindate = Math.min(mindate, dateMs);
 
-        maxdate = Math.max(maxdate, dt.getTime());
-        mindate = Math.min(mindate, dt.getTime());
-
-        dates.push(dt);
+        dates.push(date);
       });
+
+      // setup the shifter
+      // shifter.minDate = mindate;
+      // shifter.maxDate = mindate;
+      shifter.defaultStep = 8.64e7 * dates.length;
     }
 
     function dateMs(d) {
-      return (d instanceof Date)
-        ? d.getTime()
-        : (angular.isNumber(d)
-           ? d
-           : Date.parse(d));
+      return DateShifter.normalizeDateMS(d);
     }
 
     this.getStartDate = function() {
@@ -343,8 +344,8 @@ angular
       return new Date(maxdate);
     };
     this.getMonthName = function() {
-      var monthL  = (new Date(mindate)).getMonth(),
-          monthH  = (new Date(maxdate)).getMonth();
+      var monthL  = this.getStartDate().getMonth(),
+          monthH  = this.getEndDate().getMonth();
 
       if(monthL !== monthH) { // bridging months
         return monthAbbr[monthL] + ' - ' + months[monthH];
@@ -360,7 +361,7 @@ angular
       return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
     };
     this.getYear = function() {
-      return (new Date(maxdate)).getFullYear();
+      return this.getEndDate().getFullYear();
     };
     this.getDates = function() {
       return dates;
@@ -376,9 +377,11 @@ angular
     };
     this.canShift = function(dir, boundDate) {
       if(!boundDate) return true;
-      var bMs = dateMs(boundDate),
-      target = this.shiftDate((dir > 0 ? maxdate : mindate), dir).getTime();
-      return (dir > 0) ? bMs >=target : bMs <=target;
+
+      var bMs = boundDate,
+      target = this.shiftDate((dir > 0 ? maxdate : mindate), dir);
+
+      return (dir > 0) ? bMs >= target : bMs <= target;
     };
     this.shift = function(dir) {
       var shiftDate = this.shiftDate.bind(this);
@@ -398,6 +401,8 @@ angular
     ms  = 8.64e7,
     day = now.getDay(),
     offset = (day - bow) * ms;
+
+    now.setHours(0, 0, 0, 0);
 
     if(offset > 0) {
       now.setTime(now.getTime() - offset);

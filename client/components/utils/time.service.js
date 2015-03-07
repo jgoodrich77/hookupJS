@@ -80,6 +80,14 @@ angular
         $padLeft(this.getSeconds(), 2)
       ].join(':') + '.' + $padLeft(this.getMilliseconds(), 3);
     };
+    this.msOffset = function () {
+      var offset = 0;
+      offset += this.getHours() * 3600000;
+      offset += this.getMinutes() * 60000;
+      offset += this.getSeconds() * 1000;
+      offset += this.getMilliseconds();
+      return offset;
+    };
 
     this // normalize inputs
       .setHours(hour)
@@ -104,6 +112,16 @@ angular
   Time.isPast = function(date, now) {
     now = now || new Date;
     return (new Date(date)).getTime() < now.getTime();
+  };
+
+  Time.fromOffset = function (offset) {
+    offset = isNaN(offset) ? 0 : Math.min(86399999, Math.max(0, offset));
+    var N = new Time();
+    N.setHours(Math.floor(((offset / (1000*60*60)))));
+    N.setMinutes(Math.floor(((offset / (1000*60)) % 60)));
+    N.setSeconds(Math.floor((offset / 1000) % 60));
+    N.setMilliseconds(Math.floor(offset % 1000));
+    return N;
   };
 
   Time.parse = function (str) {

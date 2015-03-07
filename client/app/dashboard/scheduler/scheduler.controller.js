@@ -63,6 +63,19 @@ angular
 
   $interval(function(){}, 2500); // so scope updates on time changes
 
+  $scope.viewingYear = null;
+  $scope.viewingWeek = null;
+
+  $scope.canShiftWeek = function(direction) {
+  };
+
+  $scope.shiftWeek = function(direction) {
+  };
+
+
+
+
+
   $scope.itemClasses = function(period, date, records) {
     var
     now = new Date,
