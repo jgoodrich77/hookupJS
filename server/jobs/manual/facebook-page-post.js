@@ -4,6 +4,7 @@ var
 Q = require('q'),
 facebook = require('../../components/facebook'),
 UserUpload = require('../../api/user/upload/upload.model'),
+UserSchedule = require('../../api/user/schedule/schedule.model'),
 qLoadUserObjectInfo = require('../common/load-user-info');
 
 module.exports = function(job, done) {
@@ -52,7 +53,16 @@ module.exports = function(job, done) {
   })
   .then(function (result) {
     done();
+
     return result;
   })
-  .catch(done);
+  .catch(done)
+  .finally(function(){ // mark the original user-schedule as completed:
+    var jobId = job.attrs._id;
+    UserSchedule.findOne({jobId: jobId}, function (err, doc) {
+      if(err||!doc) return;
+      doc.status = 'complete';
+      return doc.save();
+    });
+  });
 };

@@ -4,17 +4,21 @@
     <p class="text-muted lead">Loading scheduled posts..</p>
   </div>
 
-  <div class="col-sm-12" ng-show="!loading&&!posts.length">
+  <div class="col-sm-12" ng-show="!loading&&!postsPending.length&&!postsPublished.length">
     <p>There are no posts for this period.</p>
   </div>
 
-  <div class="col-sm-12" ng-hide="loading||!posts.length">
-
+  <div class="col-sm-12" ng-show="!loading&&(postsPending.length||postsPublished.length)">
     <h2>Posts <small>for {{currentStartDate|date:'short'}} - {{currentEndDate|date:'short'}}</small></h2>
+  </div>
+
+  <div class="col-sm-12" ng-show="!loading&&postsPending.length">
+    <h3>Pending Posts</h3>
+
     <a ui-sref="app.dashboard.create-post({date: paramDate, periodStart: paramPStart, periodEnd: paramPEnd})" ng-show="isFutureDate()">Schedule a Post</a>
 
     <div class="list-group">
-      <div class="list-group-item" ng-repeat="record in posts">
+      <div class="list-group-item" ng-repeat="record in postsPending">
         <button class="btn btn-default pull-right" ng-click="toggleShowingRecord(record)">
           <span class="glyphicon glyphicon-plus" ng-if="!record.isShowing"></span>
           <span class="glyphicon glyphicon-minus" ng-if="record.isShowing"></span>
@@ -44,5 +48,43 @@
         <div class="clearfix"></div>
       </div>
     </div>
+
+    <pre ng-bind="postsPending|json"></pre>
+  </div>
+
+  <div class="col-sm-12" ng-show="!loading&&postsPublished.length">
+    <h3>Published Posts</h3>
+
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="record in postsPublished">
+        <div class="pull-right">
+          <span class="badge badge-success">{{getObjectInfo(record.id).shares.count||0}} {{'Share'|sify:getObjectInfo(record.id).shares.count}}</span>
+          <span class="badge badge-info">{{getObjectInfo(record.id).comments.summary.total_count||0}} {{'Comment'|sify:getObjectInfo(record.id).comments.summary.total_count}}</span>
+          <span class="badge badge-primary">{{getObjectInfo(record.id).likes.summary.total_count||0}} {{'Like'|sify:getObjectInfo(record.id).likes.summary.total_count}}</span>
+        </div>
+
+        <div>
+          <img class="thumbnail list-group-item-thumbnail pull-left" ng-if="!!record.picture" ng-src="{{record.picture}}" />
+          <p class="list-group-item-text" ng-show="!!record.message" ng-bind="record.message"></p>
+        </div>
+
+        <!-- <pre ng-bind="getObjectInfo(record.id)|json"></pre> -->
+
+        <!-- <div ng-show="record.likes.data.length">
+          <em>Liked by:</em>
+          <span ng-repeat="user in record.likes.data">{{user.name}} &nbsp;</span>
+        </div> -->
+
+        <div class="clearfix"></div>
+        <span class="text-muted pull-right" ng-bind="record.created_time|date:'short'"></span>
+
+        <a ng-if="!!record.link" ng-href="{{record.link}}" target="_blank">
+          <img ng-if="!!record.icon" ng-src="{{record.icon}}" />
+          <span>View on facebook</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- <pre ng-bind="postsPublished|json"></pre> -->
   </div>
 </div>

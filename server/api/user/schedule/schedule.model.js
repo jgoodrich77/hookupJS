@@ -24,6 +24,11 @@ UserScheduleSchema = new Schema({
   scheduledFor: {
     type: Date,
     required: true
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'complete'],
+    default: 'pending'
   }
 });
 
@@ -186,7 +191,8 @@ UserScheduleSchema.statics = {
           user: userId,
           jobId: jobId,
           facebookObjectId: data.facebookObjectId,
-          scheduledFor: date
+          scheduledFor: date,
+          status: 'pending'
         },
         { upsert: true },
         function (err, doc) {
@@ -239,6 +245,12 @@ UserScheduleSchema.statics = {
       .sort({ scheduledFor: 1 })
       .populate('user', '_id name')
       .exec(cb);
+  },
+  findPendingByObjectDateRange: function(objectId, dateStart, dateEnd, cb) {
+    return this.findByDateRange(dateStart, dateEnd, {
+      facebookObjectId: objectId,
+      status: 'pending'
+    }, cb);
   },
   findByUserDateRange: function(userId, dateStart, dateEnd, cb) {
     return this.findByDateRange(dateStart, dateEnd, { user: userId }, cb);

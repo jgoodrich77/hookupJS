@@ -39,7 +39,7 @@ angular
   return Scheduler;
 })
 
-.factory('ScheduleData', function ($log, $q, $timeout, $http, $inherit, Time, CacheMemory) {
+.factory('ScheduleData', function ($log, $fb, $week, $q, $timeout, $http, $inherit, Time, CacheMemory) {
 
   function ScheduleDataLoader(opts) {
     var loading = false, hasLoaded = false;
@@ -180,7 +180,7 @@ angular
             });
 
             if(!matched) {
-              $log.warn('No bucket match for data', entry);
+              $log.warn('No bucket match for data', rowDate, entry);
             }
           });
 
@@ -227,7 +227,7 @@ angular
     delete opts.propertyYear;
     delete opts.propertyWeekNumber;
 
-    this.query = function(year, weekNumber) { // should be implemented by child class
+    this.query = function(year, weekNumber) {
       opts.params[propYear]    = year;
       opts.params[propWeekNum] = weekNumber;
       return $http(opts)
@@ -238,55 +238,85 @@ angular
   };
   $inherit(ScheduleData.LoaderHttp, ScheduleDataLoader);
 
-  // ScheduleData.LoaderRandom = function(opts) {
-  //   ScheduleDataLoader.call(this, opts);
+  ScheduleData.LoaderFacebook = function(opts) {
+    ScheduleDataLoader.call(this, opts);
+    opts        = opts || {};
 
-  //   var
-  //   simulateLoad = !!opts.simulateLoad,
-  //   simulateLoadTime = opts.simulateLoadTime || 2500;
+    var
+    _fbObjectId = opts.facebookObjectId || false,
+    _fbAuthToken = opts.facebookAuthToken || false;
 
-  //   this.query = function(year, weekNumber) { // should be implemented by child class
-  //     var rnow = (new Date()).getTime();
-  //     var now = new Date(year, 0, 1);
+    this.isValid = function () {
+      return !!_fbObjectId && !!_fbAuthToken;
+    };
 
-  //     now.setHours(0,0,0);
-  //     now.setDate(now.getDate()+boW-(now.getDay()||7));
-  //     now.setTime(now.getTime() + (8.64e7 * 7 * (weekNumber - 1)));
+    this.setFacebookObject = function(fbObjectId, fbAuthToken) {
+      _fbObjectId = fbObjectId;
+      _fbAuthToken = fbAuthToken;
+    };
 
-  //     var data = [];
+    this.queryFacebookData = function(from, to) {
+      return $fb.getObjectPosts({
+        id: _fbObjectId,
+        access_token: _fbAuthToken
+      }, from, to, ['id', 'updated_time', 'created_time', 'status_type', 'type'])
+        .then(function (results) {
+          return results.data.map(function (post) { // facebook sends us weird dates, fix them:
+            post.date = new Date(post.updated_time || post.created_time);
+            return post;
+          });
+        });
+    };
 
-  //     for(var day = 0; day < 7; day++) {
-  //       var
-  //       rRowCnt = Math.ceil((Math.random() * 50) + 1),
-  //       dayDate = new Date(now.getTime() + (day * 8.64e7));
+    this.queryFutureData = function(from, to) {
+      return $http.get('/api/user-schedule/posts-pending', {
+        params: {
+          dateStart: from,
+          dateEnd: to
+        }
+      }).then(function (results) {
+        return results.data.map(function (result) {
+          result.date = result.scheduledFor;
+          return result;
+        });
+      });
+    };
 
-  //       for(var rowNum = 0; rowNum < rRowCnt; rowNum++) {
-  //         var randMsInc = Math.ceil((Math.random() * 8.64e7) + 1);
+    this.query = function(year, weekNumber) {
+      if(!this.isValid()) return $q.when(false);
 
-  //         if((dayDate.getTime() + randMsInc) > rnow) continue;
+      var
+      dateRange      = $week.dateRange(year, weekNumber),
+      now            = new Date,
+      includesFuture = dateRange.end > now,
+      includesPast   = dateRange.start < now;
 
-  //         data.push({
-  //           date: new Date(dayDate.getTime() + randMsInc),
-  //           data: {}
-  //         });
-  //       }
-  //     }
+      if(!includesFuture) { // historical only view
+        return this.queryFacebookData(dateRange.start, dateRange.end);
+      }
+      else if(!includesPast) { // future only view
+        return this.queryFutureData(dateRange.start, dateRange.end);
+      }
+      else { // aggregated view
+        return this.queryFutureData(dateRange.start, dateRange.end)
+          .then((function (futureData) {
+            var aggregated = [];
 
-  //     if(!simulateLoad) {
-  //       return data;
-  //     }
+            if(futureData) {
+              Array.prototype.push.apply(aggregated, futureData);
+            }
 
-  //     var
-  //     defer = $q.defer();
+            return this.queryFacebookData(dateRange.start, dateRange.end)
+              .then(function (facebookData) {
+                Array.prototype.push.apply(aggregated, facebookData);
+                return aggregated;
+              });
+          }).bind(this));
+      }
+    };
+  };
 
-  //     $timeout(function() {
-  //       defer.resolve(data);
-  //     }, simulateLoadTime);
-
-  //     return defer.promise;
-  //   };
-  // };
-  // $inherit(ScheduleData.LoaderRandom, ScheduleDataLoader);
+  $inherit(ScheduleData.LoaderFacebook, ScheduleDataLoader);
 
   return ScheduleData;
 })

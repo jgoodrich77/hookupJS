@@ -2,6 +2,11 @@
 
 angular
 .module('auditpagesApp')
+.filter('sify', function() {
+  return function(v, n) {
+    return v + (parseInt(n) === 1 ? '' : 's');
+  };
+})
 .filter('percentage', function ($filter) {
   return function(input, precision, mul100) {
     precision = precision || 0;

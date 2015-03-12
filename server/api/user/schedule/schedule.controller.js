@@ -34,6 +34,17 @@ exports.index = function(req, res, next) {
   });
 };
 
+exports.pendingByDateRange = function(req, res, next) {
+  var
+  dateStart = new Date(req.query.dateStart),
+  dateEnd   = new Date(req.query.dateEnd);
+
+  UserSchedule.findPendingByObjectDateRange(req.user.facebookObj.id, dateStart, dateEnd, function (err, data) {
+    if(err) return next(err);
+    res.json(data);
+  });
+};
+
 exports.countByDateRange = function(req, res, next) { // get count of schedules between two dates:
   var
   dateStart = new Date(req.query.dateStart),

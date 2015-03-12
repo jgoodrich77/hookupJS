@@ -2,12 +2,57 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardViewPostsCtrl', function ($scope, $state, $stateParams, $http, Auth, Time) {
+.controller('DashboardViewPostsCtrl', function ($scope, $q, $fb, $state, $stateParams, $http, Auth, Time) {
 
-  var endpoint = '/api/user-schedule';
+  var
+  endpoint = '/api/user-schedule',
+  currentFbObjectId,
+  currentFbObjectToken;
 
-  function getPosts() {
-    return $http.get(endpoint + '/posts', {
+  var
+  promisesObj = {},
+  promisesLikes = {};
+
+  function getObjectInfo(oid) {
+    if(promisesObj.hasOwnProperty(oid)) return promisesObj[oid];
+    var fields = [
+      'id',
+      'message',
+      'picture',
+      'link',
+      'icon',
+      'type',
+      'status_type',
+      'created_time',
+      'updated_time',
+      'shares',
+      'likes.summary(true).filter(stream)',
+      'comments.summary(true).filter(stream)'
+    ];
+    promisesObj[oid] = $fb.getObjectInfo({
+      id: oid,
+      access_token: currentFbObjectToken
+    }, fields).then(function (response) {
+      promisesObj[oid] = response;
+      return;
+    });
+    return promisesObj[oid];
+  }
+
+  function getObjectLikes(oid) {
+    if(promisesLikes.hasOwnProperty(oid)) return promisesLikes[oid];
+    promisesLikes[oid] = $fb.getObjectLikes({
+      id: oid,
+      access_token: currentFbObjectToken
+    }).then(function (response) {
+      promisesLikes[oid] = response;
+      return;
+    });
+    return promisesLikes[oid];
+  }
+
+  function getPostsPending() {
+    return $http.get(endpoint + '/posts-pending', {
       params: {
         dateStart: $scope.currentStartDate,
         dateEnd:   $scope.currentEndDate
@@ -18,29 +63,70 @@ angular
     });
   }
 
+  function getFacebookPosts() {
+    if(!currentFbObjectId || !currentFbObjectToken)
+      return $q.when(false);
+
+    return $fb.getObjectPosts({
+      id: currentFbObjectId,
+      access_token: currentFbObjectToken
+    }, $scope.currentStartDate, $scope.currentEndDate) //, ['id', 'updated_time', 'created_time', 'status_type', 'type']
+      .then(function (results) {
+        return results.data;
+      });
+  }
+
   function loadPosts() {
     $scope.loading = true;
-    $scope.posts = false;
+    $scope.postsPending = [];
+    $scope.postsPublished = [];
 
-    return getPosts()
+    return getPostsPending()
       .then(function (posts) {
-        $scope.posts = posts;
-        return posts;
+        Array.prototype.push.apply($scope.postsPending, posts);
+        return getFacebookPosts();
+      })
+      .then(function (fbPosts) {
+        if(!fbPosts) return false;
+        Array.prototype.push.apply($scope.postsPublished, fbPosts);
+        return $scope.posts;
       })
       .finally(function () {
         $scope.loading = false;
       });
   }
 
+  function loadPostsAndObject(currentObject) {
+    currentObject = currentObject || $scope.currentFbObject;
+    return $fb.getObjectIdToken(currentObject.id)
+      .then(function (token) {
+        if(!token) {
+          $scope.fbObjectError  = 'No token could be found for page.';
+          return;
+        }
+
+        currentFbObjectId = currentObject.id;
+        currentFbObjectToken = token;
+
+        loadPosts();
+      });
+  }
+
   $scope.$on('dashboard-reload', function (evt, currentObject, currentScore) {
-    loadPosts();
+    loadPostsAndObject(currentObject);
   });
 
   if($scope.loadPeriodStateParams($stateParams)) {
-    loadPosts();
+
+    if(!$scope.fullLoading) {
+      loadPostsAndObject();
+    }
 
     var
     currentUserId = Auth.getCurrentUser().id;
+
+    $scope.getObjectInfo = getObjectInfo;
+    $scope.getObjectLikes = getObjectLikes;
 
     $scope.isFutureDate = function() {
       return Time.isFuture($scope.currentEndDate);

@@ -2,11 +2,12 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardSchedulerCtrl', function ($scope, $filter, $state, $interval, Time, Scheduler, ScheduleData, SchedulePlan) {
+.controller('DashboardSchedulerCtrl', function ($scope, $fb, $filter, $state, $interval, Time, Scheduler, ScheduleData, SchedulePlan) {
 
   var
   dates = SchedulePlan.localWeekDates(0),
   dateLen = dates.length,
+  objectId, accessToken,
   plan = new SchedulePlan([
       { name: 'Morning', periods: [
         { start: '00:00', end: '04:59:59.999' },
@@ -24,12 +25,10 @@ angular
         { start: '21:00', end: '23:59:59.999' }
       ] }
     ], dates),
+  facebookLoader = new ScheduleData.LoaderFacebook(),
   data = new ScheduleData(plan, {
-    rowDateProperty: 'scheduledFor',
-    loader: new ScheduleData.LoaderHttp({
-      method: 'GET',
-      url: '/api/user-schedule'
-    })
+    rowDateProperty: 'date',
+    loader: facebookLoader
   });
 
   $scope.scheduler = new Scheduler(plan, data, {
@@ -50,31 +49,34 @@ angular
       });
   }
 
+  function loadDataAndObject(currentObject) {
+    if($scope.loadingScheduler) return; // prevent repeated calls
+
+    currentObject = currentObject || $scope.currentFbObject;
+    return $fb.getObjectIdToken(currentObject.id)
+      .then(function (token) {
+        if(!token) {
+          $scope.fbObjectError  = 'No token could be found for page.';
+          return;
+        }
+
+        facebookLoader.setFacebookObject(currentObject.id, token);
+        loadData();
+      });
+  }
+
   if(!$scope.fullLoading) {
-    loadData();
+    loadDataAndObject();
   }
 
   $scope.$on('dashboard-reload', function (evt, currentObject, currentScore) {
-    loadData();
+    loadDataAndObject(currentObject);
   });
   $scope.$on('dashboard-reload-error', function (err) {
     console.log('dashboard-reload-error', err);
   });
 
   $interval(function(){}, 2500); // so scope updates on time changes
-
-  $scope.viewingYear = null;
-  $scope.viewingWeek = null;
-
-  $scope.canShiftWeek = function(direction) {
-  };
-
-  $scope.shiftWeek = function(direction) {
-  };
-
-
-
-
 
   $scope.itemClasses = function(period, date, records) {
     var
