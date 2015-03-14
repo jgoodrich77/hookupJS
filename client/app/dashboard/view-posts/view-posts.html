@@ -84,8 +84,8 @@
 
         <div class="clearfix"></div>
         <div class="pull-right">
-          <span class="text-muted" ng-show="!!record.updated_time && record.updated_time !== record.created_time"><label>Updated:</label> {{record.updated_time|date:'short'}}</span>
-          <span class="text-muted"><label>Created:</label> {{record.created_time|date:'short'}}</span>
+          <span class="text-muted" ng-show="!!record.updated_time && record.updated_time !== record.created_time"><label>Updated:</label>&nbsp;{{record.updated_time|date:'short'}}</span>
+          <span class="text-muted"><label>Created:</label>&nbsp;{{record.created_time|date:'short'}}</span>
         </div>
 
         <a ng-if="!!record.link" ng-href="{{record.link}}" target="_blank">
