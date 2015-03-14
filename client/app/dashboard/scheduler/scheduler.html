@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-sm-12" ng-show="loadingScheduler">
+    <h3>Please wait..</h3>
+    <p class="text-muted lead">Loading your schedule..</p>
+  </div>
+  <div class="col-sm-12" ng-hide="loadingScheduler">
+
+    <div class="row">
+      <div class="col-sm-12" ng-hide="explaining">
+        <label class="text-muted">Facebook Page Score:</label>&nbsp;<strong class="text-underline" ng-bind="currentObjectScore.result.score * 100 | percentage:2"></strong>
+        <a href ng-click="explaining = true"><span class="glyphicon glyphicon-question-sign"></span></a>
+      </div>
+      <div class="col-sm-12" ng-show="explaining">
+        <div class="well">
+          <a href class="pull-right" ng-click="explaining = false">Hide Explanation</a>
+          <score-visualizer score="currentObjectScore"></score-visualizer>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-9">
+        <scheduler
+          datasource="scheduler"
+          do-item-click="itemClick"
+          do-item-classes="itemClasses"
+          class="planner"></scheduler>
+      </div>
+      <div class="col-sm-3">
+        <h3 class="helper text-muted-darker">Publishing in three easy steps:</h3>
+
+        <ol class="helper text-muted">
+          <li class="margin-bottom">Click the dark blue box to post into the current time slot.</li>
+          <li class="margin-bottom">Click into a lighter blue slots to schedule a post in the future.</li>
+          <li>If you need more help, <a href="http://blog.hookupjs.com/product-1/" target="_blank">read the blog</a> or <a href="http://blog.hookupjs.com/faq-items/faq/" target="_blank">contact us</a>.</li>
+        </ol>
+
+        <div class="scheduler-legend">
+          <!-- <dl class="item item1">
+            <dt>Days past with no posts</dt>
+            <dd></dd>
+          </dl>
+          <dl class="item item2">
+            <dt>Present day past time no posts</dt>
+            <dd></dd>
+          </dl>
+          <dl class="item item3">
+            <dt>Current time-slot with no posts</dt>
+            <dd></dd>
+          </dl> -->
+          <dl class="item item4">
+            <dt>Time slot with posts</dt>
+            <dd></dd>
+          </dl>
+          <dl class="item item5">
+            <dt>Same day future slot</dt>
+            <dd></dd>
+          </dl>
+          <dl class="item item6">
+            <dt>Future day future slot</dt>
+            <dd></dd>
+          </dl>
+
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <button ng-click="scheduler.shiftPrevious()" ng-disabled="!scheduler.canShiftPrevious()" class="pull-left btn btn-primary"><span class="glyphicon glyphicon-step-backward"></span>Last Week</button>
+    <button ng-click="scheduler.shiftNext()" ng-disabled="!scheduler.canShiftNext()" class="pull-right btn btn-primary">Next Week<span class="glyphicon glyphicon-step-forward"></span></button>
+    <div class="text-center">
+      <button ng-click="scheduler.reloadData()" ng-disabled="scheduler.isLoading()" class="btn btn-primary">Reload</button>
+    </div>
+    <div class="clearfix"></div>
+
+  </div>
+</div>

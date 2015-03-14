@@ -1,0 +1,99 @@
+<div class="row">
+
+  <div class="col-sm-12" ng-show="!loading">
+    <a href ng-click="previousPeriod()" class="btn btn-default pull-left"><span class="glyphicon glyphicon-fast-backward"></span> Previous Period</a>
+    <a href ng-click="nextPeriod()" class="btn btn-default pull-right">Next Period <span class="glyphicon glyphicon-fast-forward"></span></a>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="col-sm-12" ng-show="loading">
+    <h3>Please wait..</h3>
+    <p class="text-muted lead">Loading posts between {{currentStartDate|date:'short'}} and {{currentEndDate|date:'short'}}..</p>
+  </div>
+
+  <div class="col-sm-12" ng-show="!loading&&!postsPending.length&&!postsPublished.length">
+    <p class="text-center text-muted">There are no posts between {{currentStartDate|date:'short'}} and {{currentEndDate|date:'short'}}.</p>
+  </div>
+
+  <div class="col-sm-12" ng-show="!loading&&(postsPending.length||postsPublished.length)">
+    <h2>Posts <small>for {{currentStartDate|date:'short'}} - {{currentEndDate|date:'short'}}</small></h2>
+  </div>
+
+  <div class="col-sm-12" ng-show="!loading&&postsPending.length">
+    <h3>Pending Posts</h3>
+
+    <a ui-sref="app.dashboard.create-post({date: paramDate, periodStart: paramPStart, periodEnd: paramPEnd})" ng-show="isFutureDate()">Schedule a Post</a>
+
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="record in postsPending">
+        <button class="btn btn-default pull-right" ng-click="toggleShowingRecord(record)">
+          <span class="glyphicon glyphicon-plus" ng-if="!record.isShowing"></span>
+          <span class="glyphicon glyphicon-minus" ng-if="record.isShowing"></span>
+        </button>
+        <h4 class="list-group-item-head" ng-bind="record.scheduledFor | date:'short'"></h4>
+
+        <div ng-if="record.loading">
+          <p>Please wait, loading job information..</p>
+        </div>
+
+        <div ng-show="record.isShowing">
+          <p ng-if="record.isUsersJob === false"><b>By:</b> <em>{{record.user.name}}</em></p>
+          <p ng-if="record.detail.data.text"><b>Post Text:</b> {{record.detail.data.text}}</p>
+          <p ng-if="record.detail.data.link"><b>Link:</b> {{record.detail.data.link}}</p>
+          <p ng-if="record.detail.data.name"><b>Name:</b> {{record.detail.data.name}}</p>
+          <p ng-if="record.detail.data.caption"><b>Caption:</b> {{record.detail.data.caption}}</p>
+          <p ng-if="record.detail.data.description"><b>Description:</b> {{record.detail.data.description}}</p>
+          <p ng-if="record.detail.data.media">
+            <img ng-src="{{'/api/user-uploads/' + record.detail.data.media}}" width="100%" height="auto" />
+          </p>
+
+          <button ng-hide="!!record.detail.lastFinishedAt||!record.isUsersJob" class="btn btn-warning" ng-click="cancelScheduledJob(record, $index)">Cancel this</button>
+
+          <!-- <pre ng-bind="record|json"></pre> -->
+        </div>
+
+        <div class="clearfix"></div>
+      </div>
+    </div>
+
+    <!-- <pre ng-bind="postsPending|json"></pre> -->
+  </div>
+
+  <div class="col-sm-12" ng-show="!loading&&postsPublished.length">
+    <h3>Published Posts</h3>
+
+    <div class="list-group">
+      <div class="list-group-item" ng-repeat="record in postsPublished">
+        <div class="pull-right">
+          <span class="badge badge-success">{{getObjectInfo(record.id).shares.count||0}} {{'Share'|sify:getObjectInfo(record.id).shares.count}}</span>
+          <span class="badge badge-info">{{getObjectInfo(record.id).comments.summary.total_count||0}} {{'Comment'|sify:getObjectInfo(record.id).comments.summary.total_count}}</span>
+          <span class="badge badge-primary">{{getObjectInfo(record.id).likes.summary.total_count||0}} {{'Like'|sify:getObjectInfo(record.id).likes.summary.total_count}}</span>
+        </div>
+
+        <div>
+          <img class="thumbnail list-group-item-thumbnail pull-left" ng-if="!!record.picture" ng-src="{{record.picture}}" />
+          <p class="list-group-item-text" ng-show="!!record.message" ng-bind="record.message"></p>
+        </div>
+
+        <!-- <pre ng-bind="getObjectInfo(record.id)|json"></pre> -->
+
+        <!-- <div ng-show="record.likes.data.length">
+          <em>Liked by:</em>
+          <span ng-repeat="user in record.likes.data">{{user.name}} &nbsp;</span>
+        </div> -->
+
+        <div class="clearfix"></div>
+        <div class="pull-right">
+          <span class="text-muted" ng-show="!!record.updated_time && record.updated_time !== record.created_time"><label>Updated:</label>&nbsp;{{record.updated_time|date:'short'}}</span>
+          <span class="text-muted"><label>Created:</label>&nbsp;{{record.created_time|date:'short'}}</span>
+        </div>
+
+        <a ng-if="!!record.link" ng-href="{{record.link}}" target="_blank">
+          <img ng-if="!!record.icon" ng-src="{{record.icon}}" />
+        </a>
+      </div>
+    </div>
+
+    <!-- <pre ng-bind="postsPublished|json"></pre> -->
+  </div>
+</div>

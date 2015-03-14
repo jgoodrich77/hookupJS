@@ -1,6 +1,8 @@
-Angular-fullstack based app coming soon.
-==========
+hookupJS is a free, open source app in Angular, Mongo, Express, Node and a list of other components.
+What does it do?
+Create images / memes online with beautiful images, score your Facebook page, schedule posts and even more, coming soon.
 
+More details:
 Node / Mongoose database
 Angular / Express front end & backend
 API Integration from Google Custom Search

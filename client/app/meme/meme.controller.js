@@ -26,12 +26,23 @@ angular
 
   $scope.backgroundImgType = 'preset';
   $scope.backgroundImgs = [
-    ['https://dl.dropboxusercontent.com/u/48498161/codepen/ZYKyxd/bg-1.jpg', 'Image 1'],
-    ['https://dl.dropboxusercontent.com/u/48498161/codepen/ZYKyxd/bg-2.jpg', 'Image 2'],
-    ['https://dl.dropboxusercontent.com/u/48498161/codepen/ZYKyxd/bg-3.jpg', 'Image 3'],
-    ['https://dl.dropboxusercontent.com/u/48498161/codepen/ZYKyxd/tile-1.png', 'Tile 1'],
-    ['https://dl.dropboxusercontent.com/u/48498161/codepen/ZYKyxd/tile-2.png', 'Tile 2'],
-    ['https://dl.dropboxusercontent.com/u/48498161/codepen/ZYKyxd/tile-3.png', 'Tile 3']
+    ['/assets/images/meme-generator/bg-01.jpg', 'Image 1'],
+    ['/assets/images/meme-generator/bg-02.jpg', 'Image 2'],
+    ['/assets/images/meme-generator/bg-03.jpg', 'Image 3'],
+    ['/assets/images/meme-generator/bg-04.jpg', 'Image 4'],
+    ['/assets/images/meme-generator/bg-05.jpg', 'Image 5'],
+    ['/assets/images/meme-generator/bg-06.jpg', 'Image 6'],
+    ['/assets/images/meme-generator/bg-07.jpg', 'Image 7'],
+    ['/assets/images/meme-generator/bg-08.jpg', 'Image 8'],
+    ['/assets/images/meme-generator/bg-09.jpg', 'Image 9'],
+    ['/assets/images/meme-generator/bg-10.jpg', 'Image 10'],
+    ['/assets/images/meme-generator/bg-11.jpg', 'Image 11'],
+    ['/assets/images/meme-generator/bg-12.jpg', 'Image 12'],
+    ['/assets/images/meme-generator/bg-13.jpg', 'Image 13'],
+    ['/assets/images/meme-generator/bg-14.jpg', 'Image 14'],
+    ['/assets/images/meme-generator/tile-1.png', 'Tile 1'],
+    ['/assets/images/meme-generator/tile-2.png', 'Tile 2'],
+    ['/assets/images/meme-generator/tile-3.png', 'Tile 3']
   ];
 
   $scope.$watch('backgroundImgType', function (type) {

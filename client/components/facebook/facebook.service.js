@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.service('$fb', function ($log, $rootScope, $q, $timeout, Facebook) {
+.service('$fb', function ($log, $rootScope, $q, $http, $timeout, $padLeft, Facebook) {
 
   var
   EVT_NS = '$fb',
@@ -183,18 +183,41 @@ angular
     return defer.promise;
   }
 
-  function getObjectInfo(object) {
+  function getObjectInfo(object, fields) {
     var
-    defer = $q.defer();
-
-    Facebook.api(object.id, {
+    defer = $q.defer(),
+    opts = {
       access_token: object.access_token
-    }, function (response) {
+    };
+
+    if(fields && fields.length) {
+      opts.fields = fields;
+    }
+
+    Facebook.api(object.id, opts, function (response) {
       if(checkResponseError(response)) return defer.reject(new Error(getErrorMsg(response, MSG_INVAL)));
       defer.resolve(response);
     });
 
     return defer.promise;
+  }
+
+  function getObjectIdToken(objectId) {
+    return getObjects()
+      .then(function (objects) {
+        var
+        objData = objects.data || [],
+        found = false;
+
+        objData.every(function(obj) {
+          if(obj.id !== objectId) {
+            found = obj.access_token;
+          }
+          return !found;
+        });
+
+        return found;
+      });
   }
 
   function getObjectLikes(object) {
@@ -203,10 +226,46 @@ angular
 
     Facebook.api(object.id, {
       access_token: object.access_token,
-      fields: 'likes'
+      fields: 'likes.summary(true).filter(stream)'
     }, function (response) {
       if(checkResponseError(response)) return defer.reject(new Error(getErrorMsg(response, MSG_INVAL)));
       defer.resolve(response.likes);
+    });
+
+    return defer.promise;
+  }
+
+  // likes.summary(true).filter(stream)
+
+  function facebookDateFormat(date) {
+    date = date || new Date;
+    return [
+      date.getUTCFullYear(),
+      $padLeft(date.getUTCMonth() + 1, 2),
+      $padLeft(date.getUTCDate(), 2)
+    ].join('-') + 'T' + [
+      $padLeft(date.getUTCHours(), 2),
+      $padLeft(date.getUTCMinutes(), 2),
+      $padLeft(date.getUTCSeconds(), 2)
+    ].join(':') + '+0000';
+  }
+
+  function getObjectPosts(object, from, to, fields) {
+    var
+    defer = $q.defer(),
+    opts = {
+      access_token: object.access_token,
+      since: facebookDateFormat(from),
+      until: facebookDateFormat(to)
+    };
+
+    if(!!fields && fields.length) {
+      opts.fields = fields;
+    }
+
+    Facebook.api(object.id + '/posts', opts, function (response) {
+      if(checkResponseError(response)) return defer.reject(new Error(getErrorMsg(response, MSG_INVAL)));
+      defer.resolve(response);
     });
 
     return defer.promise;
@@ -234,6 +293,8 @@ angular
     getObjects: getObjects,
     getObjectInfo: getObjectInfo,
     getObjectLikes: getObjectLikes,
+    getObjectPosts: getObjectPosts,
+    getObjectIdToken: getObjectIdToken,
     authenticate: authenticate,
     deAuthorize: deAuthorize,
     reloadState: reloadState,
