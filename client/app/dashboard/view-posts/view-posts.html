@@ -83,7 +83,10 @@
         </div> -->
 
         <div class="clearfix"></div>
-        <span class="text-muted pull-right" ng-bind="record.created_time|date:'short'"></span>
+        <div class="pull-right">
+          <span class="text-muted" ng-show="!!record.updated_time && record.updated_time !== record.created_time"><label>Updated:</label> {{record.updated_time|date:'short'}}</span>
+          <span class="text-muted"><label>Created:</label> {{record.created_time|date:'short'}}</span>
+        </div>
 
         <a ng-if="!!record.link" ng-href="{{record.link}}" target="_blank">
           <img ng-if="!!record.icon" ng-src="{{record.icon}}" />

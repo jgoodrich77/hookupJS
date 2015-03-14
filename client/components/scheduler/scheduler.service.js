@@ -246,6 +246,12 @@ angular
     _fbObjectId = opts.facebookObjectId || false,
     _fbAuthToken = opts.facebookAuthToken || false;
 
+    function parseFacebookDate(date) {
+      var
+      fixedStr = date.replace('+0000','.000Z');
+      return new Date(fixedStr);
+    }
+
     this.isValid = function () {
       return !!_fbObjectId && !!_fbAuthToken;
     };
@@ -262,7 +268,7 @@ angular
       }, from, to, ['id', 'updated_time', 'created_time', 'status_type', 'type'])
         .then(function (results) {
           return results.data.map(function (post) { // facebook sends us weird dates, fix them:
-            post.date = new Date(post.updated_time || post.created_time);
+            post.date = parseFacebookDate(post.created_time);
             return post;
           });
         });
