@@ -2,92 +2,11 @@
 
 angular
 .module('auditpagesApp')
-.factory('Time', function ($padLeft) {
+.factory('Time', function ($padLeft, $clamp) {
+  var
+  clampInt = $clamp.clampInt;
 
   function Time (hour, minute, second, msec) {
-
-    function normalize(n, min, max) {
-      n = parseInt(n);
-
-      if(isNaN(n)) {
-        return min || 0;
-      }
-
-      if(min === undefined && max == undefined) {
-        return n;
-      }
-      if(min !== undefined) {
-        n = Math.max(min, n);
-      }
-      if(max !== undefined) {
-        n = Math.min(max, n);
-      }
-      return n;
-    }
-
-    this.getAmPm = function() {
-      return (hour >= 12 ? 'PM' : 'AM');
-    };
-
-    this.get12Hr = function(ampm) {
-      return String(hour % 12 || 12) + (!!ampm ? this.getAmPm() : '');
-    };
-    this.getHours = function () {
-      return hour   || 0;
-    };
-    this.getMinutes = function (padded) {
-      return !!padded ? $padLeft(minute, 2) : (minute || 0);
-    };
-    this.getSeconds = function () {
-      return second || 0;
-    };
-    this.getMilliseconds = function () {
-      return msec   || 0;
-    };
-
-    this.setHours = function (v) {
-      hour = normalize(v, 0, 23);
-      return this;
-    };
-    this.setMinutes = function (v) {
-      minute = normalize(v, 0, 59);
-      return this;
-    };
-    this.setSeconds = function (v) {
-      second = normalize(v, 0, 59);
-      return this;
-    };
-    this.setMilliseconds = function (v) {
-      msec = normalize(v, 0);
-      return this;
-    };
-
-    // apply to a date (or now)
-    this.toDate = function(now) {
-      var N = new Date(now);
-
-      N.setHours(this.getHours());
-      N.setMinutes(this.getMinutes());
-      N.setSeconds(this.getSeconds());
-      N.setMilliseconds(this.getMilliseconds());
-
-      return N;
-    };
-    this.toString = function() {
-      return [
-        $padLeft(this.getHours(), 2),
-        $padLeft(this.getMinutes(), 2),
-        $padLeft(this.getSeconds(), 2)
-      ].join(':') + '.' + $padLeft(this.getMilliseconds(), 3);
-    };
-    this.msOffset = function () {
-      var offset = 0;
-      offset += this.getHours() * 3600000;
-      offset += this.getMinutes() * 60000;
-      offset += this.getSeconds() * 1000;
-      offset += this.getMilliseconds();
-      return offset;
-    };
 
     this // normalize inputs
       .setHours(hour)
@@ -95,6 +14,79 @@ angular
       .setSeconds(second)
       .setMilliseconds(msec);
   }
+
+  Time.prototype.getAmPm = function() {
+    return (this.hour >= 12 ? 'PM' : 'AM');
+  };
+
+  Time.prototype.get12Hr = function(ampm) {
+    return String(this.hour % 12 || 12) + (!!ampm ? this.getAmPm() : '');
+  };
+
+  Time.prototype.getHours = function () {
+    return this.hour   || 0;
+  };
+
+  Time.prototype.getMinutes = function (padded) {
+    return !!padded ? $padLeft(this.minute, 2) : (this.minute || 0);
+  };
+
+  Time.prototype.getSeconds = function () {
+    return this.second || 0;
+  };
+
+  Time.prototype.getMilliseconds = function () {
+    return this.msec   || 0;
+  };
+
+  Time.prototype.setHours = function (v) {
+    this.hour = clampInt(v, 0, 23);
+    return this;
+  };
+
+  Time.prototype.setMinutes = function (v) {
+    this.minute = clampInt(v, 0, 59);
+    return this;
+  };
+
+  Time.prototype.setSeconds = function (v) {
+    this.second = clampInt(v, 0, 59);
+    return this;
+  };
+
+  Time.prototype.setMilliseconds = function (v) {
+    this.msec = clampInt(v, 0);
+    return this;
+  };
+
+  // apply to a date (or now)
+  Time.prototype.toDate = function(now) {
+    var N = new Date(now);
+
+    N.setHours(this.getHours());
+    N.setMinutes(this.getMinutes());
+    N.setSeconds(this.getSeconds());
+    N.setMilliseconds(this.getMilliseconds());
+
+    return N;
+  };
+
+  Time.prototype.toString = function() {
+    return [
+      $padLeft(this.getHours(), 2),
+      $padLeft(this.getMinutes(), 2),
+      $padLeft(this.getSeconds(), 2)
+    ].join(':') + '.' + $padLeft(this.getMilliseconds(), 3);
+  };
+
+  Time.prototype.msOffset = function () {
+    var offset = 0;
+    offset += this.getHours() * 3600000;
+    offset += this.getMinutes() * 60000;
+    offset += this.getSeconds() * 1000;
+    offset += this.getMilliseconds();
+    return offset;
+  };
 
   Time.isSameDay = function (date, now) {
     now = now || new Date;
@@ -124,15 +116,28 @@ angular
     return N;
   };
 
+  Time.fromDate = function(date) {
+    if(!date || !date instanceof Date) return false;
+    return new Time(
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+      date.getMilliseconds()
+    );
+  };
+
   Time.parse = function (str) {
 
     if(str instanceof Time) {
       return str;
     }
 
+    if(str instanceof Date) {
+      return Time.fromDate(str);
+    }
+
     if(angular.isNumber(str)) { // assume date (extract time component only)
-      var t = new Date(str);
-      return new Time(t.getHours(), t.getMinutes(), t.getSeconds(), t.getMilliseconds());
+      return Time.fromDate(new Date(str));
     }
     else if(angular.isString(str)) {
       var

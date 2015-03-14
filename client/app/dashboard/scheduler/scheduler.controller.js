@@ -37,20 +37,23 @@ angular
     autoLoad: false
   });
 
-  function loadData() {
-    if($scope.loadingScheduler) return; // prevent repeated calls
+  var
+  loadingData = false;
 
-    $scope.loadingScheduler = true;
+  function loadData() {
+    if(loadingData) return loadingData; // prevent repeated calls
 
     data.reset();
-    data.reload()
+    return loadingData = data.reload()
       .finally(function(){
-        $scope.loadingScheduler = false;
+        loadingData = false;
       });
   }
 
   function loadDataAndObject(currentObject) {
     if($scope.loadingScheduler) return; // prevent repeated calls
+
+    $scope.loadingScheduler = true;
 
     currentObject = currentObject || $scope.currentFbObject;
     return $fb.getObjectIdToken(currentObject.id)
@@ -61,7 +64,11 @@ angular
         }
 
         facebookLoader.setFacebookObject(currentObject.id, token);
-        loadData();
+
+        return loadData();
+      })
+      .finally(function () {
+        $scope.loadingScheduler = false;
       });
   }
 

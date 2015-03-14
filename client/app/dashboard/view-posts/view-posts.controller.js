@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardViewPostsCtrl', function ($scope, $q, $fb, $state, $stateParams, $http, Auth, Time) {
+.controller('DashboardViewPostsCtrl', function ($scope, $q, $fb, $state, $stateParams, $http, $filter, Auth, Time, DateShifter) {
 
   var
   endpoint = '/api/user-schedule',
@@ -97,6 +97,7 @@ angular
   }
 
   function loadPostsAndObject(currentObject) {
+    $scope.loading = true;
     currentObject = currentObject || $scope.currentFbObject;
     return $fb.getObjectIdToken(currentObject.id)
       .then(function (token) {
@@ -108,8 +109,29 @@ angular
         currentFbObjectId = currentObject.id;
         currentFbObjectToken = token;
 
-        loadPosts();
+        return loadPosts();
+      })
+      .finally(function () {
+        $scope.loading = false;
       });
+  }
+
+  function shiftPeriod(dir) { // /view-posts/:date/:periodStart/:periodEnd
+    var
+    dateFmt = $filter('date'),
+    pDate   = $scope.currentDate,
+    pStart  = $scope.currentStartDate,
+    pEnd    = $scope.currentEndDate,
+    shifted = DateShifter.shiftDateRange(pStart, pEnd, dir, null, true),
+    timeS   = Time.fromDate(shifted.start),
+    timeE   = Time.fromDate(shifted.end),
+    dateStr = dateFmt(shifted.end, 'yyyy-MM-dd');
+
+    $state.go('app.dashboard.view-posts', {
+      date:        dateStr,
+      periodStart: timeS.toString(),
+      periodEnd:   timeE.toString()
+    });
   }
 
   $scope.$on('dashboard-reload', function (evt, currentObject, currentScore) {
@@ -117,6 +139,8 @@ angular
   });
 
   if($scope.loadPeriodStateParams($stateParams)) {
+
+    $scope.periodSize = $scope.currentEndDate.getTime() - $scope.currentStartDate.getTime();
 
     if(!$scope.fullLoading) {
       loadPostsAndObject();
@@ -127,6 +151,14 @@ angular
 
     $scope.getObjectInfo = getObjectInfo;
     $scope.getObjectLikes = getObjectLikes;
+
+    $scope.previousPeriod = function () {
+      shiftPeriod(-1, $scope.periodSize);
+    };
+
+    $scope.nextPeriod = function () {
+      shiftPeriod(1, $scope.periodSize);
+    };
 
     $scope.isFutureDate = function() {
       return Time.isFuture($scope.currentEndDate);

@@ -1,11 +1,18 @@
 <div class="row">
+
+  <div class="col-sm-12" ng-show="!loading">
+    <a href ng-click="previousPeriod()" class="btn btn-default pull-left"><span class="glyphicon glyphicon-fast-backward"></span> Previous Period</a>
+    <a href ng-click="nextPeriod()" class="btn btn-default pull-right">Next Period <span class="glyphicon glyphicon-fast-forward"></span></a>
+    <div class="clearfix"></div>
+  </div>
+
   <div class="col-sm-12" ng-show="loading">
     <h3>Please wait..</h3>
-    <p class="text-muted lead">Loading scheduled posts..</p>
+    <p class="text-muted lead">Loading posts between {{currentStartDate|date:'short'}} and {{currentEndDate|date:'short'}}..</p>
   </div>
 
   <div class="col-sm-12" ng-show="!loading&&!postsPending.length&&!postsPublished.length">
-    <p>There are no posts for this period.</p>
+    <p class="text-center text-muted">There are no posts between {{currentStartDate|date:'short'}} and {{currentEndDate|date:'short'}}.</p>
   </div>
 
   <div class="col-sm-12" ng-show="!loading&&(postsPending.length||postsPublished.length)">
@@ -80,7 +87,6 @@
 
         <a ng-if="!!record.link" ng-href="{{record.link}}" target="_blank">
           <img ng-if="!!record.icon" ng-src="{{record.icon}}" />
-          <span>View on facebook</span>
         </a>
       </div>
     </div>

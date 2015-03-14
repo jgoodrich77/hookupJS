@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.factory('DateShifter', function () {
+.factory('DateShifter', function (Time) {
 
   function DateShifter(minDate, maxDate, step, direction) {
     this.minDate          = minDate   || false;
@@ -68,6 +68,49 @@ angular
   DateShifter.calculateOffset = function(step, direction) {
     return (step * direction);// + direction;
   };
+
+  DateShifter.shiftDateRange = function (start, end, dir, step, forceSameDate) {
+
+    step = isNaN(step) ? 0 : step;
+    dir  = isNaN(dir)  ? 1 : dir;
+
+    var
+    startms = DateShifter.normalizeDateMS(start),
+    endms   = DateShifter.normalizeDateMS(end),
+    offset  = Math.abs(endms - startms) + 1;
+
+    if(isNaN(startms)||isNaN(endms)||isNaN(offset))
+      return false;
+
+    var
+    steppedOffset    = (offset * dir),
+    shiftedStartDate = new Date(startms + steppedOffset),
+    shiftedEndDate   = new Date(endms   + steppedOffset);
+
+    if(forceSameDate && shiftedStartDate.getDate() !== shiftedEndDate.getDate()) {
+      var relativeOffset;
+
+      if(dir === 1) {
+        relativeOffset   = Time.fromDate(shiftedEndDate).msOffset() + 1;
+        shiftedStartDate = new Date(shiftedStartDate.getTime() - relativeOffset);
+        shiftedEndDate   = new Date(shiftedEndDate.getTime() - relativeOffset);
+      }
+      else {
+        relativeOffset   = 8.64e7 - Time.fromDate(shiftedStartDate).msOffset();
+        shiftedStartDate = new Date(shiftedStartDate.getTime() + relativeOffset);
+        shiftedEndDate   = new Date(shiftedEndDate.getTime() + relativeOffset);
+      }
+    }
+
+    if(step > 0) {
+      return DateShifter.shiftDateRange(shiftedStartDate, shiftedEndDate, dir, step - 1, forceSameDate);
+    }
+
+    return {
+      start: shiftedStartDate,
+      end:   shiftedEndDate
+    };
+  }
 
   DateShifter.prototype.canShift = function (date, direction, step) {
     step      = step      || this.defaultStep;
