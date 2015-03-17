@@ -27,6 +27,7 @@
     "moment": "^2.8.3",
     "mongoose": "~3.8.8",
     "morgan": "~1.0.0",
+    "natural": "^0.2.1",
     "nodemailer": "^1.0.4",
     "nodemailer-ses-transport": "^0.1.1",
     "passport-google-oauth": "latest",

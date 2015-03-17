@@ -8,7 +8,7 @@
     <p class="lead text-muted" ng-show="invalidPeriod">You are not allowed to create posts on this date. <a ui-sref="app.dashboard">Back to dashboard</a>.</p>
   </div>
 
-  <div class="col-sm-12" ng-hide="invalidDate||invalidPeriodStart||invalidPeriodEnd||invalidPeriod">
+  <div class="col-sm-8" ng-hide="invalidDate||invalidPeriodStart||invalidPeriodEnd||invalidPeriod">
     <h2>Schedule A Post <small><a ui-sref="app.dashboard.view-posts({date: paramDate, periodStart: paramPStart, periodEnd: paramPEnd})" ng-show="previousPosts">View Scheduled Posts</a></small></h2>
 
     <div class="row">
@@ -76,5 +76,48 @@
         </div>
       </div>
     </div>
+  </div>
+  <div class="col-sm-4">
+    <h3>Word Cloud</h3>
+    <p class="text-muted">These are words that performed best in your previous posts.</p>
+
+    <div ng-if="vocabularyLoading">
+      <p class="text-center text-info">Please wait, loading vocabulary..</p>
+    </div>
+
+    <div ng-if="vocabularyError">
+      <p class="text-center text-danger">Error while loading vocabulary.</p>
+    </div>
+
+    <div ng-if="vocabulary.loading">
+      <p class="text-center text-info">Please wait, we're compiling this information.</p>
+    </div>
+
+
+    <div ng-if="vocabulary.created">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-6">Word(s)</div>
+          <div class="col-sm-2 text-center">Shares</div>
+          <div class="col-sm-2 text-center">Cmts</div>
+          <div class="col-sm-2 text-center">Likes</div>
+        </div>
+      </div>
+
+      <div class="container-fluid create-post-wordcloud">
+        <div class="row" ng-repeat="word in vocabulary.words">
+          <div class="col-sm-6">{{word.variations.join(', ')}}</div>
+          <div class="col-sm-2 text-center">{{word.shares}}</div>
+          <div class="col-sm-2 text-center">{{word.comments}}</div>
+          <div class="col-sm-2 text-center">{{word.likes}}</div>
+        </div>
+      </div>
+
+      <!-- <pre ng-bind="vocabulary.words|json"></pre> -->
+
+      <p class="text-center text-muted small">Results from {{vocabulary.created|date:'short'}}</p>
+    </div>
+
+
   </div>
 </div>

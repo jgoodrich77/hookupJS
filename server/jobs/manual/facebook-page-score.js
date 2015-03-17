@@ -8,45 +8,14 @@ facebookScore = require('../../components/facebook-score'),
 facebook = require('../../components/facebook');
 
 var
-qLoadUserObjectInfo = require('../common/load-user-info');
+qLoadUserObjectInfo = require('../common/load-user-info'),
+qLoadPostEngagement = require('../common/load-post-engagement');
 
 function qValidateToken(token, accessToken) {
   return facebook.tokenInfo(token, accessToken)
     .then(function (result) {
       return !!result.data.is_valid;
     });
-}
-
-function qExtraPostData(posts, accessToken) {
-  var
-  result = Q(posts);
-
-  for(var i = 0; i < posts.length; i++) {
-    result = result.then((function (index) {
-      return function (all) {
-        var post = all[index];
-        return Q.allSettled([
-          facebook.postTotalLikes(post.id, accessToken),
-          facebook.postTotalComments(post.id, accessToken),
-          facebook.postTotalShares(post.id, accessToken)
-        ]).spread(function (pLikes, pComments, pShares) {
-          var
-          likes    = !!pLikes.value    ? pLikes.value    : 0,
-          comments = !!pComments.value ? pComments.value : 0,
-          shares   = !!pShares.value   ? pShares.value   : 0;
-
-          // attach these properties to the post object directly
-          all[index].totalLikes    = likes;
-          all[index].totalComments = comments;
-          all[index].totalShares   = shares;
-
-          return all;
-        });
-      };
-    })(i));
-  }
-
-  return result;
 }
 
 function qAllPageData(ownerToken, objectId, objectAccessToken) {
@@ -68,7 +37,7 @@ function qAllPageData(ownerToken, objectId, objectAccessToken) {
       return facebook.pagePosts(objectId, objectAccessToken, 10);
     })
     .then(function (result) {
-      return qExtraPostData(result.data, objectAccessToken);
+      return qLoadPostEngagement(result.data, objectAccessToken);
     })
     .then(function (result) {
       data.posts = result; // buffer this

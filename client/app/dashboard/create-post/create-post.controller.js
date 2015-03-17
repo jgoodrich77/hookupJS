@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardCreatePostCtrl', function ($scope, $state, $stateParams, $q, $http, $userUpload, Time) {
+.controller('DashboardCreatePostCtrl', function ($scope, $state, $stateParams, $timeout, $q, $http, $userUpload, $vocabulary, Time) {
 
   var endpoint = '/api/user-schedule';
 
@@ -37,8 +37,6 @@ angular
   }
 
   function uploadPostFiles() {
-    console.log('uploading files..');
-
     var
     post = $scope.post||{},
     media = post.media||[],
@@ -46,12 +44,12 @@ angular
 
     if(!file) return $q.when(true);
 
-    $scope.uploading = true;;
+    $scope.uploading = true;
 
     return $userUpload.doUpload(file)
-      .progress(function (evt) { // file upload progress
-        // console.log('progress:', parseFloat(100.0 * evt.loaded / evt.total), 'file:', file.name);
-      })
+      // .progress(function (evt) { // file upload progress
+      //   // console.log('progress:', parseFloat(100.0 * evt.loaded / evt.total), 'file:', file.name);
+      // })
       .finally(function(){
         $scope.uploading = false;
       })
@@ -92,33 +90,58 @@ angular
     return err;
   }
 
-  function hasPosts() {
-    return $http.get(endpoint + '/post-count', {
-      params: {
-        dateStart: $scope.currentStartDate,
-        dateEnd:   $scope.currentEndDate
-      }
-    })
-    .then(function (response) {
-      return response.data > 0;
-    });
-  }
+  // function hasPosts() {
+  //   return $http.get(endpoint + '/post-count', {
+  //     params: {
+  //       dateStart: $scope.currentStartDate,
+  //       dateEnd:   $scope.currentEndDate
+  //     }
+  //   })
+  //   .then(function (response) {
+  //     return response.data > 0;
+  //   });
+  // }
 
-  function reloadPreviousPosts() {
-    $scope.previousPosts = false;
-    hasPosts()
-      .then(function (has) {
-        $scope.previousPosts = !!has;
+  // function reloadPreviousPosts() {
+  //   $scope.previousPosts = false;
+  //   hasPosts()
+  //     .then(function (has) {
+  //       $scope.previousPosts = !!has;
+  //     });
+  // }
+
+  function reloadVocabulary(currentObject) {
+    if(!currentObject) return $q.when(false);
+
+    $scope.vocabulary = null;
+    $scope.vocabularyLoading = true;
+    $scope.vocabularyError = false;
+
+    return $vocabulary.fetchLatest({ id: currentObject.id })
+      .then(function (result) {
+        $scope.vocabulary = result;
+
+        if(result.loading) {
+          $timeout(function(){ reloadVocabulary(currentObject) }, 5000);
+        }
+      })
+      .catch(function (err) {
+        $scope.vocabularyError = err;
+      })
+      .finally(function () {
+        $scope.vocabularyLoading = false;
       });
   }
 
   $scope.$on('dashboard-reload', function (evt, currentObject, currentScore) {
-    reloadPreviousPosts();
+    // reloadPreviousPosts();
+    reloadVocabulary(currentObject);
   });
 
   if( loadParams() ) { // continue loading scope:
 
-    reloadPreviousPosts();
+    // reloadPreviousPosts();
+    reloadVocabulary($scope.currentObject);
 
     $scope.post = {};
 
