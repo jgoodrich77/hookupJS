@@ -141,7 +141,7 @@ angular
   if( loadParams() ) { // continue loading scope:
 
     // reloadPreviousPosts();
-    reloadVocabulary($scope.currentObject);
+    reloadVocabulary($scope.currentFbObject);
 
     $scope.post = {};
 
