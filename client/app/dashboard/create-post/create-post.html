@@ -116,6 +116,17 @@
       <!-- <pre ng-bind="vocabulary.words|json"></pre> -->
 
       <p class="text-center text-muted small">Results from {{vocabulary.created|date:'short'}}</p>
+
+      <p class="text-danger" ng-if="!!rerunError">
+        {{rerunError}}
+        <span ng-if="rerunErrorRemain">You have {{rerunErrorRemain|durationMs}} remaining.</span>
+      </p>
+
+      <div class="text-right" ng-if="!vocabReRunning">
+        <a href ng-click="reRunVocabulary()">Re-run this analysis.</a>
+      </div>
+
+      <p class="text-center text-muted" ng-if="vocabReRunning">Please wait, running vocabulary analysis.</p>
     </div>
 
 

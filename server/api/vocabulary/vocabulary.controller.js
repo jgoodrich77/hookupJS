@@ -7,48 +7,137 @@ config       = require('../../config/environment'),
 requestUtils = require('../requestUtils'),
 facebook     = require('../../components/facebook');
 
-exports.latestVocab = function(req, res, next) {
+var
+vocabularyJob = 'facebook-object-vocabulary',
+minReRun      = 86400000;
+
+function runVocabularyJob(agenda, facebookObjectId, userId) {
   var
-  agenda = res.agenda,
-  userId = req.user._id,
-  objectId = req.params.id,
-  jobName = 'facebook-object-vocabulary';
+  defer = Q.defer(),
+  job = agenda.create(vocabularyJob, {
+    userId: userId,
+    facebookObjectId: facebookObjectId
+  });
+
+  job.run(function (err, job) {
+    if(err) return defer.reject(err);
+
+    job.remove(function (err) {
+      if(err) return defer.reject(err);
+
+      defer.resolve(job);
+    });
+  });
+
+  return defer.promise;
+}
+
+function vocabularyJobRunning(agenda, facebookObjectId) {
+  var
+  defer = Q.defer();
+
+  agenda.jobs({
+    'name': vocabularyJob,
+    'data.facebookObjectId': facebookObjectId
+  }, function (err, jobs) {
+    if(err) return defer.reject(err);
+    if(jobs.length === 0) return defer.resolve(false);
+
+    var
+    hasUnfinished = !jobs.every(function (job) {
+      return job.lastFinishedAt !== undefined;
+    });
+
+    defer.resolve(hasUnfinished);
+  });
+
+  return defer.promise;
+}
+
+function latestVocabDoc(facebookObjectId) {
+  var
+  defer = Q.defer();
 
   Vocabulary
-    .find({
-      facebookObjectId: objectId
-    })
-    .sort({created: -1})
-    .limit(1)
+    .find({facebookObjectId: facebookObjectId})
+    .sort({created: -1}).limit(1)
     .exec(function (err, docs) {
-      if (err) return next(err);
+      if (err) return defer.reject(err);
+      if (!docs || !docs.length) return defer.resolve(false);
 
-      if(!docs || docs.length === 0) {
-        agenda.jobs({
-          'name': jobName,
-          'data.facebookObjectId': objectId
-        }, function (err, jobs) {
-          if(err) return next(err);
+      defer.resolve(docs[0]);
+    });
 
-          if(jobs.length === 0) {
-            var
-            job = agenda.create(jobName, {
-              userId: userId,
-              facebookObjectId: objectId
-            });
+  return defer.promise;
+}
 
-            job.run(function (err, job) {
-              if(err) next(err);
-            });
-          }
+exports.isRunning = function(req, res, next) {
+  return vocabularyJobRunning(res.agenda, req.params.id)
+    .then(function (isRunning) {
+      res.json({isRunning: isRunning});
+    })
+    .catch(next);
+};
 
-          res.json({ loading: true });
-        });
+exports.reRunVocab = function(req, res, next) {
 
-        return;
+  var
+  agenda   = res.agenda,
+  userId   = req.user._id,
+  objectId = req.params.id,
+  cutOff   = new Date((new Date).getTime() - minReRun);
+
+  return latestVocabDoc(objectId)
+    .then(function (doc) {
+      if(!doc) {
+        return vocabularyJobRunning(agenda, objectId)
+          .then(function (isRunning) {
+            if(!isRunning) {
+              runVocabularyJob(agenda, objectId, userId);
+            }
+            return true;
+          });
       }
 
-      var doc = docs[0];
+      if(doc.created >= cutOff) {
+        res.json({
+          error: 'Too soon to run a vocabulary analysis.',
+          msRemaining: (doc.created.getTime() - cutOff.getTime())
+        });
+        return false;
+      }
+
+      runVocabularyJob(agenda, objectId, userId);
+      return true;
+    })
+    .then(function (running) {
+      if(running) {
+        res.json({ loading: true });
+      }
+    })
+    .catch(next);
+};
+
+exports.latestVocab = function(req, res, next) {
+  var
+  agenda   = res.agenda,
+  userId   = req.user._id,
+  objectId = req.params.id;
+
+  return latestVocabDoc(objectId)
+    .then(function (doc) {
+
+      if(!doc) {
+        return vocabularyJobRunning(agenda, objectId)
+          .then(function (isRunning) {
+            if(!isRunning) {
+              runVocabularyJob(agenda, objectId, userId)
+                .catch(next);
+            }
+
+            res.json({ loading: true });
+          });
+      }
 
       res.json({
         created: doc.created,
@@ -62,5 +151,8 @@ exports.latestVocab = function(req, res, next) {
           };
         })
       });
-    });
+
+      return false;
+    })
+    .catch(next);
 };

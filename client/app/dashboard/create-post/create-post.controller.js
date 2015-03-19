@@ -145,6 +145,42 @@ angular
 
     $scope.post = {};
 
+    $scope.reRunVocabulary = function () {
+      var criteria = { id: $scope.currentFbObject.id };
+      $scope.vocabReRunning   = true;
+      $scope.rerunError       = null;
+      $scope.rerunErrorRemain = null;
+
+      return $vocabulary.reRun(criteria)
+        .then(function (results) {
+          if(results.error) {
+            $scope.rerunError = results.error;
+            $scope.rerunErrorRemain = results.msRemaining;
+            return false;
+          }
+
+          var defer = $q.defer();
+
+          (function recheck(){
+            $vocabulary.isRunning(criteria)
+              .then(function (result) {
+                if(result.isRunning) $timeout(recheck, 5000);
+                else return reloadVocabulary($scope.currentFbObject)
+                  .then(defer.resolve);
+              })
+              .catch(defer.reject);
+          })();
+
+          return defer.promise;
+        })
+        .finally(function (results) {
+          $scope.vocabReRunning = false;
+        })
+        .catch(function (err) {
+          console.log('got error:', err);
+        });
+    };
+
     $scope.submitPost = function() {
       var
       validation = validatePost();

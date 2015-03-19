@@ -32,6 +32,18 @@ angular
       params: {
         resource: 'latest'
       }
+    },
+    reRun: {
+      method: 'GET',
+      params: {
+        resource: 're-run'
+      }
+    },
+    isRunning: {
+      method: 'GET',
+      params: {
+        resource: 'is-running'
+      }
     }
   });
 });
