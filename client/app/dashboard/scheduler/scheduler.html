@@ -7,8 +7,8 @@
 
     <div class="row">
       <div class="col-sm-12" ng-hide="explaining">
-        <label class="text-muted">Facebook Page Score:</label>&nbsp;<strong class="text-underline" ng-bind="currentObjectScore.result.score * 100 | percentage:2"></strong>
-        <a href ng-click="explaining = true"><span class="glyphicon glyphicon-question-sign"></span></a>
+        <label class="text-muted">Facebook Page Score:</label>&nbsp;<a href ng-click="explaining = true"><strong class="text-underline" ng-bind="currentObjectScore.result.score * 100 | percentage:2"></strong>
+        <span class="glyphicon glyphicon-question-sign"></span></a>
       </div>
       <div class="col-sm-12" ng-show="explaining">
         <div class="well">

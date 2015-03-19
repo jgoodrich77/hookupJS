@@ -15,8 +15,8 @@ stemmer   = natural.PorterStemmer,
 kwExtract = require('keyword-extractor');
 
 var
-NUM_POSTS = 20,
-TOP_WORDS = 50;
+NUM_POSTS = 50,
+TOP_WORDS = 500;
 
 function getStems(text) {
   var

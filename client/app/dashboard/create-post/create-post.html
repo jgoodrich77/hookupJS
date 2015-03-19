@@ -79,7 +79,7 @@
   </div>
   <div class="col-sm-4">
     <h3>Word Cloud</h3>
-    <p class="text-muted">These are words that performed best in your previous posts.</p>
+    <p class="text-muted">Most liked words in your previous 50 posts, sorted by popularity.</p>
 
     <div ng-if="vocabularyLoading">
       <p class="text-center text-info">Please wait, loading vocabulary..</p>
@@ -97,25 +97,25 @@
     <div ng-if="vocabulary.created">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-sm-6">Word(s)</div>
-          <div class="col-sm-2 text-center">Shares</div>
-          <div class="col-sm-2 text-center">Cmts</div>
-          <div class="col-sm-2 text-center">Likes</div>
+          <div class="col-sm-8">Word(s)</div>
+<!--           <div class="col-sm-2 text-center">Shares</div>
+          <div class="col-sm-2 text-center">Cmts</div> -->
+          <div class="col-sm-4 text-center">Likes</div>
         </div>
       </div>
 
       <div class="container-fluid create-post-wordcloud">
         <div class="row" ng-repeat="word in vocabulary.words">
-          <div class="col-sm-6">{{word.variations.join(', ')}}</div>
-          <div class="col-sm-2 text-center">{{word.shares}}</div>
-          <div class="col-sm-2 text-center">{{word.comments}}</div>
-          <div class="col-sm-2 text-center">{{word.likes}}</div>
+          <div class="col-sm-8">{{word.variations.join(', ')}}</div>
+<!--           <div class="col-sm-2 text-center">{{word.shares}}</div>
+          <div class="col-sm-2 text-center">{{word.comments}}</div> -->
+          <div class="col-sm-4 text-center">{{word.likes}}</div>
         </div>
       </div>
 
       <!-- <pre ng-bind="vocabulary.words|json"></pre> -->
 
-      <p class="text-center text-muted small">Results from {{vocabulary.created|date:'short'}}</p>
+      <p class="text-center text-muted small">Personalized for you on {{vocabulary.created|date:'short'}}</p>
 
       <p class="text-danger" ng-if="!!rerunError">
         {{rerunError}}
@@ -123,7 +123,7 @@
       </p>
 
       <div class="text-right" ng-if="!vocabReRunning">
-        <a href ng-click="reRunVocabulary()">Re-run this analysis.</a>
+        <p class="text-muted">Keyword analysis runs manually <a href ng-click="reRunVocabulary()">click here</a> to re-run.</p>
       </div>
 
       <p class="text-center text-muted" ng-if="vocabReRunning">Please wait, running vocabulary analysis.</p>
