@@ -13,7 +13,7 @@ angular
             '<span class="glyphicon" ng-class="{\'glyphicon-minus\': breakdown.isExpanded, \'glyphicon-plus\': !breakdown.isExpanded}"></span>',
           '</a>',
         '</div>',
-        '<div class="badge">{{breakdown.score * 100 | percentage:2}}</div>',
+        '<div class="badge" style="font-size: 23px; line-height: 25px">{{breakdown.score * 100 | percentage:2}}</div>',
         '<h4 ng-bind="breakdown.label" ng-if="!breakdown.isPostItem"></h4>',
 
         '<div class="plist-group-item-text" ng-if="breakdown.isPostItem">',

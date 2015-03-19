@@ -457,6 +457,7 @@ textarea.fill {
 
 // Component styles are injected through grunt
 // injector
+@import 'dashboard/create-post/create-post.scss';
 @import 'dashboard/dashboard.scss';
 @import 'get-started/get-started.scss';
 @import 'main/main.scss';
