@@ -113,7 +113,7 @@ function preprocessStemming(text, preprocessed) {
 }
 
 function preprocess(m) {
-  console.log('message:', m);
+  // console.log('message:', m);
 
   var
   processed = preprocessLinks(m);
