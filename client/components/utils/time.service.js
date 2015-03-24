@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.factory('Time', function ($padLeft, $clamp) {
+.factory('Time', function ($padLeft, $clamp, Calendar) {
   var
   clampInt = $clamp.clampInt;
 
@@ -88,23 +88,9 @@ angular
     return offset;
   };
 
-  Time.isSameDay = function (date, now) {
-    now = now || new Date;
-    var d = new Date(date);
-    return (d.getFullYear() === now.getFullYear()) &&
-           (d.getMonth()    === now.getMonth()) &&
-           (d.getDate()     === now.getDate());
-  };
-
-  Time.isFuture = function(date, now) {
-    now = now || new Date;
-    return (new Date(date)).getTime() > now.getTime();
-  };
-
-  Time.isPast = function(date, now) {
-    now = now || new Date;
-    return (new Date(date)).getTime() < now.getTime();
-  };
+  Time.isSameDay = Calendar.isSameDay.bind(Calendar);
+  Time.isFuture = Calendar.isFuture.bind(Calendar);
+  Time.isPast = Calendar.isPast.bind(Calendar);
 
   Time.fromOffset = function (offset) {
     offset = isNaN(offset) ? 0 : Math.min(86399999, Math.max(0, offset));

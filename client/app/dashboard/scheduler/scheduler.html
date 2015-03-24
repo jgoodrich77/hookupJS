@@ -20,11 +20,21 @@
 
     <div class="row">
       <div class="col-sm-9">
+
+        <div class="text-danger" ng-if="!!loadError">
+          <h3>Load Error</h3>
+          <p>{{loadError.message||loadError}}</p>
+        </div>
+
         <scheduler
-          datasource="scheduler"
+          ng-if="!loadError"
+          calendar="calendar"
+          datasource="loader"
           do-item-click="itemClick"
           do-item-classes="itemClasses"
           class="planner"></scheduler>
+
+        <!-- <pre ng-bind="calendar|json"></pre> -->
       </div>
       <div class="col-sm-3">
         <h3 class="helper text-muted-darker">Publishing in three easy steps:</h3>
@@ -68,12 +78,14 @@
 
     <hr />
 
-    <button ng-click="scheduler.shiftPrevious()" ng-disabled="!scheduler.canShiftPrevious()" class="pull-left btn btn-primary"><span class="glyphicon glyphicon-step-backward"></span>Last Week</button>
-    <button ng-click="scheduler.shiftNext()" ng-disabled="!scheduler.canShiftNext()" class="pull-right btn btn-primary">Next Week<span class="glyphicon glyphicon-step-forward"></span></button>
-    <div class="text-center">
-      <button ng-click="scheduler.reloadData()" ng-disabled="scheduler.isLoading()" class="btn btn-primary">Reload</button>
+    <div ng-show="!!loader">
+      <button ng-click="shiftWeek(-1)" ng-disabled="loader.loading || !canShiftWeek(-1)" class="pull-left btn btn-primary"><span class="glyphicon glyphicon-step-backward"></span>Last Week</button>
+      <button ng-click="shiftWeek(1)" ng-disabled="loader.loading || !canShiftWeek(1)" class="pull-right btn btn-primary">Next Week<span class="glyphicon glyphicon-step-forward"></span></button>
+      <div class="text-center">
+        <button ng-click="reloadData()" ng-disabled="loader.loading" class="btn btn-primary">Reload</button>
+      </div>
+      <div class="clearfix"></div>
     </div>
-    <div class="clearfix"></div>
 
   </div>
 </div>

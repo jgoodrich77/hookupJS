@@ -7,6 +7,7 @@ angular
     restrict: 'E',
     templateUrl: 'components/scheduler/scheduler.html',
     scope: {
+      calendar: '=',
       datasource: '=',
       doItemClick: '=',
       doItemClasses: '='

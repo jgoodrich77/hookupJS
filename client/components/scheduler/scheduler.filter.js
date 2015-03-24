@@ -4,16 +4,12 @@ angular
 .module('auditpagesApp')
 .filter('schedulerRecordLabel', function (Time) {
   return function (recordSet, period, day) {
-
-    var
-    startTime = Time.parse(period.start).toDate(day),
-    endTime = Time.parse(period.end).toDate(day);
-
+    var isCurrentPeriod = Time.isPast(period.start) && Time.isFuture(period.end);
 
     if(recordSet.length === 0) {
       var glyphicon = '';
 
-      if(Time.isPast(startTime, new Date) && Time.isFuture(endTime, new Date)) {
+      if(isCurrentPeriod) {
         glyphicon = 'glyphicon glyphicon-plus';
       }
 
