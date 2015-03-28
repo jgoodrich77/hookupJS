@@ -21,7 +21,8 @@
     "angular-facebook": "~0.2.3",
     "ng-file-upload": "~2.0.5",
     "ng-file-upload-shim": "~2.0.5",
-    "angulartics": "~0.17.2"
+    "angulartics": "~0.17.2",
+    "angular-calendar-util": "*"
   },
   "devDependencies": {
     "angular-mocks": ">=1.2.*",

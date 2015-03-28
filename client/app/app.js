@@ -18,6 +18,7 @@ angular.module('auditpagesApp', [
   'angularUtils.directives.uiBreadcrumbs',
   'angularUtils.directives.dirPagination',
   'angularFileUpload',
+  'angular-calendar',
   'facebook'
 ])
 .config(function (envConfig, $analyticsProvider, $stateProvider, $uiViewScrollProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {
