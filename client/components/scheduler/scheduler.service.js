@@ -136,8 +136,8 @@ angular
   ScheduleDataAggr.prototype.query = function (dateRange) {
     var
     now            = new Date,
-    includesFuture = dateRange.from > now,
-    includesPast   = dateRange.to   < now;
+    includesFuture = dateRange.to   > now,
+    includesPast   = dateRange.from < now;
 
     if(!includesFuture) { // historical only view
       return this.loaderFb.query(dateRange);

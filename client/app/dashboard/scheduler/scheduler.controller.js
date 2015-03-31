@@ -114,7 +114,6 @@ angular
     $scope.loader = new ScheduleDataAggr(lObject, lToken);
     return $scope.loader.load(calendar.dateRange)
       .then(function (results) {
-        data.clearRecords();
         data.addRecords(results);
         return data;
       })
@@ -187,6 +186,7 @@ angular
     }
 
     if(changeDates || changeObject || !!force) {
+      data.clearRecords();
       promise = !!promise ? promise.then (reloadData) : reloadData ();
     }
 
