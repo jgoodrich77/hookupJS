@@ -1,9 +1,9 @@
 <div class="row">
-  <div class="col-sm-12" ng-show="loadingScheduler">
+  <div class="col-sm-12" ng-show="reloadingObject">
     <h3>Please wait..</h3>
-    <p class="text-muted lead">Loading your schedule..</p>
+    <p class="text-muted lead" ng-show="!!reloadingObject">Loading your schedule..</p>
   </div>
-  <div class="col-sm-12" ng-hide="loadingScheduler">
+  <div class="col-sm-12" ng-hide="reloadingObject">
 
     <div class="row">
       <div class="col-sm-12" ng-hide="explaining">
@@ -19,22 +19,78 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-9">
-
-        <div class="text-danger" ng-if="!!loadError">
+      <div class="col-sm-9" ng-if="!!loadError">
+        <div class="text-danger">
           <h3>Load Error</h3>
           <p>{{loadError.message||loadError}}</p>
         </div>
+      </div>
 
-        <scheduler
-          ng-if="!loadError"
-          calendar="calendar"
-          datasource="loader"
-          do-item-click="itemClick"
-          do-item-classes="itemClasses"
-          class="planner"></scheduler>
+      <div class="col-sm-9 calendar-wrapper" ng-if="!loadError">
 
-        <!-- <pre ng-bind="calendar|json"></pre> -->
+        <div class="margin-top">
+          <button ng-click="calendar.week = calendar.week - 1" class="btn btn-lg btn-default pull-left"><span class="glyphicon glyphicon-chevron-left"></span></button>
+          <button ng-click="calendar.week = calendar.week + 1" class="btn btn-lg btn-default pull-right"><span class="glyphicon glyphicon-chevron-right"></span></button>
+        </div>
+
+        <h1 class="text-center calendar-header">
+          <span ng-show="calendar.weekSpansMonths" class="month-name">{{calendar.dateRange.from | date:'MMM'}} - {{calendar.dateRange.to | date:'MMMM'}}</span>
+          <span ng-hide="calendar.weekSpansMonths" ng-bind="calendar.dateRange.from | date:'MMMM'" class="month-name"></span>
+        </h1>
+
+        <div class="clearfix"></div>
+
+<!--         <div class="row">
+          <div class="col-sm-12">
+            <canvas id="weekLineChart" series="weekChartSeries" data="weekChartData" labels="weekChartLabels" height="50" class="chart chart-line"></canvas>
+          </div>
+        </div> -->
+
+        <!-- <input type="range" min="1" max="53" step="1" ng-model="calendar.week" ng-model-options="modelOpts" class="margin-bottom"/> -->
+
+        <div class="row-flex day-headers">
+          <div class="flex-2 text-right">
+
+            <div class="btn-group pull-left">
+              <button class="btn btn-sm btn-default" ng-click="calendar.toToday()" ng-hide="calendar.isThisWeek" title="Go to this week."><span class="glyphicon glyphicon-calendar"></span></button>
+              <button class="btn btn-sm btn-default" ng-click="reload(true)" ng-disabled="loader.loading" title="Refresh the data for current page."><span class="glyphicon glyphicon-refresh"></span></button>
+            </div>
+
+            <div>Week {{calendar.week}}</div><small class="text-info">{{calendar.year}}</small>
+          </div>
+          <div ng-repeat="item in weekDays" ng-class="headerClasses(item)" class="flex-1 day-header text-center">
+            <div ng-bind="item.date.date|date:'dd'" class="day-date"></div>
+            <div ng-bind="item.date.date|date:'EEE'" class="day-date-name visible-xs visible-sm"></div>
+            <div ng-bind="item.date.date|date:'EEEE'" class="day-date-name visible-md visible-lg"></div>
+          </div>
+        </div>
+
+        <div class="day-wrapper">
+          <div ng-repeat="group in weekDays[0].day.groups">
+            <h4 class="day-group" ng-bind="group.title"></h4>
+            <div class="day-group-wrapper">
+              <div ng-repeat="period in group.periods" class="row-flex flex-stretch">
+                <div class="flex-2 day-cell-period">
+                  <div ng-bind="period|timeRange:'h:mm a'" class="inner-cell"></div>
+                </div>
+                <div ng-repeat="item in weekDays" ng-class="itemClasses(period.toDate(item.date.date))" class="flex-1 day-cell" ng-click="itemClick(period.toDate(item.date.date))"
+                  tooltip-popup-delay="0"
+                  tooltip-placement="right"
+                  tooltip-animation="false"
+                  tooltip-html-unsafe="{{data.queryDateRange(period.toDate(item.date.date))|dataEntryTooltip}}">
+                  <div ng-bind-html="data.queryDateRange(period.toDate(item.date.date))|dataEntryCell:period.toDate(item.date.date)" class="inner-cell text-center"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="overlay" ng-show="reloadingData">
+          <div class="overlay-body">
+            <div class="overlay-title">Please Wait</div>
+            <div class="overlay-text">Loading your data..</div>
+          </div>
+        </div>
       </div>
       <div class="col-sm-3">
         <h3 class="helper text-muted-darker">Publishing in three easy steps:</h3>
@@ -46,18 +102,6 @@
         </ol>
 
         <div class="scheduler-legend">
-          <!-- <dl class="item item1">
-            <dt>Days past with no posts</dt>
-            <dd></dd>
-          </dl>
-          <dl class="item item2">
-            <dt>Present day past time no posts</dt>
-            <dd></dd>
-          </dl>
-          <dl class="item item3">
-            <dt>Current time-slot with no posts</dt>
-            <dd></dd>
-          </dl> -->
           <dl class="item item4">
             <dt>Time slot with posts</dt>
             <dd></dd>
@@ -74,17 +118,6 @@
           <div class="clearfix"></div>
         </div>
       </div>
-    </div>
-
-    <hr />
-
-    <div ng-show="!!loader">
-      <button ng-click="shiftWeek(-1)" ng-disabled="loader.loading || !canShiftWeek(-1)" class="pull-left btn btn-primary"><span class="glyphicon glyphicon-step-backward"></span>Last Week</button>
-      <button ng-click="shiftWeek(1)" ng-disabled="loader.loading || !canShiftWeek(1)" class="pull-right btn btn-primary">Next Week<span class="glyphicon glyphicon-step-forward"></span></button>
-      <div class="text-center">
-        <button ng-click="reloadData()" ng-disabled="loader.loading" class="btn btn-primary">Reload</button>
-      </div>
-      <div class="clearfix"></div>
     </div>
 
   </div>

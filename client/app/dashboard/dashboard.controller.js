@@ -2,7 +2,7 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardCtrl', function ($scope, $state, $user, $timeout, Modal, Time) {
+.controller('DashboardCtrl', function ($scope, $state, $user, $timeout, Modal, Time, DateRange) {
 
   $scope.isDashboardHome = function() {
     return $state.current.name === 'app.dashboard';
@@ -89,10 +89,7 @@ angular
       $scope.currentEndDate = dEnd;
     }
 
-    $scope.currentPeriod = {
-      start: $scope.currentStart,
-      end: $scope.currentEnd
-    };
+    $scope.currentPeriod = new DateRange($scope.currentStartDate, $scope.currentEndDate);
 
     return true;
   };

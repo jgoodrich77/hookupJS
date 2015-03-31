@@ -3,21 +3,13 @@
 angular
 .module('auditpagesApp')
 
-.factory('ScheduleDataLoader', function ($q, CalendarWeek) {
+.factory('ScheduleDataLoader', function ($q) {
 
-  function ScheduleDataLoader(calendar) {
+  function ScheduleDataLoader() {
     this.reset();
-    this.calendar = calendar;
   }
 
   Object.defineProperties(ScheduleDataLoader.prototype, {
-    calendar: {
-      get: function()  { return this._calendar; },
-      set: function(v) {
-        if(!v instanceof CalendarWeek) return;
-        this._calendar = v;
-      }
-    },
     loading: {
       get: function() { return this._loading; }
     },
@@ -34,20 +26,14 @@ angular
     this._loading = false;
   };
 
-  ScheduleDataLoader.prototype.getWeekDateRange = function (year, weekNumber) {
-    if(!this.calendar) return false;
-    return this.calendar.getWeekDates(year, weekNumber);
-  };
-
   ScheduleDataLoader.prototype.query = function(dateRange) { // should be implemented by child class
     return [];
   };
 
-  ScheduleDataLoader.prototype.load = function(dateProperty) {
+  ScheduleDataLoader.prototype.load = function(dateRange) {
     this._loading = true;
-    return $q.when(this.query(this.getWeekDateRange()))
+    return $q.when(this.query(dateRange))
       .then((function (data) {
-        this.calendar.loadData(data, dateProperty, true);
         return data;
       }).bind(this))
       .finally((function () {
@@ -61,8 +47,8 @@ angular
 
 .factory('ScheduleDataFuture', function ($http, ScheduleDataLoader) {
 
-  function ScheduleDataFuture(calendar) {
-    ScheduleDataLoader.call(this, calendar);
+  function ScheduleDataFuture() {
+    ScheduleDataLoader.call(this);
   }
 
   ScheduleDataFuture.prototype = new ScheduleDataLoader;
@@ -88,10 +74,10 @@ angular
   return ScheduleDataFuture;
 })
 
-.factory('ScheduleDataFB', function ($fb, ScheduleDataLoader) {
+.factory('ScheduleDataFB', function ($fb, $filter, Calendar, ScheduleDataLoader) {
 
-  function ScheduleDataFB(calendar, fbObjectId, fbAuthToken) {
-    ScheduleDataLoader.call(this, calendar);
+  function ScheduleDataFB(fbObjectId, fbAuthToken) {
+    ScheduleDataLoader.call(this);
     this.fbObjectId  = fbObjectId;
     this.fbAuthToken = fbAuthToken;
   }
@@ -114,13 +100,12 @@ angular
   });
 
   ScheduleDataFB.fixFacebookDate = function (date) {
-    var fixedStr = (date||'').replace('+0000','.000Z');
-    return new Date(fixedStr);
+    // var fixedStr = (date||'').replace('+0000','.000Z');
+    return new Date(date);
   };
 
   ScheduleDataFB.prototype.query = function (dateRange) {
     if(!this.valid) return false;
-
     return $fb.getObjectPosts({
       id: this.fbObjectId,
       access_token: this.fbAuthToken,

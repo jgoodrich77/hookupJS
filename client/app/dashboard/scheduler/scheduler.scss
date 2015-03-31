@@ -1,0 +1,263 @@
+@import url(http://fonts.googleapis.com/css?family=Oswald);
+@import url(http://fonts.googleapis.com/css?family=Roboto);
+
+.margin-top {
+  margin-top: 15px;
+}
+.margin-bottom {
+  margin-bottom: 15px;
+}
+.row-flex {
+  $flexers: 10;
+  @include display(flex);
+
+  @for $i from 1 through $flexers {
+    .flex-#{$i} { @include flex($i); }
+  }
+}
+
+$font-col-offset: 60%;
+$today-darkness: 10%;
+
+
+$color-bg-negative: #D3D3D3;
+$color-fg-negative: #9C9C9C;
+$color-bg-negative-today: darken($color-bg-negative, 10%);
+$color-fg-negative-today: darken($color-fg-negative, 10%);
+
+
+$color-bg-neutral: #C9E8FF;
+//$color-fg-neutral: #2B628C;
+$color-fg-neutral: #ACD4F2;
+$color-bg-neutral-today: darken($color-bg-neutral, 10%);
+$color-fg-neutral-today: darken($color-fg-neutral, 20%);
+
+$color-bg-positive: #CFFFC2;
+$color-fg-positive: #187200;
+$color-bg-positive-today: darken($color-bg-positive, 10%);
+$color-fg-positive-today: $color-fg-positive;
+
+$color-bg-disabled: #ddd;
+$color-fg-disabled: #777;
+$color-bg-disabled-today: darken($color-bg-disabled, 10%);
+$color-fg-disabled-today: $color-fg-disabled;
+
+$color-bg-current: #2695D1;
+$color-fg-current: #FFFFFF;
+$color-current-darken: 10%;
+
+$color-hm-0:           #A5FF7A;
+$color-hm-0-fg:        darken($color-hm-0, $font-col-offset);
+$color-hm-0-future:    #78C2FA;
+$color-hm-0-future-fg: darken($color-hm-0-future, $font-col-offset);
+$color-hm-0-past:      #eee;
+$color-hm-0-past-fg:   darken($color-hm-0-past, $font-col-offset);
+
+$color-hm-1:    #F0FF7A;
+$color-hm-1-fg: darken($color-hm-1, $font-col-offset);
+$color-hm-2:    #FFD87A;
+$color-hm-2-fg: darken($color-hm-2, $font-col-offset);
+$color-hm-3:    #FFBD7A;
+$color-hm-3-fg: darken($color-hm-3, $font-col-offset);
+$color-hm-4:    #FF967A;
+$color-hm-4-fg: darken($color-hm-4, $font-col-offset);
+
+.calendar-wrapper {
+  position: relative;
+}
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(#fff, 0.6);
+
+  .overlay-body {
+    border-radius: 5px;
+    padding: 10px;
+    background-color: rgba(#111, 0.8);
+    color: #fff;
+  }
+
+  .overlay-title,
+  .overlay-text {
+    display: block;
+  }
+
+  .overlay-title {
+    text-align: center;
+    font-weight: bold;
+  }
+  .overlay-text {
+  }
+}
+
+.calendar-header {
+  font-family: Oswald;
+}
+
+.day-headers {
+  .day-date {
+    font-size: 25px;
+    font-weight: bold;
+    font-family: Oswald;
+  }
+  .day-date-name {
+  }
+
+  .day-header {
+    &.today {
+      background-color: $color-hm-0;
+      color: $color-hm-0-fg;
+      border-radius: 5px;
+    }
+  }
+}
+
+.day-wrapper {
+  $border-color: #ddd;
+  $border-width: 0;
+
+  .day-group-wrapper {
+    border: 0 solid $border-color;
+    border-width: 0 0 $border-width $border-width;
+  }
+  .inner-cell {
+    padding: 4px 8px;
+  }
+  .day-cell-period,
+  .day-cell {
+    border: 0 solid $border-color;
+    border-width: $border-width $border-width 0 0;
+  }
+  .day-cell-period {
+    font-size: 0.8em;
+    line-height: 1.2em;
+  }
+  .day-cell {
+    margin: 1px;
+    cursor: pointer;
+
+    &.heatmap-0 {
+      background-color: $color-hm-0; // current
+      color: $color-hm-0-fg;
+
+      &.future {
+        background-color: $color-hm-0-future;
+        color: $color-hm-0-future-fg;
+
+        &.today {
+          background-color: darken($color-hm-0-future, $today-darkness);
+          color: darken($color-hm-0-future-fg, $today-darkness);
+        }
+      }
+      &.past {
+        background-color: $color-hm-0-past;
+        color: $color-hm-0-past-fg;
+
+        &.today {
+          background-color: darken($color-hm-0-past, $today-darkness);
+          color: darken($color-hm-0-past-fg, $today-darkness);
+        }
+      }
+    }
+    &.heatmap-1 {
+      background-color: $color-hm-1;
+      color: $color-hm-1-fg;
+
+      &.today {
+        background-color: darken($color-hm-1, $today-darkness);
+        color: darken($color-hm-1-fg, $today-darkness);
+      }
+    }
+    &.heatmap-2 {
+      background-color: $color-hm-2;
+      color: $color-hm-2-fg;
+
+      &.today {
+        background-color: darken($color-hm-2, $today-darkness);
+        color: darken($color-hm-2-fg, $today-darkness);
+      }
+    }
+    &.heatmap-3 {
+      background-color: $color-hm-3;
+      color: $color-hm-3-fg;
+
+      &.today {
+        background-color: darken($color-hm-3, $today-darkness);
+        color: darken($color-hm-3-fg, $today-darkness);
+      }
+    }
+    &.heatmap-4 {
+      background-color: $color-hm-4;
+      color: $color-hm-4-fg;
+
+      &.today {
+        background-color: darken($color-hm-4, $today-darkness);
+        color: darken($color-hm-4-fg, $today-darkness);
+      }
+    }
+  }
+}
+
+.scheduler-legend {
+  .item {
+    font-size: 0.8em;
+
+    dt, dd {
+      box-sizing: border-box;
+      float: left;
+      display: block;
+    }
+
+    dt {
+      width: 80%;
+      text-align: right;
+      padding-right: 3px;
+    }
+    dd {
+      width: 20%;
+      height: 1em;
+      outline: 1px solid black;
+    }
+  }
+
+  .item1 {
+    dd {
+      background-color: $color-bg-negative;
+    }
+  }
+  .item2 {
+    dd {
+      background-color: $color-bg-negative-today;
+    }
+  }
+  .item3 {
+    dd {
+      background-color: $color-bg-current;
+    }
+  }
+  .item4 {
+    dd {
+      background-color: $color-bg-positive;
+    }
+  }
+  .item5 {
+    dd {
+      background-color: $color-bg-neutral-today;
+    }
+  }
+  .item6 {
+    dd {
+      background-color: $color-bg-neutral;
+    }
+  }
+}

@@ -15,6 +15,7 @@ angular.module('auditpagesApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
+  'chart.js',
   'angularUtils.directives.uiBreadcrumbs',
   'angularUtils.directives.dirPagination',
   'angularFileUpload',
