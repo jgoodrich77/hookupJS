@@ -26,7 +26,7 @@ Init script:
 
 I found this makes life a little easier, you'll need to tweak this file according to your environment.
 
-__For development mode:__ `hookupjs-start-development.sh`
+__For development mode with grunt:__ `hookupjs-start-development.sh`
 
     #!/bin/sh
     export HOOKUP_URL="http://full-domain-name-here"
@@ -38,7 +38,7 @@ __For development mode:__ `hookupjs-start-development.sh`
     cd /path/to/hookupjs
     grunt serve
 
-__For production mode:__ `hookupjs-start-production.sh`
+__For production mode with grunt:__ `hookupjs-start-production.sh`
 
     #!/bin/sh
     export HOOKUP_URL="http://full-domain-name-here"
@@ -49,3 +49,18 @@ __For production mode:__ `hookupjs-start-production.sh`
     export PORT=9990
     cd /path/to/hookupjs
     grunt serve:dist
+
+__For production mode *without* grunt:__ `hookupjs-start-dist.sh`
+
+Note, bower install will have no effect as the modules are checked into git. Npm install is still required!
+
+    #!/bin/sh
+    export NODE_ENV="production"
+    export HOOKUP_URL="http://full-domain-name-here"
+    export HOOKUP_AWS_SENDER="verified-sender@amznses.com"
+    export HOOKUP_AWS_ACCESSKEYID="VALIDAWSACCESSKEY"
+    export HOOKUP_AWS_KEYSECRET="VALID/AWS/Secret/key"
+    export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs"
+    export PORT=9990
+    cd /path/to/hookupjs
+    node dist/server/app.js

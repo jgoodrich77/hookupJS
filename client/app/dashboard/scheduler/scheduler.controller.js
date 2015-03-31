@@ -2,103 +2,83 @@
 
 angular
 .module('auditpagesApp')
-.controller('DashboardSchedulerCtrl', function ($scope, $fb, $filter, $state, $interval, Time, Scheduler, ScheduleData, SchedulePlan) {
-
-  var
-  dates = SchedulePlan.localWeekDates(0),
-  dateLen = dates.length,
-  objectId, accessToken,
-  plan = new SchedulePlan([
-      { name: 'Morning', periods: [
-        { start: '00:00', end: '04:59:59.999' },
-        { start: '05:00', end: '07:59:59.999' },
-        { start: '08:00', end: '09:59:59.999' }
-      ] },
-      { name: 'Afternoon', periods: [
-        { start: '10:00', end: '11:59:59.999' },
-        { start: '12:00', end: '14:59:59.999' },
-        { start: '15:00', end: '16:59:59.999' }
-      ] },
-      { name: 'Evening', periods: [
-        { start: '17:00', end: '18:59:59.999' },
-        { start: '19:00', end: '20:59:59.999' },
-        { start: '21:00', end: '23:59:59.999' }
-      ] }
-    ], dates),
-  facebookLoader = new ScheduleData.LoaderFacebook(),
-  data = new ScheduleData(plan, {
-    rowDateProperty: 'date',
-    loader: facebookLoader
-  });
-
-  $scope.scheduler = new Scheduler(plan, data, {
-    minDate: new Date(new Date(dates[0]).getTime() - (8.64e7 * dateLen * 8)),
-    maxDate: new Date(new Date(dates[dateLen - 1]).getTime() + (8.64e7 * dateLen)),
-    autoLoad: false
-  });
-
-  var
-  loadingData = false;
-
-  function loadData() {
-    if(loadingData) return loadingData; // prevent repeated calls
-
-    data.reset();
-    return loadingData = data.reload()
-      .finally(function(){
-        loadingData = false;
-      });
-  }
-
-  function loadDataAndObject(currentObject) {
-    if($scope.loadingScheduler) return; // prevent repeated calls
-
-    $scope.loadingScheduler = true;
-
-    currentObject = currentObject || $scope.currentFbObject;
-    return $fb.getObjectIdToken(currentObject.id)
-      .then(function (token) {
-        if(!token) {
-          $scope.fbObjectError  = 'No token could be found for page.';
-          return;
-        }
-
-        facebookLoader.setFacebookObject(currentObject.id, token);
-
-        return loadData();
-      })
-      .finally(function () {
-        $scope.loadingScheduler = false;
-      });
-  }
-
-  if(!$scope.fullLoading) {
-    loadDataAndObject();
-  }
-
-  $scope.$on('dashboard-reload', function (evt, currentObject, currentScore) {
-    loadDataAndObject(currentObject);
-  });
-  $scope.$on('dashboard-reload-error', function (err) {
-    console.log('dashboard-reload-error', err);
-  });
-
-  $interval(function(){}, 2500); // so scope updates on time changes
-
-  $scope.itemClasses = function(period, date, records) {
+.filter('dataEntryTooltip', function (Calendar, $filter) {
+  var dateFn = $filter('date');
+  return function (entries) {
+    if(!entries || !entries.length) return null;
+    return entries.map(function (entry) {
+      return dateFn(entry.date, 'short');
+    }).join('<br />');
+  };
+})
+.filter('dataEntryCell', function (Calendar) {
+  return function (entries, period) {
     var
-    now = new Date,
-    pStartDate = Time.parse(period.start).toDate(date),
-    pEndDate   = Time.parse(period.end).toDate(date),
-    isSameDay  = Time.isSameDay(date, now);
+    isCurrentPeriod = Calendar.isPast(period.from) && Calendar.isFuture(period.to),
+    hasData         = (!!entries && !!entries.length);
 
-    return {
-      'current':  isSameDay,
-      'disabled': false,
-      'negative': Time.isPast(pEndDate, now) && !records.length,
-      'positive': !!records.length,
-      'neutral':  Time.isFuture(pStartDate, now)
-    };
+    if(!hasData && !isCurrentPeriod) return '&nbsp;';
+    if(!hasData && isCurrentPeriod)  return '<span class="glyphicon glyphicon-plus"></span>';
+
+    return entries.length;
+  };
+})
+.controller('DashboardSchedulerCtrl', function ($q, $scope, $fb, $filter, $state, $interval, $numberUtil, Calendar, DayGroup, Day, TimeRange, DateStore, ScheduleDataAggr) {
+
+  var
+  BOW      = 0,
+  calendar = $scope.calendar = new Calendar(BOW),
+  data     = $scope.data     = new DateStore(),
+  daySpec  = [
+    new DayGroup('Morning',   new TimeRange('00:00', '11:59:59.999'), 3),
+    new DayGroup('Afternoon', new TimeRange('12:00', '17:59:59.999'), 3),
+    new DayGroup('Evening',   new TimeRange('18:00', '23:59:59.999'), 3),
+    new DayGroup('Day Total', new TimeRange('00:00', '23:59:59.999'), 1)
+  ];
+
+  $scope.weekDays = [];
+  $scope.modelOpts = {
+    debounce: 250
+  };
+
+  $scope.enableHeatMap = true;
+
+  $scope.headerClasses = function(item) {
+    var
+    classes = {};
+
+    if(calendar.isToday(item.date.date)) {
+      classes['today'] = true;
+    }
+
+    return classes;
+  };
+
+  $scope.itemClasses = function (period) {
+    if(!data) return;
+
+    var
+    records     = data.queryDateRange(period),
+    hasData     = !!records.length,
+    heatMap     = $numberUtil.clamp(records.length, 0, 4, 0),
+    isStartPast = Calendar.isPast(period.from),
+    isEndPast   = Calendar.isPast(period.to),
+    isToday     = calendar.isToday(period.from) && calendar.isToday(period.to),
+    classes     = {};
+
+    if(isToday) {
+      classes['today'] = true;
+    }
+
+    classes['heatmap-' + heatMap] = true;
+
+    if(!hasData) {
+      if(isStartPast && !isEndPast) classes['present'] = true;
+      else if(!isStartPast)         classes['future']  = true;
+      else if(isEndPast)            classes['past']    = true;
+    }
+
+    return classes;
   };
 
   $scope.explainScore = function (result) {
@@ -106,23 +86,125 @@ angular
     $scope.explainedScore = result;
   };
 
-  $scope.itemClick = function(period, date, records) {
+  $scope.itemClick = function(period) {
 
     var
-    pStartDate = Time.parse(period.start).toDate(date),
-    pEndDate   = Time.parse(period.end).toDate(date),
-    dateFmt    = $filter('date'),
-    params     = {
-      date:        dateFmt(date, 'yyyy-MM-dd'),
-      periodStart: period.start,
-      periodEnd:   period.end
+    records = data.queryDateRange(period),
+    hasData = !!records.length,
+    dateFmt = $filter('date'),
+    params  = {
+      date:        dateFmt(period.from, 'yyyy-MM-dd'),
+      periodStart: dateFmt(period.from, 'HH:mm'),
+      periodEnd:   dateFmt(period.to, 'HH:mm:ss.sss')
     };
 
-    if(Time.isFuture(pEndDate, new Date)) {
-      $state.go('app.dashboard.create-post', params);
-    }
-    else if(records.length > 0) {
+    if(hasData) {
       $state.go('app.dashboard.view-posts', params);
     }
+    else if(!Calendar.isPast(period.to)) {
+      $state.go('app.dashboard.create-post', params);
+    }
   };
+
+  var
+  lObject, lToken,
+  lFromDate, lToDate;
+
+  function reloadData () {
+    if(!lObject || !lToken) return false;
+
+    $scope.reloadingData = true;
+    $scope.loader = new ScheduleDataAggr(lObject, lToken);
+    return $scope.loader.load(calendar.dateRange)
+      .then(function (results) {
+        data.addRecords(results);
+        return data;
+      })
+      .finally(function () {
+        $scope.reloadingData = false;
+      });
+  }
+
+  function reloadObject () {
+    if($scope.reloadingObject) return false;
+
+    $scope.reloadingObject = true;
+
+    return $fb.whenReady()
+      .then(function(){
+        return $fb.getObjectIdToken(lObject);
+      })
+      .then(function (token) {
+        if(!token) {
+          $scope.fbObjectError  = 'No token could be found for page.';
+          return;
+        }
+
+        lToken = token;
+
+        return {
+          object: lObject,
+          token: lToken
+        };
+      })
+      .finally(function () {
+        $scope.reloadingObject = false;
+      });
+  }
+
+  function rebuildCalendar () {
+    $scope.weekDays.splice(0, $scope.weekDays.length);
+
+    calendar.weekDates.forEach(function (d) {
+      var day = new Day(daySpec);
+      $scope.weekDays.push({
+        day: day,
+        date: day.applyDate(d)
+      });
+    });
+  }
+
+  $scope.reload = function (force) {
+    if(!calendar || !data || !$scope.currentFbObject) return;
+
+    var
+    cRange       = calendar.dateRange,
+    cFbObj       = $scope.currentFbObject,
+    changeDates  = (lFromDate !== cRange.from || lToDate !== cRange.to),
+    changeObject = (lObject !== cFbObj.id || !lToken);
+
+    if (changeDates) {
+      lFromDate = cRange.from;
+      lToDate   = cRange.to;
+      rebuildCalendar();
+    }
+
+    var
+    promise = false;
+
+    if (changeObject) {
+      lObject = cFbObj.id;
+      lToken  = null;
+      promise = reloadObject();
+    }
+
+    if(changeDates || changeObject || !!force) {
+      data.clearRecords();
+      promise = !!promise ? promise.then (reloadData) : reloadData ();
+    }
+
+    return promise;
+  };
+
+  $interval(function(){}, 1000); // refresh the scope
+  $scope.$watch('calendar.week', $scope.reload);
+  $scope.$watch('calendar.year', $scope.reload);
+
+  if(!$scope.fullLoading) {
+    $scope.reload();
+  }
+
+  $scope.$on('dashboard-reload', function (evt, currentObject, currentScore) {
+    $scope.reload();
+  });
 });

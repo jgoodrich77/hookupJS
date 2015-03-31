@@ -15,9 +15,11 @@ angular.module('auditpagesApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
+  'chart.js',
   'angularUtils.directives.uiBreadcrumbs',
   'angularUtils.directives.dirPagination',
   'angularFileUpload',
+  'angular-calendar',
   'facebook'
 ])
 .config(function (envConfig, $analyticsProvider, $stateProvider, $uiViewScrollProvider, $urlRouterProvider, $locationProvider, $httpProvider, $tooltipProvider, FacebookProvider) {

@@ -18,7 +18,7 @@
       </dl>
       <dl class="col-xs-6">
         <dt>Time slot</dt>
-        <dd>{{currentPeriod | schedulerPeriod}}</dd>
+        <dd>{{currentPeriod | timeRange:'h:mm a'}}</dd>
       </dl>
     </div>
 
@@ -95,21 +95,21 @@
 
 
     <div ng-if="vocabulary.created">
+
       <div class="container-fluid">
         <div class="row">
-          <div class="col-sm-8">Word(s)</div>
+          <div class="col-xs-8">Word(s)</div>
 <!--           <div class="col-sm-2 text-center">Shares</div>
           <div class="col-sm-2 text-center">Cmts</div> -->
-          <div class="col-sm-4 text-center">Likes</div>
+          <div class="col-xs-4 text-center">Likes</div>
         </div>
-      </div>
-
-      <div class="container-fluid create-post-wordcloud">
-        <div class="row" ng-repeat="word in vocabulary.words">
-          <div class="col-sm-8">{{word.variations.join(', ')}}</div>
-<!--           <div class="col-sm-2 text-center">{{word.shares}}</div>
-          <div class="col-sm-2 text-center">{{word.comments}}</div> -->
-          <div class="col-sm-4 text-center">{{word.likes}}</div>
+        <div class="create-post-wordcloud">
+          <div class="row" ng-repeat="word in vocabulary.words">
+            <div class="col-xs-8">{{word.variations.join(', ')}}</div>
+  <!--           <div class="col-sm-2 text-center">{{word.shares}}</div>
+            <div class="col-sm-2 text-center">{{word.comments}}</div> -->
+            <div class="col-xs-4 text-right">{{word.likes}}</div>
+          </div>
         </div>
       </div>
 
