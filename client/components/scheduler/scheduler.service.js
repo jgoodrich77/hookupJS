@@ -109,6 +109,7 @@ angular
     return $fb.getObjectPosts({
       id: this.fbObjectId,
       access_token: this.fbAuthToken,
+      limit: 200
     }, dateRange.from, dateRange.to, ['id', 'updated_time', 'created_time', 'status_type', 'type'])
       .then(function (results) {
         return results.data.map(function (post) { // facebook sends us weird dates, fix them:
