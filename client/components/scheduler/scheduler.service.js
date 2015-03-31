@@ -65,7 +65,7 @@ angular
       }
     }).then(function (results) {
       return results.data.map(function (result) {
-        result.date = result.scheduledFor;
+        result.date = new Date(result.scheduledFor);
         return result;
       });
     });
