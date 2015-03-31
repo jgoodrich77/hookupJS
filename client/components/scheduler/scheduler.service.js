@@ -108,9 +108,8 @@ angular
     if(!this.valid) return false;
     return $fb.getObjectPosts({
       id: this.fbObjectId,
-      access_token: this.fbAuthToken,
-      limit: 200
-    }, dateRange.from, dateRange.to, ['id', 'updated_time', 'created_time', 'status_type', 'type'])
+      access_token: this.fbAuthToken
+    }, dateRange.from, dateRange.to, ['id', 'updated_time', 'created_time', 'status_type', 'type'], 200)
       .then(function (results) {
         return results.data.map(function (post) { // facebook sends us weird dates, fix them:
           post.date = ScheduleDataFB.fixFacebookDate(post.created_time);

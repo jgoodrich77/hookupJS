@@ -250,7 +250,7 @@ angular
     ].join(':') + '+0000';
   }
 
-  function getObjectPosts(object, from, to, fields) {
+  function getObjectPosts(object, from, to, fields, limit) {
     var
     defer = $q.defer(),
     opts = {
@@ -261,6 +261,10 @@ angular
 
     if(!!fields && fields.length) {
       opts.fields = fields;
+    }
+
+    if(!isNaN(limit)) {
+      opts.limit = limit;
     }
 
     Facebook.api(object.id + '/posts', opts, function (response) {
