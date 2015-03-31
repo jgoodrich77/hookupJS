@@ -41,6 +41,8 @@ angular
     debounce: 250
   };
 
+  $scope.enableHeatMap = true;
+
   $scope.headerClasses = function(item) {
     var
     classes = {};

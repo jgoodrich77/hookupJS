@@ -49,16 +49,16 @@ $font-col-offset: 60%;
 $today-darkness: 10%;
 $color-current-darken: 10%;
 
-$color-noheat-current: #00659C;
+$color-noheat-current: #2695D1;
 $color-noheat-current-fg: #FFFFFF;
 $color-noheat-posts: #CFFFC2;
-$color-noheat-posts-fg: #187200;
+$color-noheat-posts-fg: #000;
 
 $color-hm-0:           $color-noheat-current;
 $color-hm-0-fg:        $color-noheat-current-fg;
-$color-hm-0-future:    #78C2FA;
+$color-hm-0-future:    #C9E8FF;
 $color-hm-0-future-fg: darken($color-hm-0-future, $font-col-offset);
-$color-hm-0-past:      #eee;
+$color-hm-0-past:      #D3D3D3;
 $color-hm-0-past-fg:   darken($color-hm-0-past, $font-col-offset);
 
 $color-hm-1:    #F0FF7A;
