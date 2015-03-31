@@ -65,7 +65,7 @@
           </div>
         </div>
 
-        <div class="day-wrapper">
+        <div class="day-wrapper" ng-class="{'enable-heatmap': enableHeatMap}">
           <div ng-repeat="group in weekDays[0].day.groups">
             <h4 class="day-group" ng-bind="group.title"></h4>
             <div class="day-group-wrapper">
@@ -85,6 +85,8 @@
             </div>
           </div>
         </div>
+
+        <label><input type="checkbox" ng-model="enableHeatMap"> Enable heat-map view.</label>
 
         <div class="overlay" ng-show="reloadingData">
           <div class="overlay-body">
@@ -108,11 +110,11 @@
             <dd></dd>
           </dl>
           <dl class="item item5">
-            <dt>Same day future slot</dt>
+            <dt>Past time slot</dt>
             <dd></dd>
           </dl>
           <dl class="item item6">
-            <dt>Future day future slot</dt>
+            <dt>Available slot</dt>
             <dd></dd>
           </dl>
 

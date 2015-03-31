@@ -16,9 +16,7 @@
   }
 }
 
-$font-col-offset: 60%;
-$today-darkness: 10%;
-
+//////// deprecating:
 
 $color-bg-negative: #D3D3D3;
 $color-fg-negative: #9C9C9C;
@@ -44,10 +42,20 @@ $color-fg-disabled-today: $color-fg-disabled;
 
 $color-bg-current: #2695D1;
 $color-fg-current: #FFFFFF;
+
+//////// in favor of:
+
+$font-col-offset: 60%;
+$today-darkness: 10%;
 $color-current-darken: 10%;
 
-$color-hm-0:           #A5FF7A;
-$color-hm-0-fg:        darken($color-hm-0, $font-col-offset);
+$color-noheat-current: #00659C;
+$color-noheat-current-fg: #FFFFFF;
+$color-noheat-posts: #CFFFC2;
+$color-noheat-posts-fg: #187200;
+
+$color-hm-0:           $color-noheat-current;
+$color-hm-0-fg:        $color-noheat-current-fg;
 $color-hm-0-future:    #78C2FA;
 $color-hm-0-future-fg: darken($color-hm-0-future, $font-col-offset);
 $color-hm-0-past:      #eee;
@@ -115,8 +123,8 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
 
   .day-header {
     &.today {
-      background-color: $color-hm-0;
-      color: $color-hm-0-fg;
+      background-color: #ccc;
+      color: #000;
       border-radius: 5px;
     }
   }
@@ -142,11 +150,53 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
     font-size: 0.8em;
     line-height: 1.2em;
   }
+
   .day-cell {
     margin: 1px;
     cursor: pointer;
 
     &.heatmap-0 {
+      background-color: $color-noheat-current; // current
+      color: $color-noheat-current-fg;
+    }
+
+    &.heatmap-1,
+    &.heatmap-2,
+    &.heatmap-3,
+    &.heatmap-4 {
+      background-color: $color-noheat-posts;
+      color: $color-noheat-posts-fg;
+
+      &.today {
+        background-color: darken($color-noheat-posts, $today-darkness);
+        color: darken($color-noheat-posts-fg, $today-darkness);
+      }
+    }
+
+    &.future {
+      background-color: $color-hm-0-future;
+      color: $color-hm-0-future-fg;
+
+      &.today {
+        background-color: darken($color-hm-0-future, $today-darkness);
+        color: darken($color-hm-0-future-fg, $today-darkness);
+      }
+    }
+
+    &.past {
+      background-color: $color-hm-0-past;
+      color: $color-hm-0-past-fg;
+
+      &.today {
+        background-color: darken($color-hm-0-past, $today-darkness);
+        color: darken($color-hm-0-past-fg, $today-darkness);
+      }
+    }
+  }
+
+  &.enable-heatmap {
+
+    .heatmap-0 {
       background-color: $color-hm-0; // current
       color: $color-hm-0-fg;
 
@@ -169,7 +219,7 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
         }
       }
     }
-    &.heatmap-1 {
+    .heatmap-1 {
       background-color: $color-hm-1;
       color: $color-hm-1-fg;
 
@@ -178,7 +228,7 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
         color: darken($color-hm-1-fg, $today-darkness);
       }
     }
-    &.heatmap-2 {
+    .heatmap-2 {
       background-color: $color-hm-2;
       color: $color-hm-2-fg;
 
@@ -187,7 +237,7 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
         color: darken($color-hm-2-fg, $today-darkness);
       }
     }
-    &.heatmap-3 {
+    .heatmap-3 {
       background-color: $color-hm-3;
       color: $color-hm-3-fg;
 
@@ -196,7 +246,7 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
         color: darken($color-hm-3-fg, $today-darkness);
       }
     }
-    &.heatmap-4 {
+    .heatmap-4 {
       background-color: $color-hm-4;
       color: $color-hm-4-fg;
 
@@ -247,17 +297,17 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
   }
   .item4 {
     dd {
-      background-color: $color-bg-positive;
+      background-color: $color-noheat-posts;
     }
   }
   .item5 {
     dd {
-      background-color: $color-bg-neutral-today;
+      background-color: $color-hm-0-past;
     }
   }
   .item6 {
     dd {
-      background-color: $color-bg-neutral;
+      background-color: $color-hm-0-future;
     }
   }
 }
