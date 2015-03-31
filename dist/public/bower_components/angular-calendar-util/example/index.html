@@ -1,0 +1,88 @@
+<html ng-app="MyApplication" ng-strict-di>
+<title>Angular-Calendar Example</title>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+</head>
+<body ng-controller="IndexCtrl">
+
+  <div class="container">
+
+    <h1 class="page-header">Angular-Calendar <small>Examples</small></h1>
+    <p class="lead">A useful calendar and date utility module for Angular 1.3x.</p>
+
+
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="well">
+
+          <p class="text-center">
+            <span class="badge pull-right">{{calendar.year}}</span>
+            <b ng-show="calendar.weekSpansMonths" class="month-name">{{calendar.dateRange.from | date:'MMM'}} - {{calendar.dateRange.to | date:'MMMM'}}</b>
+            <b ng-hide="calendar.weekSpansMonths" ng-bind="calendar.dateRange.from | date:'MMMM'" class="month-name"></b>
+          </p>
+
+          <div ng-repeat="date in calendar.weekDates" ng-class="{'text-success': calendar.isToday(date)}">
+            <div>{{date|date:'fullDate'}} <b ng-show="calendar.isToday(date)">Today!</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <hr class="visible-xs" />
+
+        <dl>
+          <dt>Beginning Of Week <b>{{calendar.beginningOfWeek}}</b></dt>
+          <dd><input type="range" ng-model="calendar.beginningOfWeek" min="0" max="6" step="1" /></dd>
+        </dl>
+
+        <dl>
+          <dt>Week <b>{{calendar.week}}</b></dt>
+          <dd><input type="range" ng-model="calendar.week" min="1" max="53"  step="1" /></dd>
+        </dl>
+
+        <dl>
+          <dt>Year <b>{{calendar.year}}</b></dt>
+          <dd><input type="range" ng-model="calendar.year" min="1970" max="2100"  step="1"/></dd>
+        </dl>
+
+        <div ng-hide="calendar.isThisWeek">
+          <button class="btn btn-default" ng-click="calendar.toToday()">Go to this week</button>
+        </div>
+      </div>
+    </div>
+
+    <h2>Date Manipulation</h2>
+    <p>Notice when shifting by months, if is currently last day of the month, will always remain at the end of the shifted month.</p>
+    <form class="form" novalidate>
+      <dl class="form-group">
+        <dt>Sample Date <a href ng-click="resetCurrentDate()"><span class="glyphicon glyphicon-refresh"></span></a></dt>
+        <dd>
+          <span class="help-hint">{{currentDate|date:'fullDate'}}<br />{{currentDate|date:'h:mm:ss.sss a'}}</span>
+        </dd>
+      </dl>
+      <dl class="form-group">
+        <dt>Adjust by offset (supports negative values)</dt>
+        <dd>
+          <input class="form-control" type="number" ng-model="testOffset">
+          <select class="form-control" ng-model="testOffsetMultiplier">
+            <option value="ms">Milli-seconds</option>
+            <option value="sec">Seconds</option>
+            <option value="min">Minutes</option>
+            <option value="hr">Hours</option>
+            <option value="days">Days</option>
+            <option value="week">Weeks</option>
+            <option value="month">Months</option>
+            <option value="year">Years</option>
+          </select>
+        </dd>
+      </dl>
+      <div class="btn-group">
+        <button class="btn btn-success" ng-click="currentDate = calendar.dateOffset(testOffset, currentDate, testOffsetMultiplier)">Offset Date</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>
+  <script type="text/javascript" src="../dist/angular-calendar.min.js"></script>
+  <script type="text/javascript" src="./index.js"></script>
+</body>
+</html>

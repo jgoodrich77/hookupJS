@@ -77,6 +77,7 @@
                   tooltip-popup-delay="0"
                   tooltip-placement="right"
                   tooltip-animation="false"
+                  tooltip-append-to-body="true"
                   tooltip-html-unsafe="{{data.queryDateRange(period.toDate(item.date.date))|dataEntryTooltip}}">
                   <div ng-bind-html="data.queryDateRange(period.toDate(item.date.date))|dataEntryCell:period.toDate(item.date.date)" class="inner-cell text-center"></div>
                 </div>

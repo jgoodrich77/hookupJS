@@ -32,7 +32,8 @@ angular
   daySpec  = [
     new DayGroup('Morning',   new TimeRange('00:00', '11:59:59.999'), 3),
     new DayGroup('Afternoon', new TimeRange('12:00', '17:59:59.999'), 3),
-    new DayGroup('Evening',   new TimeRange('18:00', '23:59:59.999'), 3)
+    new DayGroup('Evening',   new TimeRange('18:00', '23:59:59.999'), 3),
+    new DayGroup('Day Total', new TimeRange('00:00', '23:59:59.999'), 1)
   ];
 
   $scope.weekDays = [];

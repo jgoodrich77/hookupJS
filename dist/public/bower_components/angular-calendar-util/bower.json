@@ -1,0 +1,35 @@
+{
+  "name": "angular-calendar",
+  "author": "Hans Doller <hans@ticonerd.com>",
+  "version": "0.1.0",
+  "homepage": "http://kryo2k.github.io/angular-calendar/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kryo2k/angular-calendar.git"
+  },
+  "dependencies": {
+    "angular": ">=1.2.*",
+    "json3": "~3.3.1"
+  },
+  "authors": [
+    "Hans Doller <hans@w3forge.org>"
+  ],
+  "description": "A useful calendar and date utility module for Angular 1.3x.",
+  "main": "src/angular-calendar.js",
+  "keywords": [
+    "date",
+    "time",
+    "date",
+    "manipulation",
+    "angular",
+    "1.3x"
+  ],
+  "license": "GPLv2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
