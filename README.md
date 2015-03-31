@@ -63,5 +63,4 @@ Note, bower install will have no effect as the modules are checked into git. Npm
     export MONGO_URI="mongodb://your-mongo-server-ip/hookupjs"
     export PORT=9990
     cd /path/to/hookupjs
-    grunt serve:dist
     node dist/server/app.js
