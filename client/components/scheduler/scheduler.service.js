@@ -100,8 +100,8 @@ angular
   });
 
   ScheduleDataFB.fixFacebookDate = function (date) {
-    // var fixedStr = (date||'').replace('+0000','.000Z');
-    return new Date(date);
+    var fixedStr = (date||'').replace('+0000','.000Z');
+    return new Date(fixedStr);
   };
 
   ScheduleDataFB.prototype.query = function (dateRange) {
