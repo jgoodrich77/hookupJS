@@ -23,7 +23,7 @@ angular
     return entries.length;
   };
 })
-.controller('DashboardSchedulerCtrl', function ($q, $scope, $fb, $filter, $state, $interval, $numberUtil, Calendar, DayGroup, Day, TimeRange, DateStore, ScheduleDataAggr) {
+.controller('DashboardSchedulerCtrl', function ($q, $scope, $fb, $filter, $state, $interval, $numberUtil, Calendar, DayGroup, Day, Time, TimeRange, DateStore, ScheduleDataAggr) {
 
   var
   BOW      = 0,
@@ -52,6 +52,43 @@ angular
     }
 
     return classes;
+  };
+
+  $scope.nowParams = function (period) {
+
+    if(!period) {
+      var
+      now = new Date(),
+      nowTime = Time.fromDate(now);
+
+      daySpec.every(function (spec) {
+        if(spec.range.contains(nowTime)) {
+          spec.periods.every(function (tr) {
+            if(tr.contains(nowTime)) { period = tr; }
+            return !period;
+          });
+        }
+
+        return !period;
+      });
+
+      if(period) {
+        period = period.toDate(now);
+      }
+    }
+
+    if(!period) {
+      return false;
+    }
+
+    var
+    dateFmt = $filter('date');
+
+    return {
+      date:        dateFmt(period.from, 'yyyy-MM-dd'),
+      periodStart: dateFmt(period.from, 'HH:mm'),
+      periodEnd:   dateFmt(period.to, 'HH:mm:ss.sss')
+    };
   };
 
   $scope.itemClasses = function (period) {
@@ -91,12 +128,9 @@ angular
     var
     records = data.queryDateRange(period),
     hasData = !!records.length,
-    dateFmt = $filter('date'),
-    params  = {
-      date:        dateFmt(period.from, 'yyyy-MM-dd'),
-      periodStart: dateFmt(period.from, 'HH:mm'),
-      periodEnd:   dateFmt(period.to, 'HH:mm:ss.sss')
-    };
+    params  = $scope.nowParams(period);
+
+    if(!params) return;
 
     if(hasData) {
       $state.go('app.dashboard.view-posts', params);

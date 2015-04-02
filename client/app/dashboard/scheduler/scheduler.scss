@@ -70,6 +70,8 @@ $color-hm-3-fg: darken($color-hm-3, $font-col-offset);
 $color-hm-4:    #FF967A;
 $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
 
+$breakpoint: 480px;
+
 .calendar-wrapper {
   position: relative;
 }
@@ -110,6 +112,11 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
 
 .calendar-header {
   font-family: Oswald;
+
+  @media (max-width: $breakpoint) {
+    font-size: 20px;
+    line-height: 50px;
+  }
 }
 
 .day-headers {
@@ -117,8 +124,15 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
     font-size: 25px;
     font-weight: bold;
     font-family: Oswald;
+
+    @media (max-width: $breakpoint) {
+      font-size: 18px;
+    }
   }
   .day-date-name {
+    @media (max-width: $breakpoint) {
+      font-size: 10px;
+    }
   }
 
   .day-header {
@@ -149,6 +163,10 @@ $color-hm-4-fg: darken($color-hm-4, $font-col-offset);
   .day-cell-period {
     font-size: 0.8em;
     line-height: 1.2em;
+
+    @media (max-width: $breakpoint) {
+      font-size: 8px;
+    }
   }
 
   .day-cell {

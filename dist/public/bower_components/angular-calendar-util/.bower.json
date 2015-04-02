@@ -31,11 +31,11 @@
     "test",
     "tests"
   ],
-  "_release": "61647d53af",
+  "_release": "d56346aa66",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "61647d53af9f37689ab94e3be1bf0955de0a7206"
+    "commit": "d56346aa662093a5d7f7e9078e1d1db90e94d43d"
   },
   "_source": "git://github.com/kryo2k/angular-calendar.git",
   "_target": "*",

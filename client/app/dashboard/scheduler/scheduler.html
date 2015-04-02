@@ -71,7 +71,7 @@
             <div class="day-group-wrapper">
               <div ng-repeat="period in group.periods" class="row-flex flex-stretch">
                 <div class="flex-2 day-cell-period">
-                  <div ng-bind="period|timeRange:'h:mm a'" class="inner-cell"></div>
+                  <div ng-bind="period|timeRange:'h a':'h:mm a':' - '" class="inner-cell"></div>
                 </div>
                 <div ng-repeat="item in weekDays" ng-class="itemClasses(period.toDate(item.date.date))" class="flex-1 day-cell" ng-click="itemClick(period.toDate(item.date.date))"
                   tooltip-popup-delay="0"
@@ -99,8 +99,9 @@
         <h3 class="helper text-muted-darker">Publishing in three easy steps:</h3>
 
         <ol class="helper text-muted">
-          <li class="margin-bottom">Click the dark blue box to post into the current time slot.</li>
-          <li class="margin-bottom">Click into a lighter blue slots to schedule a post in the future.</li>
+          <li class="margin-bottom">Click a blue box to create a post in that time slot.</li>
+          <li class="margin-bottom"><a ui-sref="app.meme">Click here</a> to create unique images for your account.</li>
+          <li class="margin-bottom"><a ui-sref="app.dashboard.create-post(nowParams())">Click here</a> to see the top most engaging keywords from your most recent posts.</li>
           <li>If you need more help, <a href="http://blog.hookupjs.com/product-1/" target="_blank">read the blog</a> or <a href="http://blog.hookupjs.com/faq-items/faq/" target="_blank">contact us</a>.</li>
         </ol>
 
