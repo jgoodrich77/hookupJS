@@ -16,7 +16,7 @@ angular.module('auditpagesApp')
     // property set.
     //
 
-    $scope.menuLeft = [{
+    $scope.menuLeft = [/*{
       'caption': 'Home',
       'title': 'Go back to home page',
       'state': 'app.main',
@@ -24,13 +24,7 @@ angular.module('auditpagesApp')
       'showIf': function() {
         return $state.current.name !== 'app.main';
       }
-    }, {
-      'caption': 'Meme Generator',
-      'title': 'Generator a Meme Image',
-      'state': 'app.meme',
-      'glyph': 'glyphicon glyphicon-image',
-      'roles': ['user','admin']
-    }/*,{
+    },{
       'caption': 'External Link',
       'title': 'Go back to Google.com',
       'link': 'http://google.com/',
@@ -41,7 +35,13 @@ angular.module('auditpagesApp')
       'caption': 'Dashboard',
       'state': 'app.dashboard',
       'roles': ['user','admin']
-    },{
+    }, {
+      'caption': 'Meme Generator',
+      'title': 'Generator a Meme Image',
+      'state': 'app.meme',
+      'glyph': 'glyphicon glyphicon-image',
+      'roles': ['user','admin']
+    }/*,{
       'caption': 'About',
       'title': 'HookupJS Free Software',
       'link': 'http://blog.hookupjs.com/about/',
@@ -51,7 +51,7 @@ angular.module('auditpagesApp')
       'title': 'HookupJS Contact FAQ',
       'link': 'http://blog.hookupjs.com/faq-items/faq/',
       'external': true
-    },{
+    }*/,{
       'caption': 'Administration',
       'title': 'Administration page',
       'state': 'app.admin',

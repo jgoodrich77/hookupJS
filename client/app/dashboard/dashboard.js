@@ -7,7 +7,7 @@ angular.module('auditpagesApp')
         url: '/dashboard',
         data: {
           breadcrumbTitle: 'My Dashboard',
-          roles: ['user']
+          roles: ['user', 'admin']
         },
         views: {
           'content': {
@@ -20,7 +20,7 @@ angular.module('auditpagesApp')
         url: '/create-post/:date/:periodStart/:periodEnd',
         data: {
           breadcrumbTitle: 'Create Post',
-          roles: ['user']
+          roles: ['user', 'admin']
         },
         views: {
           'dashboardView': {
@@ -33,7 +33,7 @@ angular.module('auditpagesApp')
         url: '/view-posts/:date/:periodStart/:periodEnd',
         data: {
           breadcrumbTitle: 'View Posts',
-          roles: ['user']
+          roles: ['user', 'admin']
         },
         views: {
           'dashboardView': {

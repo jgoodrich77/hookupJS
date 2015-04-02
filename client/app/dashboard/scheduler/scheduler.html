@@ -34,7 +34,7 @@
         </div>
 
         <h1 class="text-center calendar-header">
-          <span ng-show="calendar.weekSpansMonths" class="month-name">{{calendar.dateRange.from | date:'MMM'}} - {{calendar.dateRange.to | date:'MMMM'}}</span>
+          <span ng-show="calendar.weekSpansMonths" class="month-name">{{calendar.dateRange.from | date:'MMM'}} - {{calendar.dateRange.to | date:'MMM'}}</span>
           <span ng-hide="calendar.weekSpansMonths" ng-bind="calendar.dateRange.from | date:'MMMM'" class="month-name"></span>
         </h1>
 
@@ -71,7 +71,7 @@
             <div class="day-group-wrapper">
               <div ng-repeat="period in group.periods" class="row-flex flex-stretch">
                 <div class="flex-2 day-cell-period">
-                  <div ng-bind="period|timeRange:'h:mm a'" class="inner-cell"></div>
+                  <div ng-bind="period|timeRange:'h a':'h:mm a':' - '" class="inner-cell"></div>
                 </div>
                 <div ng-repeat="item in weekDays" ng-class="itemClasses(period.toDate(item.date.date))" class="flex-1 day-cell" ng-click="itemClick(period.toDate(item.date.date))"
                   tooltip-popup-delay="0"
@@ -99,9 +99,10 @@
         <h3 class="helper text-muted-darker">Publishing in three easy steps:</h3>
 
         <ol class="helper text-muted">
-          <li class="margin-bottom">Click the dark blue box to post into the current time slot.</li>
-          <li class="margin-bottom">Click into a lighter blue slots to schedule a post in the future.</li>
-          <li>If you need more help, <a href="http://blog.hookupjs.com/product-1/" target="_blank">read the blog</a> or <a href="http://blog.hookupjs.com/faq-items/faq/" target="_blank">contact us</a>.</li>
+          <li class="margin-bottom">Schedule a post to Facebook by tapping a blue box.</li>
+          <li class="margin-bottom">Create <a ui-sref="app.meme">unique, branded images</a> for Facebook or other social networks.</li>
+          <li class="margin-bottom">Read the top 500 <a ui-sref="app.dashboard.create-post(nowParams())">most engaging keywords</a> from your latest posts, daily.</li>
+          <li>For more help, <a href="http://blog.hookupjs.com/faq-items/faq/" target="_blank">contact us</a> give us a call at <a href="tel://4088746176">408 874-6176</a> or <a href="http://blog.hookupjs.com/product-1/" target="_blank">read the product tour</a>.</li>
         </ol>
 
         <div class="scheduler-legend">

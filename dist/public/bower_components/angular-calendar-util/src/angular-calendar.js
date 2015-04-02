@@ -1036,7 +1036,7 @@
       if (!tr||!t||!tr instanceof TimeRange||!t instanceof Time) {
         return false;
       }
-      return tr.from.after(t, true) && tr.to.before(t, true);
+      return tr.from.before(t, true) && tr.to.after(t, true);
     };
 
     TimeRange.sorter = function (reverse) {
