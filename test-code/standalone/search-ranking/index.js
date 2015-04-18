@@ -67,6 +67,12 @@ fmt('    -p <int>            number of results per page (default: %d)', cfgKwQue
     '    -r|--results        show latest stored results for listed keywords',
     '    -T|--title          show title of the result (depends on -r|--results)',
     '    -s|--snippet        show snippet of the result (depends on -r|--results)',
+    '',
+    '  dashboard',
+    '    -d|--domains=<str>  competitor domains to filter by (separate with comma)',
+    '    -t|--tag=<str>      filter ranking results by keyword tag.',
+    '    -k|--keyword=<str>  filter ranking results for a single keyword',
+    '    -f|--file=<file>    filter ranking results for a list of keywords in a file',
     ''
     ].join('\n'));
 
@@ -79,9 +85,10 @@ var
 logger = new Logger(!!opts.v),
 action = process.argv[2],
 actionMap = {
-  'flush'  : require('./lib/action/flush'),
-  'fetch'  : require('./lib/action/fetch'),
-  'list'   : require('./lib/action/list')
+  'flush'     : require('./lib/action/flush'),
+  'fetch'     : require('./lib/action/fetch'),
+  'list'      : require('./lib/action/list'),
+  'dashboard' : require('./lib/action/dashboard')
 };
 
 if(opts.h || actionMap[action] === undefined) {

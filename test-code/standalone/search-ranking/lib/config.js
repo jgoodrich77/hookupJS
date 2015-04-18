@@ -7,5 +7,7 @@ module.exports = {
     pageSize: 10,
     cx:  process.env.GOOGLE_CSE_CX  || '-- invalid key --',
     auth: process.env.GOOGLE_CSE_KEY || '-- invalid key --'
+  },
+  dashboard: {
   }
 };
